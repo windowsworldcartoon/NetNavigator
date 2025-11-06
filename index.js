@@ -155,9 +155,20 @@ const menuTemplate = [
             {
                 label: 'About',
                 click: () => {
-                    shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator');
+                    const win = BrowserWindow.getFocusedWindow();
+                    dialog.showMessageBox(win, {
+                        type: 'info',
+                        title: 'Open External',
+                        message: 'Your about to open https://github.com/windowsworldcartoon/NetNavigator',
+                        detail: 'Do you want to open it in your default browser?',
+                        buttons: ['Open External', 'No']
+                    }).then(result => {
+                        if (result.response === 0) {
+                            shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator');
+                        }
+                    });
                 }
-            }
+            },
         ]
     }
 ];
@@ -211,7 +222,158 @@ function createWindow() {
   });
   win.loadFile(path.join(publicPath, 'index.html'));
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
+  const menu = Menu.buildFromTemplate([
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Exit',
+                accelerator: process.platform === 'darwin' ? 'Cmd+Q' : 'Ctrl+Q',
+                click: () => {
+                    app.quit();
+                }
+            }
+        ]
+    },
+    {
+        label: 'Window',
+        submenu: [
+            {
+                label: 'Minimize',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    if (win) win.minimize();
+                }
+            },
+            {
+                label: 'Maximize',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    if (win) {
+                        if (win.isMaximized()) {
+                            win.unmaximize();
+                        } else {
+                            win.maximize();
+                        }
+                    }
+                }
+            },
+            { role: 'close' },
+            
+        ]
+    },
+    {
+        label: 'Edit',
+        submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' }
+        ]
+    },
+    {
+        label: 'View',
+        submenu: [
+            { role: 'reload' },
+            { role: 'forceReload' },
+            {
+                label: 'Toggle DevTools',
+                accelerator: 'F12',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    if (win) {
+                        const devtoolsWin = new BrowserWindow({ width: 800, height: 600, title: 'NetNavigator - DevTools', autoHideMenuBar: true, icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), webPreferences: { nodeIntegration: true, contextIsolation: false } });
+                        win.webContents.setDevToolsWebContents(devtoolsWin.webContents);
+                        win.webContents.openDevTools({ mode: 'detach' });
+                    }
+                }
+            },
+            { label: 'Check for Updates', click: () => { ipcMain.emit('check-for-updates') } },
+            { type: 'separator' },
+            { role: 'resetZoom' },
+            { role: 'zoomIn' },
+            { role: 'zoomOut' },
+            { type: 'separator' },
+            { role: 'togglefullscreen' },
+            { label: 'Toggle Theme', submenu: [
+                { label: 'Light', type: 'radio', checked: nativeTheme.themeSource === 'light', click: () => { nativeTheme.themeSource = 'light' } },
+                { label: 'Dark', type: 'radio', checked: nativeTheme.themeSource === 'dark', click: () => { nativeTheme.themeSource = 'dark' } },
+                { label: 'System', type: 'radio', checked: nativeTheme.themeSource === 'system', click: () => { nativeTheme.themeSource = 'system' } }
+            ]}
+        ]
+    },
+    {
+        label: 'Network',
+        submenu: [
+            {
+                label: 'Network Scanner',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'scanner');
+                }
+            },
+            {
+                label: 'Port Checker',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'port');
+                }
+            },
+            {
+                label: 'DNS Resolver',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'dns');
+                }
+            },
+            {
+                label: 'Network Monitor',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'monitor');
+                }
+            },
+            {
+                label: 'Network Optimization',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'optimize');
+                }
+            },
+            {
+                label: 'Network Info',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'info');
+                }
+            }
+        ]
+    },
+    {
+        label: 'Help',
+        submenu: [
+            {
+                label: 'About',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    dialog.showMessageBox(win, {
+                        type: 'info',
+                        title: 'About',
+                        message: 'Your about to open https://github.com/windowsworldcartoon/NetNavigator',
+                        detail: 'Do you want to open it in your default browser?',
+                        buttons: ['Open External', 'No']
+                    }).then(result => {
+                        if (result.response === 0) {
+                            shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator');
+                         }
+                    });
+                }
+            },
+        ]
+    },
+  ]);  
   Menu.setApplicationMenu(menu);
 
 
