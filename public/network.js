@@ -15,9 +15,23 @@ document.querySelectorAll('.tab-button').forEach(button => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('welcome').style.display = 'block';
-    document.getElementsByClassName('loading-screen')[0].style.display = 'none';
+document.addEventListener('DOMContentLoaded', async () => {
+    await ipcRenderer.invoke('updates-json').then(data => {
+        const tag_name = data.tag_name;
+        const version = data.version;
+        if (tag_name !== version) {
+            document.getElementsByClassName('loading-screen')[0].style.display = 'none';
+            const update = document.createElement('div');
+            update.className = 'card';
+            update.id = 'update-card';
+            update.innerHTML = `<div class="card-content"><h3>Update Available</h3><p>Version ${version} is available. Click <a onclick="openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/${tag_name}')">here</a> to download.</p></div><div class="alert info"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/info-circle.svg"/></svg> Update available: ${tag_name}</div><div class="card-actions"><button onclick="cancelUpdate()" id='cancel-update'>Cancel</button></div>`;
+            document.body.appendChild(update);
+
+        } else {
+            document.getElementsByClassName('loading-screen')[0].style.display = 'none';
+            document.getElementById('welcome').style.display = 'block';
+        }
+    });
 });
 
 // Network Scanner
@@ -146,6 +160,12 @@ document.getElementById('stop-monitor').addEventListener('click', () => {
     clearInterval(monitorInterval);
     document.getElementById('start-monitor').disabled = false;
     document.getElementById('stop-monitor').disabled = true;
+    const resultsDiv = document.getElementById('monitor-results');
+    resultsDiv.innerHTML += '<div>Stopping network monitor...</div>';
+    resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    setTimeout(() => {
+        resultsDiv.innerHTML = '';
+    }, 1000);
 });
 
 // Network Optimization
@@ -158,11 +178,11 @@ document.getElementById('optimize-btn').addEventListener('click', () => {
     exec('ipconfig /flushdns && ipconfig /release && ipconfig /renew', (error, stdout, stderr) => {
         if (error) {
             console.error('Optimization error:', error.message);
-            resultsDiv.innerHTML = 'Error: ' + error.message;
+            resultsDiv.innerHTML += '\nError: ' + error.message;
             return;
         }
         console.log('Optimization completed');
-        resultsDiv.innerHTML = 'Network optimized: DNS cache flushed, IP renewed.';
+        resultsDiv.innerHTML += '\nNetwork optimized: DNS cache flushed, IP renewed.';
     });
 });
 
@@ -200,16 +220,17 @@ document.getElementById('get-info-btn').addEventListener('click', () => {
 document.getElementById('check-connect-btn').addEventListener('click', () => {
     console.log('Checking connectivity');
     const statusDiv = document.getElementById('connect-status');
-    statusDiv.innerHTML = 'Checking...';
+    statusDiv.innerHTML = '';
+    statusDiv.innerHTML += 'Checking...';
 
 
     exec('ping -n 1 8.8.8.8', (error, stdout, stderr) => {
         if (stdout.includes('Reply from')) {
             console.log('Connected to internet');
-            statusDiv.innerHTML = '<span style="color: green;">Connected to Internet</span>';
+            statusDiv.innerHTML += '<div class="alert success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/check.svg"/></svg> Connected to Internet</div>';
         } else {
             console.log('Not connected to internet');
-            statusDiv.innerHTML = '<span style="color: red;">Not Connected to Internet</span>';
+            statusDiv.innerHTML += '<div class="alert error"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/x.svg"/></svg> Not Connected to Internet</div>';
         }
     });
 });
@@ -218,7 +239,7 @@ document.getElementById('check-connect-btn').addEventListener('click', () => {
 document.getElementById('theme-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     const button = document.getElementById('theme-toggle');
-    button.innerHTML = document.body.classList.contains('dark-mode') ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/sun-high.svg"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/moon.svg"/></svg>';
+    bnerHTML = document.body.classList.contains('dark-mode') ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/sun-high.svg"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/moon.svg"/></svg>';
     ipcRenderer.invoke('theme:toggle');
 });
 
@@ -240,6 +261,9 @@ ipcRenderer.on('switch-tab', (event, tab) => {
 });
 
 
+
+
+
 ipcRenderer.on('set-mode', (event, mode) => {
     event.preventDefault();
     console.log('Mode:', mode);
@@ -253,5 +277,11 @@ ipcRenderer.on('set-mode', (event, mode) => {
     }
 });
 
+function openExternal(url) {
+    ipcRenderer.invoke('open-external', url);
+}
 
-
+function cancelUpdate() {
+    document.getElementById('update-card').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+}

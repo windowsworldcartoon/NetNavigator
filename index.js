@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain, dialog, net, Menu, nativeTheme, Tray, } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, net, Menu, nativeTheme, Tray, shell, autoUpdater } = require('electron');
 const path = require('path');
-
+const os = require('os');
+const fs = require('fs');
 ipcMain.on('minimize-window', () => {
     const win = BrowserWindow.getFocusedWindow();
     if (win) win.minimize();
@@ -154,12 +155,7 @@ const menuTemplate = [
             {
                 label: 'About',
                 click: () => {
-                    dialog.showMessageBox({
-                        type: 'info',
-                        title: 'About NetNavigator',
-                        message: 'NetNavigator - Network diagnostics tool',
-                        detail: 'Version 1.0.0'
-                    });
+                    shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator');
                 }
             }
         ]
@@ -167,11 +163,10 @@ const menuTemplate = [
 ];
 
 function createWindow() {
-    
-    
+  const homedir = os.homedir();
   
   const publicPath = path.join(__dirname, 'public');
-  const os = [
+  const os1 = [
     {
         id: 'win32',
         name: 'Windows'
@@ -203,7 +198,7 @@ function createWindow() {
     
   ]
   const win = new BrowserWindow({
-    title: `NetNavigator (${os.find(o => o.id === process.platform).name})`,
+    title: `NetNavigator (${os1.find(o => o.id === process.platform).name}) (${app.getVersion()})`,
     width: 800,
     height: 600,
     icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), // Assuming icon.png in public
@@ -236,6 +231,31 @@ function createWindow() {
     ])
   }
 
+  const configPath = path.join(os.homedir(), '.netnavigator', 'config.json');
+  const netdirPath = path.join(os.homedir(), '.netnavigator');
+  console.log(configPath);
+
+  try {
+    if (!fs.existsSync(netdirPath)) {
+      fs.mkdirSync(netdirPath);
+    }
+
+    if (!fs.existsSync(configPath)) {
+      fs.writeFileSync(configPath, JSON.stringify({}));
+    } else {
+      const configFileData = fs.readFileSync(configPath, 'utf8');
+      const configData = JSON.parse(configFileData);
+
+      if (Object.keys(configData).length === 0) {
+        const newConfig = { name: 'NetNavigator', autoUpdate: false };
+        fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+      }
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+
   
   const contextMenu = Menu.buildFromTemplate([
     { role: 'copy' },
@@ -256,6 +276,30 @@ function createWindow() {
     { role: 'undo' },
     { role: 'redo' }
   ]);
+  
+  
+  try {
+    const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    if (configData.autoUpdate === true) {
+        ipcMain.emit('check-for-updates');
+    }
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+        console.error('Error parsing config file:', error);
+        dialog.showMessageBox(win, {
+            type: 'error',
+            title: 'Error Parsing Config File',
+            message: 'There was an error parsing the config file. Please check the file and try again.'
+        })
+    } else {
+        console.error('Error reading config file:', error);
+        dialog.showMessageBox(win, {
+            type: 'error',
+            title: 'Error Reading Config File',
+            message: 'There was an error reading the config file. Please check the file and try again.'
+        });
+    }
+  }
 
   win.webContents.on('context-menu', (e, params) => {
     e.preventDefault();
@@ -265,37 +309,9 @@ function createWindow() {
         editMenu.popup({ window: win });
     }
   });
-  ipcMain.on('check-for-updates', () => {
-    const network = net.isOnline();
-    if (!network) {
-        dialog.showMessageBox(win, {
-            type: 'error',
-            title: 'No Internet Connection',
-            message: 'Please check your internet connection and try again.'
-        });
-        return;
-    }
-    const github = "https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest";
-    fetch(github)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch updates ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data)
-    })
-    .catch(error => {
-        dialog.showMessageBox(win, {
-            type: 'error',
-            title: 'NetNavigator - Error',
-            message: 'Failed to check for updates',
-            detail: error.message,
-            buttons: ['OK']
-        })
-    })
-  });
+
+
+ 
 
 
   ipcMain.on('show-error', (event, data) => {
@@ -328,6 +344,74 @@ ipcMain.handle('theme:system', async () => {
 });
 
 
+
+ ipcMain.on('check-for-updates', () => {
+    const win = BrowserWindow.getFocusedWindow();
+    const network = net.isOnline();
+    if (!network) {
+        dialog.showMessageBox(win, {
+            type: 'error',
+            title: 'No Internet Connection',
+            message: 'Please check your internet connection and try again.'
+        });
+        return;
+    }
+    const github = "https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest";
+    fetch(github)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch updates ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.tag_name === app.getVersion()) {
+            dialog.showMessageBox(win, {
+                type: 'info',
+                title: 'NetNavigator - Update',
+                message: 'You are using the latest version of NetNavigator.'
+            });
+        } else {
+            dialog.showMessageBox(win, {
+                type: 'info',
+                title: 'NetNavigator - Update',
+                message: 'A new version of NetNavigator is available.',
+                detail: `Version ${data.tag_name} is available.`,
+                buttons: ['Update', 'Cancel']
+            }).then(result => {
+                if (result.response === 0) {
+                   
+                } else {
+                    dialog.showMessageBox(win, {
+                        type: 'info',
+                        title: 'NetNavigator - Update',
+                        message: 'Update canceled.'
+                    });
+                }
+            })
+        }
+    })
+    .catch(error => {
+        dialog.showMessageBox(win, {
+            type: 'error',
+            title: 'NetNavigator - Error',
+            message: 'Failed to check for updates',
+            detail: error.message,
+            buttons: ['OK']
+        })
+    })
+  });
+
+ipcMain.handle('updates-json', async () => {
+    const github = "https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest";
+    const response = await fetch(github);
+    const data = await response.json();
+    return {...data, version: app.getVersion()};
+});
+
+ipcMain.handle('open-external', async (event, url) => {
+    shell.openExternal(url);
+});
 
 app.whenReady().then(() => {
   createWindow();
