@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="card" style="margin: auto; height: fit-content;">
+            <h1>Loading...</h1>
+            <p>Please wait while we load the application...</p>
+            <p>This may take a few minutes.</p>
+            <br>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <div class="welcome" id="welcome" style="display: none;">
+        <div class="welcome-content">
+            <div class="card">
+                <h1>Welcome to NetNavigator</h1>
+                <p>NetNavigator is a powerful network scanning and monitoring tool.</p>
+                <p>Scan your network, check ports, resolve DNS, and monitor network activity.</p>
+                <button id="start-btn">Start</button>
+            </div>
+        </div>
+    </div>
+    <div id="app" style="display: none;">
+        <div id="app-header">
+            <h1>NetNavigator</h1>
+            <button id="theme-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><use href="../tabler-icons-3.35.0/icons/outline/moon.svg"/></svg></button>
+        </div>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="scanner">Network Scanner</button>
+            <button class="tab-button" data-tab="port">Port Checker</button>
+            <button class="tab-button" data-tab="monitor">Network Monitor</button>
+            <button class="tab-button" data-tab="optimize">Network Optimization</button>
+            <button class="tab-button" data-tab="info">Network Info</button>
+        </div>
+        <div id="content">
+            <div id="scanner" class="tab-content active">
+                <h2>Network Scanner</h2>
+                <input type="text" id="scan-ip" placeholder="Enter base IP (e.g., 192.168.1)">
+                <button id="scan-btn">Scan</button>
+                <div id="scan-results"></div>
+            </div>
+            <div id="port" class="tab-content">
+                <h2>Port Checker</h2>
+                <input type="text" id="host" placeholder="Host">
+                <input type="number" id="port-num" placeholder="Port">
+                <button id="check-port-btn">Check Port</button>
+                <div id="port-results"></div>
+            </div>
+            <div id="monitor" class="tab-content">
+                <h2>Network Monitor</h2>
+                <button id="start-monitor">Start Monitoring</button>
+                <button id="stop-monitor" disabled>Stop Monitoring</button>
+                <div id="monitor-results"></div>
+            </div>
+            <div id="optimize" class="tab-content">
+                <h2>Network Optimization</h2>
+                <button id="optimize-btn">Run Optimization</button>
+                <div id="optimize-results"></div>
+            </div>
+            <div id="info" class="tab-content">
+                <h2>Network Info</h2>
+                <button id="get-info-btn">Get Network Info</button>
+                <button id="check-connect-btn">Check Connectivity</button>
+                <div id="connect-status"></div>
+                <div id="info-results"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./network.js"></script>
+</html>
