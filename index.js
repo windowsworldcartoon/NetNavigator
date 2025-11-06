@@ -568,7 +568,11 @@ ipcMain.handle('updates-json', async () => {
     const github = "https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest";
     const response = await fetch(github);
     const data = await response.json();
-    return {...data, version: app.getVersion()};
+    if (response.ok) {
+        return data;
+    } else {
+        throw new Error('Failed to fetch updates ' + response.status);
+    }
 });
 
 ipcMain.handle('open-external', async (event, url) => {

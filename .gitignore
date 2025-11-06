@@ -2,3 +2,4 @@ node_modules
 electron-builder.json5
 release
 version.md
+.env

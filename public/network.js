@@ -3,7 +3,6 @@ const dns = require('dns');
 const net = require('net');
 const os = require('os');
 const { ipcRenderer, dialog } = require('electron');
-let mode = 'normal';
 // Tab switching
 document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
@@ -31,6 +30,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementsByClassName('loading-screen')[0].style.display = 'none';
             document.getElementById('welcome').style.display = 'block';
         }
+    }).catch(err => {
+        console.error('Error fetching updates:', err);
+        document.getElementsByClassName('loading-screen')[0].style.display = 'none';
+        const error = document.createElement('div');
+        error.className = 'alert error';
+        error.textContent = 'Error fetching updates';
+        document.body.appendChild(error);
     });
 });
 
@@ -283,5 +289,13 @@ function openExternal(url) {
 
 function cancelUpdate() {
     document.getElementById('update-card').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    document.getElementById('loading-screen').style.display = 'block';
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+    }, 100);
 }
+
+
+
+
