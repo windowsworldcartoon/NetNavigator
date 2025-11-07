@@ -33,17 +33,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }).catch(err => {
         console.error('Error fetching updates:', err);
         document.getElementsByClassName('loading-screen')[0].style.display = 'none';
+        const update = document.createElement('div');
+        update.className = 'card';
+        update.id = 'update-card';
         const error = document.createElement('div');
         error.className = 'alert error';
-        error.textContent = 'Error fetching updates';
-        document.body.appendChild(error);
+        error.innerHTML = 'Error fetching updates. <button onclick="cancelUpdate()" id="cancel-update">Cancel</button>';
+        update.appendChild(error);
+        document.body.appendChild(update);
     });
 });
 
 // Network Scanner
 document.getElementById('scan-btn').addEventListener('click', () => {
     const baseIP = document.getElementById('scan-ip').value;
-    console.log('Scanning network for base IP:', baseIP);
     const resultsDiv = document.getElementById('scan-results');
     resultsDiv.innerHTML = 'Scanning...';
 

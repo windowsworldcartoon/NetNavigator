@@ -569,7 +569,7 @@ ipcMain.handle('updates-json', async () => {
     const response = await fetch(github);
     const data = await response.json();
     if (response.ok) {
-        return data;
+        return { ...data, version: app.getVersion() };
     } else {
         throw new Error('Failed to fetch updates ' + response.status);
     }
