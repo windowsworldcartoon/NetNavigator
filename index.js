@@ -1,11 +1,20 @@
-const { app, BrowserWindow, ipcMain, dialog, net, Menu, nativeTheme, Tray, shell, autoUpdater } = require('electron');
-const path = require('path');
+const { app, BrowserWindow, ipcMain, dialog, Menu, nativeTheme, shell } = require('electron');
 const os = require('os');
+const path = require('path');
 const fs = require('fs');
+const dns = require('dns');
+const net = require('net');
+const { fsPromises } = require('fs');
+
+const registeredCommands = new Set();
+const activeServers = new Map();
+
+
 ipcMain.on('minimize-window', () => {
     const win = BrowserWindow.getFocusedWindow();
     if (win) win.minimize();
 });
+
 
 ipcMain.on('maximize-window', () => {
     const win = BrowserWindow.getFocusedWindow();
@@ -17,6 +26,19 @@ ipcMain.on('maximize-window', () => {
         }
     }
 });
+
+
+function checkInternetConnection() {
+    return new Promise((resolve, reject) => {
+        dns.lookup('github.com', (err) => {
+            if (err && err.code === 'ENOTFOUND') {
+                resolve(false);
+            } else {
+                resolve(true);
+            }
+        });
+    })
+}
 
 
 
@@ -141,14 +163,29 @@ const menuTemplate = [
                 }
             },
             {
-                label: 'Network Info',
+            label: 'Network Info',
+            click: () => {
+            const win = BrowserWindow.getFocusedWindow();
+            win.webContents.send('switch-tab', 'info');
+            }
+            },
+            { type: 'separator' },
+            {
+                label: 'Diagnostics',
                 click: () => {
                     const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'info');
+                    win.webContents.send('switch-tab', 'diagnostics');
+                }
+            },
+            {
+                label: 'Packet & Traffic Analysis',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'packet-analysis');
                 }
             }
-        ]
-    },
+            ]
+            },
     {
         label: 'Help',
         submenu: [
@@ -173,7 +210,7 @@ const menuTemplate = [
     }
 ];
 
-function createWindow() {
+async function createWindow() {
   const homedir = os.homedir();
   
   const publicPath = path.join(__dirname, 'public');
@@ -214,7 +251,6 @@ function createWindow() {
     height: 600,
     icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), // Assuming icon.png in public
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false,
       spellcheck: true
@@ -348,12 +384,27 @@ function createWindow() {
                     const win = BrowserWindow.getFocusedWindow();
                     win.webContents.send('switch-tab', 'info');
                 }
+            },
+            { type: 'separator' },
+            {
+                label: 'Diagnostics',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'diagnostics');
+                }
+            },
+            {
+                label: 'Packet & Traffic Analysis',
+                click: () => {
+                    const win = BrowserWindow.getFocusedWindow();
+                    win.webContents.send('switch-tab', 'packet-analysis');
+                }
             }
-        ]
-    },
-    {
-        label: 'Help',
-        submenu: [
+            ]
+            },
+            {
+            label: 'Help',
+            submenu: [
             {
                 label: 'About',
                 click: () => {
@@ -409,7 +460,7 @@ function createWindow() {
       const configData = JSON.parse(configFileData);
 
       if (Object.keys(configData).length === 0) {
-        const newConfig = { name: 'NetNavigator', autoUpdate: false };
+        const newConfig = { name: 'NetNavigator', autoUpdate: false, loadExtensions: true };
         fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
       }
     }
@@ -417,15 +468,31 @@ function createWindow() {
     console.error(err);
   }
 
-
-  
   const contextMenu = Menu.buildFromTemplate([
+    { role: 'undo' },
+    { role: 'redo' },
+    { type: 'separator' },
     { role: 'copy' },
     { role: 'paste' },
-    { role: 'reload' },
+    { role: 'cut' },
+    { role: 'selectall' },
+    { type: 'separator' },
+    { label: 'Reload', accelerator: 'F5', click: () => win.reload() },
+    { label: 'Force Reload', accelerator: 'Ctrl+F5', click: () => win.webContents.reloadIgnoringCache() },
+    { type: 'separator' },
+    { label: 'Toggle DevTools', accelerator: 'F12', click: () => win.webContents.toggleDevTools() },
+    { label: 'Inspect Element', click: (menuItem, browserWindow, event) => {
+        try {
+            const { x, y } = event;
+            win.webContents.inspectElement(x, y);
+        } catch (e) {
+            console.error('Failed to inspect element', e);
+        }
+    } },
     { type: 'separator' },
     { role: 'togglefullscreen' },
     { type: 'separator' },
+    { role: 'minimize' },
     { role: 'close' },
   ]);
 
@@ -438,8 +505,18 @@ function createWindow() {
     { role: 'undo' },
     { role: 'redo' }
   ]);
-  
-  
+
+  ipcMain.on('open-folder',  (event, data) => {
+     dialog.showOpenDialog({
+        properties: ['openDirectory']
+     }).then(result => {
+        if (result.filePaths[0] && result.canceled == false) {
+            win.webContents.send('open-folder-result', { path: result.filePaths[0] });
+        } else {
+            win.webContents.send('open-folder-result', { canceled: true, info: 'No folder selected'});
+        }
+     })
+  })  
   try {
     const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     if (configData.autoUpdate === true) {
@@ -466,7 +543,31 @@ function createWindow() {
   win.webContents.on('context-menu', (e, params) => {
     e.preventDefault();
     if (!params.isEditable) {
-        contextMenu.popup({ window: win });
+        const customContextMenu = Menu.buildFromTemplate([
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'copy' },
+            { role: 'paste' },
+            { role: 'cut' },
+            { role: 'selectall' },
+            { type: 'separator' },
+            { label: 'Reload', accelerator: 'F5', click: () => win.reload() },
+            { label: 'Force Reload', accelerator: 'Ctrl+F5', click: () => win.webContents.reloadIgnoringCache() },
+            { type: 'separator' },
+            { label: 'Toggle DevTools', accelerator: 'F12', click: () => {
+                const devToolsWin = new BrowserWindow({ width: 800, height: 600, title: 'NetNavigator - DevTools', autoHideMenuBar: true, icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), webPreferences: { nodeIntegration: true, contextIsolation: false } });
+                win.webContents.setDevToolsWebContents(devToolsWin.webContents);
+                win.webContents.openDevTools({ mode: 'detach' });
+            } },
+            { label: 'Inspect Element', click: () => win.webContents.inspectElement(params.x, params.y) },
+            { type: 'separator' },
+            { role: 'togglefullscreen' },
+            { type: 'separator' },
+            { role: 'minimize' },
+            { role: 'close' },
+        ]);
+        customContextMenu.popup({ window: win });
     } else {
         editMenu.popup({ window: win });
     }
@@ -489,6 +590,8 @@ function createWindow() {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
+
+
 }
 
 ipcMain.handle('theme:toggle', async () => {
@@ -505,19 +608,57 @@ ipcMain.handle('theme:system', async () => {
   return nativeTheme.themeSource;
 });
 
+ipcMain.handle('command-palette', async () => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (win) {
+    win.webContents.send('show-command-palette');
+  }
+  return { success: true };
+});
+
+
+
+function checkConnectivity() {
+  return new Promise((resolve) => {
+    try {
+      const timeoutId = setTimeout(() => {
+        resolve(false);
+      }, 5000);
+
+      // Use DNS lookup to google.com as connectivity test
+      dns.lookup('google.com', (err, address, family) => {
+        if (err) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+    } catch (error) {
+      console.error('Connectivity check exception:', error);
+      resolve(false);
+    }
+  });
+
+}
+ipcMain.handle('netNav.checkConnectivity', async () => {
+  return await checkConnectivity() ? true : false;
+});
+
+
 
 
  ipcMain.on('check-for-updates', () => {
     const win = BrowserWindow.getFocusedWindow();
-    const network = net.isOnline();
-    if (!network) {
-        dialog.showMessageBox(win, {
-            type: 'error',
-            title: 'No Internet Connection',
-            message: 'Please check your internet connection and try again.'
-        });
-        return;
-    }
+    dns.lookup('github.com', (err, address, family) => {
+        if (err) {
+            dialog.showMessageBox(win, {
+                type: 'error',
+                title: 'NetNavigator - Error',
+                message: 'There was an error checking for updates. Please check your internet connection and try again.'
+            });
+            return;
+        }
+    })
     const github = "https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest";
     fetch(github)
     .then(response => {
@@ -575,14 +716,648 @@ ipcMain.handle('updates-json', async () => {
     }
 });
 
-ipcMain.handle('open-external', async (event, url) => {
-    shell.openExternal(url);
+
+ipcMain.handle('create-server', async (event, data) => {
+    const { spawn } = require('child_process');
+    
+    // Validate input
+    if (!data || !data.name || !data.port) {
+        throw new Error('Invalid server configuration: name and port are required');
+    }
+
+    const homedir = os.homedir();
+    const workspacePath = path.join(homedir, '.netnavigator', 'workspaces');
+    
+    if (!workspacePath) {
+        throw new Error('Failed to determine workspace path');
+    }
+
+    const serverPath = path.join(workspacePath, data.name);
+    const serverConfig = {
+        name: data.name,
+        port: data.port,
+        type: data.type || 'http',
+        createdAt: new Date().toISOString(),
+        status: 'starting'
+    };
+
+    // Check if server already exists and is running
+    if (activeServers.has(data.name)) {
+        throw new Error('Server is already running');
+    }
+
+    if (!fs.existsSync(serverPath)) {
+        await fsPromises.mkdir(serverPath, { recursive: true });
+    }
+    
+    await fsPromises.writeFile(path.join(serverPath, 'config.json'), JSON.stringify(serverConfig, null, 2));
+    
+    const jsServer = `
+const http = require('http');
+const hostname = 'localhost';
+const port = ${data.port};
+
+const server = http.createServer((req, res) => {
+   if (req.url === '/') {
+       res.statusCode = 200;
+       res.setHeader('Content-Type', 'text/plain');
+       res.end('Hello World');
+   } else if (req.url === '/test') {
+       res.statusCode = 200;
+       res.setHeader('Content-Type', 'text/plain');
+       res.end('Test');
+   } else if (req.url === '/api') {
+       res.statusCode = 200;
+       res.setHeader('Content-Type', 'application/json');
+       res.end(JSON.stringify({ message: 'Hello World' }));
+   } else {
+       res.statusCode = 404;
+       res.setHeader('Content-Type', 'text/plain');
+       res.end('Not Found');
+   }
 });
 
-app.whenReady().then(() => {
-  createWindow();
+server.listen(port, hostname, () => {
+     console.log(\`Server running at http://\${hostname}:\${port}/\`);
+});
+
+process.on('SIGTERM', () => {
+     console.log('SIGTERM signal received: closing HTTP server');
+     server.close(() => {
+          console.log('HTTP server closed');
+     });
+});
+`;
+    
+    await fsPromises.writeFile(path.join(serverPath, 'server.js'), jsServer);
+    
+    // Spawn the server process
+    const serverProcess = spawn('node', ['server.js'], {
+        cwd: serverPath,
+        stdio: ['ignore', 'pipe', 'pipe']
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    // Capture stdout
+    serverProcess.stdout.on('data', (data) => {
+        const chunk = data.toString();
+        stdout += chunk;
+        console.log(`[${data.name}] stdout:`, chunk);
+        // Send to renderer
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+            win.webContents.send('server-output', data.name, 'stdout', chunk);
+        }
+    });
+
+    // Capture stderr
+    serverProcess.stderr.on('data', (data) => {
+        const chunk = data.toString();
+        stderr += chunk;
+        console.log(`[${data.name}] stderr:`, chunk);
+        // Send to renderer
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+            win.webContents.send('server-output', data.name, 'stderr', chunk);
+        }
+    });
+
+    // Handle process exit
+    serverProcess.on('exit', (code, signal) => {
+        console.log(`Server ${data.name} exited with code ${code} and signal ${signal}`);
+        activeServers.delete(data.name);
+        // Send exit notification
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+            win.webContents.send('server-exited', data.name, code, signal);
+        }
+    });
+
+    // Store the process
+    activeServers.set(data.name, {
+        process: serverProcess,
+        config: serverConfig,
+        startTime: new Date(),
+        stdout,
+        stderr
+    });
+
+    return {
+        success: true,
+        message: 'Server created and started successfully',
+        serverId: data.name,
+        config: serverConfig
+    };
+});
+
+// Stop server handler
+ipcMain.handle('stop-server', async (event, serverName) => {
+    if (!activeServers.has(serverName)) {
+        throw new Error(`Server '${serverName}' is not running`);
+    }
+
+    const serverData = activeServers.get(serverName);
+    const { process: serverProcess } = serverData;
+
+    return new Promise((resolve, reject) => {
+        // Give the process 5 seconds to shut down gracefully
+        const timeout = setTimeout(() => {
+            serverProcess.kill('SIGKILL');
+            resolve({ success: true, message: 'Server forcefully stopped' });
+        }, 5000);
+
+        serverProcess.on('exit', () => {
+            clearTimeout(timeout);
+            activeServers.delete(serverName);
+            resolve({ success: true, message: 'Server stopped successfully' });
+        });
+
+        // Send SIGTERM for graceful shutdown
+        serverProcess.kill('SIGTERM');
+    });
+});
+
+// Get server status handler
+ipcMain.handle('get-server-status', async (event, serverName) => {
+    if (!activeServers.has(serverName)) {
+        return {
+            running: false,
+            message: `Server '${serverName}' is not running`
+        };
+    }
+
+    const serverData = activeServers.get(serverName);
+    return {
+        running: true,
+        name: serverData.config.name,
+        port: serverData.config.port,
+        type: serverData.config.type,
+        createdAt: serverData.config.createdAt,
+        uptime: Date.now() - serverData.startTime.getTime(),
+        pid: serverData.process.pid,
+        stdout: serverData.stdout,
+        stderr: serverData.stderr
+    };
+});
+
+// Get all active servers
+ipcMain.handle('get-active-servers', async (event) => {
+    const servers = [];
+    for (const [name, data] of activeServers.entries()) {
+        servers.push({
+            name,
+            port: data.config.port,
+            type: data.config.type,
+            createdAt: data.config.createdAt,
+            uptime: Date.now() - data.startTime.getTime(),
+            pid: data.process.pid
+        });
+    }
+    return servers;
+})
+
+
+ipcMain.handle('exec', async (event, command) => {
+    const { exec } = require('child_process');
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) reject({ error, stdout, stderr });
+            else resolve({ stdout, stderr });
+        });
+    });
+});
+
+ipcMain.handle('dns-lookup', async (event, options) => {
+    const dnsPromises = require('dns').promises;
+    try {
+        const host = options.host || options;
+        const recordType = options.recordType || 'A';
+        
+        if (recordType === 'ALL') {
+            // Resolve all record types
+            const recordTypes = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'CNAME'];
+            const results = {};
+            
+            for (const type of recordTypes) {
+                try {
+                    const result = await dnsPromises.resolve(host, type);
+                    results[type] = result;
+                } catch (e) {
+                    // Ignore errors for individual types
+                }
+            }
+            
+            return { records: results, host };
+        } else {
+            const records = await dnsPromises.resolve(host, recordType);
+            return { records: records.map(r => ({ [recordType]: r })), host };
+        }
+    } catch (error) {
+        throw new Error(`DNS lookup failed: ${error.message}`);
+    }
+});
+
+ipcMain.handle('dns-reverse-lookup', async (event, options) => {
+     const dnsPromises = dns.promises;
+     try {
+         const ip = options.ip || options;
+         const hostname = await dnsPromises.reverse(ip);
+         return { hostnames: hostname, ip };
+     } catch (error) {
+         throw new Error(`Reverse DNS lookup failed: ${error.message}`);
+     }
+ });
+
+ipcMain.handle('net-connect', async (event, port, host) => {
+    return new Promise((resolve) => {
+        const socket = net.connect(port, host, () => {
+            resolve(true);
+            socket.end();
+        });
+        socket.on('error', () => {
+            resolve(false);
+            socket.end();
+        });
+    });
+});
+
+ipcMain.handle('check-port', async (event, host, port) => {
+    return new Promise((resolve) => {
+        const socket = net.createConnection(port, host);
+        socket.setTimeout(2000);
+        socket.on('connect', () => {
+            resolve('open');
+            socket.end();
+        });
+        socket.on('timeout', () => {
+            resolve('timeout');
+            socket.destroy();
+        });
+        socket.on('error', () => {
+            resolve('closed');
+            socket.destroy();
+        });
+    });
+});
+
+ipcMain.handle('os-network-interfaces', async () => {
+    console.log('os-network-interfaces');
+    const networkInterfaces = os.networkInterfaces();
+    console.log(networkInterfaces);
+    return networkInterfaces;
+});
+
+ipcMain.handle('os-homedir', async () => {
+    const osModule = require('os');
+    return osModule.homedir();
+});
+
+ipcMain.handle('fs-exists-sync', async (event, p) => {
+    return fs.existsSync(p);
+});
+
+ipcMain.handle('fs-mkdir-sync', async (event, p, options) => {
+    fs.mkdirSync(p, options);
+});
+
+ipcMain.handle('fs-read-file-sync', async (event, p, encoding = 'utf8') => {
+    return fs.readFileSync(p, encoding);
+});
+
+ipcMain.handle('fs-write-file-sync', async (event, p, data, encoding = 'utf8') => {
+    fs.writeFileSync(p, data, encoding);
+    return true;
+});
+
+ipcMain.handle('fs-readdir-sync', async (event, p) => {
+    return fs.readdirSync(p);
+});
+
+ipcMain.handle('fs-unlink-sync', async (event, p) => {
+    fs.unlinkSync(p);
+    return true;
+});
+
+ipcMain.handle('fs-rmdir-sync', async (event, p) => {
+    fs.rmdirSync(p);
+    return true;
+});
+
+ipcMain.handle('fs-stat-sync', async (event, p) => {
+    const stats = fs.statSync(p);
+    return {
+        isDirectory: stats.isDirectory(),
+        isFile: stats.isFile(),
+        size: stats.size,
+        mtime: stats.mtime.toISOString(),
+    };
+});
+
+ipcMain.handle('path-join', async (event, ...args) => {
+    return path.join(...args);
+});
+
+ipcMain.handle('path-resolve', async (event, ...args) => {
+    return path.resolve(...args);
+});
+
+ipcMain.handle('path-basename', async (event, p) => {
+    return path.basename(p);
+});
+
+ipcMain.handle('path-dirname', async (event, p) => {
+    return path.dirname(p);
+});
+
+ipcMain.handle('os-platform', async (event) => {
+    return os.platform();
+});
+
+// ============================================================
+// System Information Handlers
+// ============================================================
+
+ipcMain.handle('get-system-info', async () => {
+    return {
+        platform: os.platform(),
+        arch: os.arch(),
+        cpus: os.cpus().length,
+        totalMemory: Math.round(os.totalmem() / 1024 / 1024 / 1024) + ' GB',
+        freeMemory: Math.round(os.freemem() / 1024 / 1024) + ' MB',
+        uptime: Math.round(os.uptime() / 60 / 60) + ' hours',
+        hostname: os.hostname(),
+        homeDir: os.homedir()
+    };
+});
+
+ipcMain.handle('get-cpu-usage', async () => {
+    const cpus = os.cpus();
+    let totalIdle = 0, totalTick = 0;
+
+    cpus.forEach(cpu => {
+        for (let type in cpu.times) {
+            totalTick += cpu.times[type];
+        }
+        totalIdle += cpu.times.idle;
+    });
+
+    const idle = totalIdle / cpus.length;
+    const total = totalTick / cpus.length;
+    const usage = 100 - ~~(100 * idle / total);
+
+    return {
+        usage: Math.max(0, Math.min(100, usage)),
+        cores: cpus.length
+    };
+});
+
+ipcMain.handle('get-memory-usage', async () => {
+    const total = os.totalmem();
+    const free = os.freemem();
+    const used = total - free;
+
+    return {
+        total: Math.round(total / 1024 / 1024),
+        used: Math.round(used / 1024 / 1024),
+        free: Math.round(free / 1024 / 1024),
+        percentage: Math.round((used / total) * 100)
+    };
+});
+
+// ============================================================
+// Network Diagnostics Handlers
+// ============================================================
+
+ipcMain.handle('get-ip-info', async () => {
+    const interfaces = os.networkInterfaces();
+    const ipInfo = {};
+
+    for (const [name, addrs] of Object.entries(interfaces)) {
+        ipInfo[name] = addrs.filter(addr => !addr.internal).map(addr => ({
+            address: addr.address,
+            family: addr.family,
+            mac: addr.mac
+        }));
+    }
+
+    return ipInfo;
+});
+
+ipcMain.handle('ping-host', async (event, host) => {
+    return new Promise((resolve) => {
+        const startTime = Date.now();
+
+        dns.lookup(host, (err) => {
+            if (err) {
+                resolve({ success: false, error: err.message });
+            } else {
+                const latency = Date.now() - startTime;
+                resolve({ success: true, latency, host });
+            }
+        });
+    });
+});
+
+ipcMain.handle('check-port-range', async (event, host, startPort, endPort) => {
+    const results = [];
+    const maxConcurrent = 5;
+
+    for (let port = startPort; port <= endPort; port++) {
+        const socket = net.createConnection({
+            host,
+            port,
+            timeout: 100
+        });
+
+        const result = await new Promise((resolve) => {
+            socket.on('connect', () => {
+                resolve({ port, status: 'open' });
+                socket.end();
+            });
+
+            socket.on('timeout', () => {
+                resolve({ port, status: 'timeout' });
+                socket.destroy();
+            });
+
+            socket.on('error', () => {
+                resolve({ port, status: 'closed' });
+            });
+        });
+
+        results.push(result);
+    }
+
+    return results;
+});
+
+// ============================================================
+// File Operations Handlers
+// ============================================================
+
+ipcMain.handle('open-file-dialog', async (event, options = {}) => {
+    return await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
+        properties: ['openFile'],
+        ...options
+    });
+});
+
+ipcMain.handle('save-file-dialog', async (event, options = {}) => {
+    return await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), options);
+});
+
+ipcMain.handle('open-folder-dialog', async (event, options = {}) => {
+    return await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
+        properties: ['openDirectory'],
+        ...options
+    });
+});
+
+// ============================================================
+// Application Handlers
+// ============================================================
+
+ipcMain.handle('get-app-version', async () => {
+    return app.getVersion();
+});
+
+ipcMain.handle('get-versions', async () => {
+    const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+    return {
+        app: app.getVersion(),
+        electron: process.versions.electron,
+        node: process.versions.node,
+        chrome: process.versions.chrome,
+        v8: process.versions.v8
+    };
+});
+
+ipcMain.handle('restart-app', async () => {
+    app.relaunch();
+    app.exit(0);
+});
+
+ipcMain.handle('quit-app', async () => {
+    app.quit();
+});
+
+ipcMain.handle('show-about-dialog', async () => {
+    dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+        type: 'info',
+        title: 'About NetNavigator',
+        message: 'NetNavigator',
+        detail: `Version ${app.getVersion()}\n\nA powerful network scanning and monitoring tool for system administrators and developers.`
+    });
+});
+
+// ============================================================
+// Cleanup Handler
+// ============================================================
+
+// Clean up active servers on app quit
+app.on('before-quit', () => {
+    for (const [name, data] of activeServers.entries()) {
+        try {
+            data.process.kill('SIGTERM');
+        } catch (e) {
+            console.error(`Failed to kill server ${name}:`, e);
+        }
+    }
+    activeServers.clear();
+});
+
+ipcMain.handle('get-commands', () => Array.from(registeredCommands));
+
+ipcMain.handle('get-config', async () => {
+    const configPath = path.join(os.homedir(), '.netnavigator', 'config.json');
+    try {
+        if (fs.existsSync(configPath)) {
+            return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+    } catch (error) {
+        console.error('Error reading config:', error);
+    }
+    return {};
+});
+
+ipcMain.handle('get-theme', async () => {
+    return nativeTheme.themeSource;
+});
+
+ipcMain.on('toggle-devtools', () => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+        const devToolsWin = new BrowserWindow({ width: 800, height: 600, title: 'NetNavigator - DevTools', autoHideMenuBar: true, icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), webPreferences: { nodeIntegration: true, contextIsolation: false } });
+        win.webContents.setDevToolsWebContents(devToolsWin.webContents);
+        win.webContents.openDevTools({ mode: 'detach' });
+    }
+});
+
+
+
+
+
+ipcMain.handle('set-theme', async (event, theme) => {
+    if (theme === 'light') {
+        nativeTheme.themeSource = 'light';
+    } else if (theme === 'dark') {
+        nativeTheme.themeSource = 'dark';
+    } else if (theme === 'system') {
+        nativeTheme.themeSource = 'system';
+    }
+});
+
+ipcMain.handle('set-auto-update', async (event, enabled) => {
+    // Save to config
+    const configPath = path.join(os.homedir(), '.netnavigator', 'config.json');
+    try {
+        let config = {};
+        if (fs.existsSync(configPath)) {
+            config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+        config.autoUpdate = enabled;
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+    } catch (error) {
+        console.error('Error saving auto-update setting:', error);
+    }
+});
+
+
+
+ipcMain.handle('reset-settings', async (event) => {
+    const configPath = path.join(os.homedir(), '.netnavigator', 'config.json');
+    try {
+        fs.writeFileSync(configPath, JSON.stringify({ name: 'NetNavigator', autoUpdate: false }, null, 2));
+    } catch (error) {
+        console.error('Error resetting settings:', error);
+    }
+});
+
+ipcMain.handle('clear-cache', async (event) => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+        await win.webContents.session.clearCache();
+    }
+});
+
+ipcMain.handle('open-external', async (event, url) => {
+    try {
+        await shell.openExternal(url);
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to open external URL:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+app.whenReady().then(async () => {
+  await createWindow();
 });
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
+
+module.exports = {};
