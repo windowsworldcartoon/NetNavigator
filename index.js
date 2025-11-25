@@ -128,60 +128,94 @@ const menuTemplate = [
         label: 'Network',
         submenu: [
             {
-                label: 'Network Scanner',
+                label: 'Dashboard',
                 click: () => {
                     const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'scanner');
+                    win.webContents.send('switch-tab', 'dashboard');
                 }
-            },
-            {
-                label: 'Port Checker',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'port');
-                }
-            },
-            {
-                label: 'DNS Resolver',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'dns');
-                }
-            },
-            {
-                label: 'Network Monitor',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'monitor');
-                }
-            },
-            {
-                label: 'Network Optimization',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'optimize');
-                }
-            },
-            {
-            label: 'Network Info',
-            click: () => {
-            const win = BrowserWindow.getFocusedWindow();
-            win.webContents.send('switch-tab', 'info');
-            }
             },
             { type: 'separator' },
             {
-                label: 'Diagnostics',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'diagnostics');
-                }
+                label: 'Tools',
+                submenu: [
+                    {
+                        label: 'Network Scanner',
+                        accelerator: 'Ctrl+Shift+S',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'scanner');
+                        }
+                    },
+                    {
+                        label: 'Port Checker',
+                        accelerator: 'Ctrl+Shift+P',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'port');
+                        }
+                    },
+                    {
+                        label: 'DNS Resolver',
+                        accelerator: 'Ctrl+Shift+D',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'dns');
+                        }
+                    },
+                    {
+                        label: 'Network Info',
+                        accelerator: 'Ctrl+Shift+I',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'info');
+                        }
+                    }
+                ]
             },
             {
-                label: 'Packet & Traffic Analysis',
+                label: 'Monitoring',
+                submenu: [
+                    {
+                        label: 'Network Monitor',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'monitor');
+                        }
+                    },
+                    {
+                        label: 'Packet & Traffic Analysis',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'packet-analysis');
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'Advanced',
+                submenu: [
+                    {
+                        label: 'Network Optimization',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'optimize');
+                        }
+                    },
+                    {
+                        label: 'Diagnostics',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'diagnostics');
+                        }
+                    }
+                ]
+            },
+            { type: 'separator' },
+            {
+                label: 'Server Manager',
                 click: () => {
                     const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'packet-analysis');
+                    win.webContents.send('switch-tab', 'server-maker');
                 }
             }
             ]
@@ -196,12 +230,12 @@ const menuTemplate = [
                     dialog.showMessageBox(win, {
                         type: 'info',
                         title: 'Open External',
-                        message: 'Your about to open https://github.com/windowsworldcartoon/NetNavigator',
+                        message: 'Your about to open https://github.com/windowsworldcartoon/NetNavigator#readme',
                         detail: 'Do you want to open it in your default browser?',
                         buttons: ['Open External', 'No']
                     }).then(result => {
                         if (result.response === 0) {
-                            shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator');
+                            shell.openExternal('https://github.com/windowsworldcartoon/NetNavigator?tab=readme-ov-file#readme');
                         }
                     });
                 }
@@ -249,13 +283,30 @@ async function createWindow() {
     title: `NetNavigator (${os1.find(o => o.id === process.platform).name}) (${app.getVersion()})`,
     width: 800,
     height: 600,
-    icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'), // Assuming icon.png in public
+    icon: path.join(__dirname, 'public', process.platform === 'win32' ? 'favicon.ico' : 'network.png'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      spellcheck: true
-    }
+      spellcheck: true,
+    },
   });
+
+  // Handle JavaScript disabled error
+  win.webContents.on('crashed', () => {
+    console.error('Renderer process crashed');
+    dialog.showErrorBox('Renderer Process Crashed', 'The application renderer process has crashed. Please restart the application.');
+  });
+
+  // Check if JavaScript is available when DOM is ready
+  win.webContents.on('dom-ready', () => {
+    // Verify JavaScript is working by executing a simple test
+    win.webContents.executeJavaScript('window.jsEnabled = true;').catch(error => {
+      console.error('JavaScript is not available:', error);
+      dialog.showErrorBox('JavaScript Disabled', 'This application requires JavaScript to be enabled. Please enable JavaScript and restart the application.');
+      win.close();
+    });
+  });
+
   win.loadFile(path.join(publicPath, 'index.html'));
 
   const menu = Menu.buildFromTemplate([
@@ -344,60 +395,94 @@ async function createWindow() {
         label: 'Network',
         submenu: [
             {
-                label: 'Network Scanner',
+                label: 'Dashboard',
                 click: () => {
                     const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'scanner');
-                }
-            },
-            {
-                label: 'Port Checker',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'port');
-                }
-            },
-            {
-                label: 'DNS Resolver',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'dns');
-                }
-            },
-            {
-                label: 'Network Monitor',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'monitor');
-                }
-            },
-            {
-                label: 'Network Optimization',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'optimize');
-                }
-            },
-            {
-                label: 'Network Info',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'info');
+                    win.webContents.send('switch-tab', 'dashboard');
                 }
             },
             { type: 'separator' },
             {
-                label: 'Diagnostics',
-                click: () => {
-                    const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'diagnostics');
-                }
+                label: 'Tools',
+                submenu: [
+                    {
+                        label: 'Network Scanner',
+                        accelerator: 'Ctrl+Shift+S',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'scanner');
+                        }
+                    },
+                    {
+                        label: 'Port Checker',
+                        accelerator: 'Ctrl+Shift+P',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'port');
+                        }
+                    },
+                    {
+                        label: 'DNS Resolver',
+                        accelerator: 'Ctrl+Shift+D',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'dns');
+                        }
+                    },
+                    {
+                        label: 'Network Info',
+                        accelerator: 'Ctrl+Shift+I',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'info');
+                        }
+                    }
+                ]
             },
             {
-                label: 'Packet & Traffic Analysis',
+                label: 'Monitoring',
+                submenu: [
+                    {
+                        label: 'Network Monitor',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'monitor');
+                        }
+                    },
+                    {
+                        label: 'Packet & Traffic Analysis',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'packet-analysis');
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'Advanced',
+                submenu: [
+                    {
+                        label: 'Network Optimization',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'optimize');
+                        }
+                    },
+                    {
+                        label: 'Diagnostics',
+                        click: () => {
+                            const win = BrowserWindow.getFocusedWindow();
+                            win.webContents.send('switch-tab', 'diagnostics');
+                        }
+                    }
+                ]
+            },
+            { type: 'separator' },
+            {
+                label: 'Server Manager',
                 click: () => {
                     const win = BrowserWindow.getFocusedWindow();
-                    win.webContents.send('switch-tab', 'packet-analysis');
+                    win.webContents.send('switch-tab', 'server-maker');
                 }
             }
             ]

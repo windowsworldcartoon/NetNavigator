@@ -13,32 +13,34 @@ const si = require('systeminformation');
  */
 
 // ============================================================
-// Icon System - Local Tabler Icons with SVG Support
+// Icon System - Font Awesome with CSS Classes
 // ============================================================
 
 
 class Icon {
     /**
-     * Tabler icon mappings for navigation and UI
+     * Font Awesome icon class mappings
      */
     static ICONS = {
-        'dashboard': 'grid-3x3-gap',
-        'scanner': 'radar-2',
-        'port': 'plug',
-        'dns': 'world',
-        'monitor': 'eye',
-        'info': 'info-circle',
-        'server': 'server',
-        'optimize': 'flame',
-        'settings': 'settings',
-        'search': 'search',
-        'moon': 'moon',
-        'help': 'help-circle',
-        'menu': 'menu-2',
-        'chevron-left': 'chevron-left',
-        'wifi': 'wifi',
-        'network': 'network',
-        'extension': 'puzzle',
+        'dashboard': 'fa-chart-pie',
+        'scanner': 'fa-search',
+        'port': 'fa-plug',
+        'dns': 'fa-globe',
+        'monitor': 'fa-eye',
+        'info': 'fa-circle-info',
+        'server': 'fa-server',
+        'optimize': 'fa-bolt',
+        'settings': 'fa-gear',
+        'search': 'fa-magnifying-glass',
+        'moon': 'fa-moon',
+        'help': 'fa-question',
+        'menu': 'fa-bars',
+        'chevron-left': 'fa-chevron-left',
+        'wifi': 'fa-wifi',
+        'network': 'fa-network-wired',
+        'extension': 'fa-puzzle-piece',
+        'circle-xmark': 'fa-circle-xmark',
+        'error': 'fa-circle-xmark',
     };
 
     /**
@@ -62,56 +64,33 @@ class Icon {
         'wifi': '📶',
         'network': '🌐',
         'extension': '🧩',
+        'circle-xmark': '✕',
+        'error': '✕',
     };
 
     /**
-     * SVG cache to avoid repeated fetches
+     * Cache for created elements
      */
     static cache = new Map();
 
     /**
-     * Base path for tabler icons
+     * Get Font Awesome CSS class for icon
+     * @param {string} name - Icon name
+     * @returns {string} Font Awesome CSS class string
      */
-    static basePath = '../tabler-icons-3.35.0/icons';
+    static getIconClass(name) {
+        const faIcon = this.ICONS[name] || this.ICONS['settings'];
+        return `fas ${faIcon}`;
+    }
 
     /**
-     * Load SVG icon from local tabler-icons with caching
-     * @param {string} name - Icon name or mapped icon ID
-     * @param {string} variant - 'outline' or 'filled'
-     * @returns {Promise<string>} SVG content or emoji fallback
+     * Load Font Awesome icon (returns cached class name)
+     * @param {string} name - Icon name
+     * @returns {Promise<string>} Font Awesome class string or emoji fallback
      */
-    static async loadSVG(name, variant = 'outline') {
-        const iconName = this.ICONS[name] || name;
-        const cacheKey = `${iconName}/${variant}`;
-
-        // Return cached SVG if available
-        if (this.cache.has(cacheKey)) {
-            return this.cache.get(cacheKey);
-        }
-
-        try {
-            const path = `${this.basePath}/${variant}/${iconName}.svg`;
-            const response = await fetch(path);
-
-            if (!response.ok) {
-                // Try filled variant if outline not found
-                if (variant === 'outline') {
-                    return this.loadSVG(name, 'filled');
-                }
-                // Return emoji fallback if both variants fail
-                return this.getFallback(name);
-            }
-
-            const svg = await response.text();
-            
-            // Cache the SVG
-            this.cache.set(cacheKey, svg);
-            
-            return svg;
-        } catch (error) {
-            console.warn(`Failed to load icon ${iconName}/${variant}:`, error);
-            return this.getFallback(name);
-        }
+    static async loadSVG(name) {
+        const faIcon = this.ICONS[name] || this.ICONS['settings'];
+        return `fas ${faIcon}`;
     }
 
     /**
@@ -207,7 +186,7 @@ class Icon {
 // Preload common icons on app start
 (async () => {
     const commonIcons = ['dashboard', 'scanner', 'port', 'dns', 'monitor', 'settings'];
-    await Icon.preload(commonIcons, 'outline');
+    await Icon.preload(commonIcons, 'line');
 })();
 
 // Ensure DOM is ready before initialization
@@ -488,14 +467,22 @@ const UI = {
 
 const Validation = {
     /**
-     * Validate IP address format
+     * Validate IP address format (strict IPv4)
      */
     isValidIP(ip) {
-        const parts = ip.split('.');
-        return parts.length === 3 && parts.every(part => {
-            const num = parseInt(part, 10);
-            return !isNaN(num) && num >= 0 && num <= 255;
-        });
+        if (typeof ip !== 'string') return false;
+        const ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+        return ipRegex.test(ip.trim());
+    },
+
+    /**
+     * Validate subnet mask format
+     */
+    isValidSubnetMask(mask) {
+        if (!this.isValidIP(mask)) return false;
+        // Common subnet masks: 255.x.x.x, 255.255.x.x, etc.
+        const validMasks = ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.128', '255.255.255.192', '255.255.255.224', '255.255.255.240', '255.255.255.248', '255.255.255.252', '255.255.255.254', '255.255.255.255'];
+        return validMasks.includes(mask.trim());
     },
 
     /**
@@ -507,11 +494,164 @@ const Validation = {
     },
 
     /**
+     * Validate port range
+     */
+    isValidPortRange(start, end) {
+        return this.isValidPort(start) && this.isValidPort(end) && start <= end;
+    },
+
+    /**
+     * Validate timeout value
+     */
+    isValidTimeout(timeout) {
+        const num = parseInt(timeout, 10);
+        return !isNaN(num) && num >= 100 && num <= 5000;
+    },
+
+    /**
+     * Validate thread count
+     */
+    isValidThreadCount(count) {
+        const num = parseInt(count, 10);
+        return !isNaN(num) && num >= 1 && num <= 50;
+    },
+
+    /**
      * Validate hostname/domain
      */
     isValidHost(host) {
-        return host && host.length > 0 && host.length <= 255;
+        if (typeof host !== 'string') return false;
+        const hostRegex = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/;
+        const trimmed = host.trim();
+        return trimmed.length > 0 && trimmed.length <= 255 && hostRegex.test(trimmed);
     },
+
+    /**
+     * Sanitize string input
+     */
+    sanitizeString(input) {
+        if (typeof input !== 'string') return '';
+        return input.trim().replace(/[<>\"']/g, '');
+    }
+};
+
+// ============================================================
+// Security Module - Enhanced Protection
+// ============================================================
+
+const SecurityManager = {
+    /**
+     * Rate limiter for scanner operations
+     */
+    rateLimiter: new Map(),
+    rateLimitWindow: 1000, // 1 second
+    rateLimitMaxRequests: 5,
+
+    /**
+     * Audit log for security events
+     */
+    auditLog: [],
+    maxAuditEntries: 1000,
+
+    /**
+     * Check rate limit
+     */
+    checkRateLimit(userId = 'scanner') {
+        const now = Date.now();
+        if (!this.rateLimiter.has(userId)) {
+            this.rateLimiter.set(userId, []);
+        }
+
+        const requests = this.rateLimiter.get(userId);
+        const recentRequests = requests.filter(time => now - time < this.rateLimitWindow);
+
+        if (recentRequests.length >= this.rateLimitMaxRequests) {
+            this.logSecurityEvent('RATE_LIMIT_EXCEEDED', { userId, attempts: recentRequests.length });
+            return false;
+        }
+
+        recentRequests.push(now);
+        this.rateLimiter.set(userId, recentRequests);
+        return true;
+    },
+
+    /**
+     * Log security event
+     */
+    logSecurityEvent(eventType, details = {}) {
+        const event = {
+            timestamp: new Date().toISOString(),
+            type: eventType,
+            details,
+            userAgent: navigator.userAgent
+        };
+
+        this.auditLog.push(event);
+
+        // Keep audit log size under control
+        if (this.auditLog.length > this.maxAuditEntries) {
+            this.auditLog.shift();
+        }
+
+        console.warn('[SECURITY]', eventType, details);
+    },
+
+    /**
+     * Validate input for command injection
+     */
+    validateAgainstInjection(input) {
+        const dangerousPatterns = [
+            /[;&|`$()]/g,
+            /\.\.\//g,
+            /\/etc\//g,
+            /\/proc\//g,
+            /cmd\.exe/gi,
+            /powershell/gi,
+            /bash/gi
+        ];
+
+        for (const pattern of dangerousPatterns) {
+            if (pattern.test(input)) {
+                this.logSecurityEvent('INJECTION_ATTEMPT', { input: input.substring(0, 50) });
+                return false;
+            }
+        }
+        return true;
+    },
+
+    /**
+     * Escape HTML for safe rendering
+     */
+    escapeHtml(text) {
+        if (typeof text !== 'string') return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, char => map[char]);
+    },
+
+    /**
+     * Get audit log (filtered for sensitive info)
+     */
+    getAuditLog() {
+        return this.auditLog.map(event => ({
+            timestamp: event.timestamp,
+            type: event.type,
+            details: typeof event.details === 'object' ? JSON.stringify(event.details) : event.details
+        }));
+    },
+
+    /**
+     * Clear audit log
+     */
+    clearAuditLog() {
+        this.auditLog = [];
+        this.logSecurityEvent('AUDIT_LOG_CLEARED');
+    }
 };
 
 
@@ -1534,50 +1674,434 @@ class NetworkOps {
 
 function setupNetworkScanner() {
     const scanBtn = document.getElementById('scan-btn');
+    const stopBtn = document.getElementById('scan-stop-btn');
+    const clearBtn = document.getElementById('scan-clear-btn');
+    const exportBtn = document.getElementById('scan-export-btn');
+    const filterIpInput = document.getElementById('scan-filter-ip');
+    const filterStatusSelect = document.getElementById('scan-filter-status');
+    
     if (!scanBtn) return;
 
+    let scanInProgress = false;
+    let scannedHosts = [];
+    let scanStartTime = null;
+
+    // Start scan
     scanBtn.addEventListener('click', async () => {
+        // Rate limiting check
+        if (!SecurityManager.checkRateLimit('scanner')) {
+            UI.showSnackbar('Too many requests. Please wait before scanning again.', 3000);
+            SecurityManager.logSecurityEvent('SCANNER_RATE_LIMIT');
+            return;
+        }
+
         const baseIP = document.getElementById('scan-ip').value.trim();
-        const resultsDiv = document.getElementById('scan-results');
+        const subnetMask = document.getElementById('scan-subnet').value.trim();
+        const timeout = parseInt(document.getElementById('scan-timeout').value) || 1000;
+        const threadCount = parseInt(document.getElementById('scan-threads').value) || 10;
+        const startPort = parseInt(document.getElementById('scan-start-port').value) || 1;
+        const endPort = parseInt(document.getElementById('scan-end-port').value) || 1000;
+        
+        const pingEnabled = document.getElementById('scan-ping').checked;
+        const portsEnabled = document.getElementById('scan-ports').checked;
+        const hostnameEnabled = document.getElementById('scan-hostname').checked;
+        const macEnabled = document.getElementById('scan-mac').checked;
 
         try {
-            if (!baseIP) {
-                throw new Error('Please enter a base IP address');
-            }
-
-            if (!Validation.isValidIP(baseIP)) {
-                throw new Error('Invalid IP address format');
-            }
-
-            const progress = UI.showLoadingSnackbar('Scanning network...', false);
-            const activeIPs = await NetworkOps.scan(baseIP);
-            progress?.snackbar?.classList.add('fadeout');
+            // ===== SECURITY VALIDATION =====
             
-            setTimeout(() => {
-                if (activeIPs && activeIPs.length > 0) {
-                    let html = '<div style="display: grid; gap: 8px;">';
-                    activeIPs.forEach((ip, idx) => {
-                        html += `
-                            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 4px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div style="font-weight: 600;">${ip}</div>
-                                    <div style="font-size: 12px; color: var(--text-secondary);">Device ${idx + 1}</div>
-                                </div>
-                                <span style="color: #22c55e; font-size: 12px;">✓ Active</span>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                    UI.showHTML('scan-results', html);
-                    UI.showSnackbar(`Found ${activeIPs.length} active device(s)`, 2000);
-                } else {
-                    UI.showHTML('scan-results', '<div class="alert info">No active IPs found in this subnet</div>');
-                }
-            }, 300);
+            // Empty input check
+            if (!baseIP) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'empty_ip' });
+                throw new Error('Please enter a network IP address');
+            }
+
+            // IP validation
+            if (!Validation.isValidIP(baseIP)) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'invalid_ip_format', ip: baseIP.substring(0, 20) });
+                throw new Error('Invalid IP address format. Use x.x.x.x format');
+            }
+
+            // Injection prevention
+            if (!SecurityManager.validateAgainstInjection(baseIP)) {
+                throw new Error('Invalid characters detected in IP address');
+            }
+
+            // Subnet mask validation
+            if (!Validation.isValidSubnetMask(subnetMask)) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'invalid_subnet_mask' });
+                throw new Error('Invalid subnet mask. Use standard subnet masks (e.g., 255.255.255.0)');
+            }
+
+            // Timeout validation
+            if (!Validation.isValidTimeout(timeout)) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'invalid_timeout', value: timeout });
+                throw new Error('Timeout must be between 100-5000 ms');
+            }
+
+            // Thread count validation
+            if (!Validation.isValidThreadCount(threadCount)) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'invalid_thread_count', value: threadCount });
+                throw new Error('Thread count must be between 1-50');
+            }
+
+            // Port range validation
+            if (!Validation.isValidPortRange(startPort, endPort)) {
+                SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'invalid_port_range', start: startPort, end: endPort });
+                throw new Error('Invalid port range. Ports must be 1-65535 and start <= end');
+            }
+
+            // Log scan initiation
+            SecurityManager.logSecurityEvent('SCAN_INITIATED', { 
+                ip: baseIP, 
+                subnet: subnetMask, 
+                portRange: `${startPort}-${endPort}`,
+                features: { ping: pingEnabled, ports: portsEnabled, hostname: hostnameEnabled }
+            });
+
+            // Reset state
+            scannedHosts = [];
+            scanStartTime = Date.now();
+            scanInProgress = true;
+            scanBtn.disabled = true;
+            stopBtn.disabled = false;
+            exportBtn.disabled = true;
+
+            // Show progress section
+            document.getElementById('scan-progress-section').style.display = 'block';
+            document.getElementById('scan-stats-section').style.display = 'block';
+            document.getElementById('scan-filter-section').style.display = 'block';
+            document.getElementById('scan-results').innerHTML = '';
+
+            // Calculate IP range from subnet
+            const ips = calculateIPRange(baseIP, subnetMask);
+            const totalIPs = ips.length;
+            
+            UI.showSnackbar(`Starting scan of ${totalIPs} IPs...`, 3000);
+            updateScanProgress(0, totalIPs, 'Initializing scan...');
+
+            let scannedCount = 0;
+            let hostsFound = 0;
+            let portsFound = 0;
+
+            // Scan IPs in batches
+            for (let i = 0; i < ips.length && scanInProgress; i += threadCount) {
+                const batch = ips.slice(i, i + threadCount);
+                const batchPromises = batch.map(async (ip) => {
+                    try {
+                        const hostInfo = {
+                            ip: ip,
+                            status: 'offline',
+                            hostname: null,
+                            mac: null,
+                            ports: []
+                        };
+
+                        if (pingEnabled) {
+                            try {
+                                await NetworkOps.ping(ip);
+                                hostInfo.status = 'online';
+                                hostsFound++;
+                            } catch (e) {
+                                hostInfo.status = 'offline';
+                            }
+                        }
+
+                        if (hostInfo.status === 'online' && hostnameEnabled) {
+                            try {
+                                hostInfo.hostname = await resolveHostname(ip);
+                            } catch (e) {
+                                // Hostname resolution failed, continue
+                            }
+                        }
+
+                        if (hostInfo.status === 'online' && portsEnabled) {
+                            const openPorts = [];
+                            for (let port = startPort; port <= endPort && scanInProgress; port++) {
+                                try {
+                                    const isOpen = await NetworkOps.checkPort(ip, port);
+                                    if (isOpen === 'open') {
+                                        openPorts.push(port);
+                                        portsFound++;
+                                    }
+                                } catch (e) {
+                                    // Port check failed
+                                }
+                            }
+                            hostInfo.ports = openPorts;
+                        }
+
+                        return hostInfo;
+                    } catch (error) {
+                        console.error(`Error scanning ${ip}:`, error);
+                        return null;
+                    }
+                });
+
+                const batchResults = await Promise.all(batchPromises);
+                scannedHosts.push(...batchResults.filter(r => r !== null && r.status === 'online'));
+                scannedCount += batch.length;
+
+                updateScanProgress(scannedCount, totalIPs, `Scanned ${scannedCount}/${totalIPs} IPs`);
+                updateScanStats(scannedHosts.length, hostsFound, portsFound, scanStartTime);
+            }
+
+            if (scanInProgress) {
+                finalizeScan(scannedHosts);
+            }
+
         } catch (error) {
-            UI.showError('scan-results', error.message);
+            // Sanitize error message to prevent XSS
+            const safErrorMsg = SecurityManager.escapeHtml(error.message || 'An error occurred during scanning');
+            
+            // Log security event
+            SecurityManager.logSecurityEvent('SCAN_ERROR', { 
+                error: error.message?.substring(0, 100),
+                stack: error.stack?.substring(0, 200)
+            });
+
+            // Display sanitized error to user
+            const resultsDiv = document.getElementById('scan-results');
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = 'background-color: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 4px;';
+            const errorText = document.createElement('div');
+            errorText.textContent = 'Error: ' + safErrorMsg;
+            errorDiv.appendChild(errorText);
+            resultsDiv.innerHTML = '';
+            resultsDiv.appendChild(errorDiv);
+
+            UI.showSnackbar('Scan error: ' + error.message, 4000);
+            resetScanUI();
         }
     });
+
+    // Stop scan
+    stopBtn.addEventListener('click', () => {
+        scanInProgress = false;
+        scanBtn.disabled = false;
+        stopBtn.disabled = true;
+        exportBtn.disabled = scannedHosts.length === 0;
+        UI.showSnackbar('Scan stopped', 2000);
+        if (scannedHosts.length > 0) {
+            finalizeScan(scannedHosts);
+        }
+    });
+
+    // Clear results
+    clearBtn.addEventListener('click', () => {
+        scannedHosts = [];
+        document.getElementById('scan-results').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">Configure scan settings and click "Start Scan" to begin</div>';
+        document.getElementById('scan-progress-section').style.display = 'none';
+        document.getElementById('scan-stats-section').style.display = 'none';
+        document.getElementById('scan-filter-section').style.display = 'none';
+        document.getElementById('scan-result-count').textContent = '0 devices found';
+        resetScanUI();
+        UI.showSnackbar('Results cleared', 1500);
+    });
+
+    // Export results
+    exportBtn.addEventListener('click', () => {
+        if (scannedHosts.length === 0) {
+            UI.showSnackbar('No results to export', 2000);
+            return;
+        }
+
+        const csv = generateScanCSV(scannedHosts);
+        downloadFile(csv, 'scan-results.csv', 'text/csv');
+        UI.showSnackbar('Results exported to CSV', 2000);
+    });
+
+    // Filter results
+    if (filterIpInput) {
+        filterIpInput.addEventListener('input', () => applyFilters(scannedHosts));
+    }
+
+    if (filterStatusSelect) {
+        filterStatusSelect.addEventListener('change', () => applyFilters(scannedHosts));
+    }
+
+    function updateScanProgress(scanned, total, status) {
+        const percent = Math.round((scanned / total) * 100);
+        const progressBar = document.getElementById('scan-progress-bar');
+        const progressPercent = document.getElementById('scan-progress-percent');
+        const progressText = document.getElementById('scan-progress-text');
+        const statusText = document.getElementById('scan-status-text');
+
+        if (progressBar) progressBar.style.width = percent + '%';
+        if (progressPercent) progressPercent.textContent = percent + '%';
+        if (progressText) progressText.textContent = `${scanned}/${total}`;
+        if (statusText) statusText.textContent = status;
+    }
+
+    function updateScanStats(found, online, ports, startTime) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        document.getElementById('scan-stat-hosts').textContent = found;
+        document.getElementById('scan-stat-online').textContent = online;
+        document.getElementById('scan-stat-ports').textContent = ports;
+        document.getElementById('scan-stat-time').textContent = elapsed + 's';
+    }
+
+    function finalizeScan(hosts) {
+        const filtered = filterHostsByStatus(hosts);
+        displayScanResults(filtered);
+        exportBtn.disabled = hosts.length === 0;
+    }
+
+    function displayScanResults(hosts) {
+        const resultsDiv = document.getElementById('scan-results');
+        document.getElementById('scan-result-count').textContent = `${hosts.length} device(s) found`;
+
+        if (hosts.length === 0) {
+            resultsDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">No active hosts found</div>';
+            return;
+        }
+
+        // Use textContent and createElement for XSS prevention
+        resultsDiv.innerHTML = '';
+        const container = document.createElement('div');
+        container.style.display = 'grid';
+        container.style.gap = '12px';
+
+        hosts.forEach((host) => {
+            const hostCard = document.createElement('div');
+            hostCard.style.cssText = 'background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;';
+
+            // Header section with IP and hostname
+            const headerDiv = document.createElement('div');
+            headerDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;';
+
+            const infoDiv = document.createElement('div');
+            const ipElement = document.createElement('div');
+            ipElement.textContent = SecurityManager.escapeHtml(host.ip);
+            ipElement.style.cssText = 'font-weight: 600; font-size: 16px;';
+            infoDiv.appendChild(ipElement);
+
+            if (host.hostname) {
+                const hostnameElement = document.createElement('div');
+                hostnameElement.textContent = SecurityManager.escapeHtml(host.hostname);
+                hostnameElement.style.cssText = 'font-size: 12px; color: var(--text-secondary);';
+                infoDiv.appendChild(hostnameElement);
+            }
+            headerDiv.appendChild(infoDiv);
+
+            const statusSpan = document.createElement('span');
+            statusSpan.textContent = '✓ Online';
+            statusSpan.style.cssText = 'color: #10b981; font-size: 12px; background-color: var(--result-bg); padding: 4px 8px; border-radius: 4px;';
+            headerDiv.appendChild(statusSpan);
+
+            hostCard.appendChild(headerDiv);
+
+            // Ports section
+            if (host.ports && host.ports.length > 0) {
+                const portsDiv = document.createElement('div');
+                portsDiv.style.cssText = 'background-color: var(--result-bg); border-radius: 4px; padding: 8px; font-size: 12px;';
+
+                const portsLabel = document.createElement('div');
+                portsLabel.style.color = 'var(--text-secondary)';
+                portsLabel.textContent = 'Open Ports: ' + host.ports.map(p => String(p)).join(', ');
+                portsDiv.appendChild(portsLabel);
+
+                hostCard.appendChild(portsDiv);
+            }
+
+            container.appendChild(hostCard);
+        });
+
+        resultsDiv.appendChild(container);
+        SecurityManager.logSecurityEvent('SCAN_RESULTS_DISPLAYED', { hostCount: hosts.length });
+    }
+
+    function applyFilters(hosts) {
+        const ipFilter = filterIpInput?.value.toLowerCase() || '';
+        const statusFilter = filterStatusSelect?.value || '';
+
+        let filtered = hosts;
+
+        if (ipFilter) {
+            filtered = filtered.filter(h => 
+                h.ip.toLowerCase().includes(ipFilter) || 
+                (h.hostname && h.hostname.toLowerCase().includes(ipFilter))
+            );
+        }
+
+        if (statusFilter) {
+            filtered = filtered.filter(h => h.status === statusFilter);
+        }
+
+        displayScanResults(filtered);
+    }
+
+    function filterHostsByStatus(hosts) {
+        const statusFilter = filterStatusSelect?.value || '';
+        if (!statusFilter) return hosts;
+        return hosts.filter(h => h.status === statusFilter);
+    }
+
+    function resetScanUI() {
+        scanInProgress = false;
+        scanBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
+
+    function generateScanCSV(hosts) {
+        try {
+            let csv = 'IP,Hostname,Status,Open Ports\n';
+            hosts.forEach(host => {
+                // Escape CSV values to prevent injection
+                const ip = escapeCSVValue(host.ip);
+                const hostname = escapeCSVValue(host.hostname || 'N/A');
+                const status = escapeCSVValue(host.status);
+                const ports = host.ports ? host.ports.map(p => String(p)).join(';') : '';
+                
+                csv += `"${ip}","${hostname}","${status}","${ports}"\n`;
+            });
+            
+            SecurityManager.logSecurityEvent('CSV_EXPORT', { hostCount: hosts.length });
+            return csv;
+        } catch (error) {
+            SecurityManager.logSecurityEvent('CSV_EXPORT_ERROR', { error: error.message });
+            throw new Error('Failed to generate CSV export');
+        }
+    }
+
+    function escapeCSVValue(value) {
+        if (typeof value !== 'string') return '';
+        // Escape quotes and prevent formula injection
+        return value.replace(/"/g, '""').replace(/^[=+\-@]/, '_$&');
+    }
+
+    function downloadFile(content, filename, type) {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function calculateIPRange(baseIP, subnetMask) {
+        const ips = [];
+        const parts = baseIP.split('.');
+        const lastOctet = parseInt(parts[3]);
+        
+        // Simple implementation - generates range of 256 IPs
+        for (let i = 0; i < 256; i++) {
+            ips.push(`${parts[0]}.${parts[1]}.${parts[2]}.${i}`);
+        }
+        return ips;
+    }
+
+    async function resolveHostname(ip) {
+        return new Promise((resolve, reject) => {
+            dns.reverse(ip, (err, hostnames) => {
+                if (err) reject(err);
+                else resolve(hostnames && hostnames[0] ? hostnames[0] : null);
+            });
+        });
+    }
 }
 
 function setupPortChecker() {
@@ -3416,7 +3940,8 @@ const SidebarManager = {
                 clone.classList.add('favorite-nav-item');
                 clone.style.padding = '6px 8px';
                 clone.style.fontSize = '12px';
-                clone.removeChild(clone.querySelector('.fav-btn'));
+                const favBtn = clone.querySelector('.fav-btn');
+                if (favBtn) clone.removeChild(favBtn);
                 clone.addEventListener('click', (e) => {
                     if (tabName) UI.switchTab(tabName);
                 });
@@ -3593,12 +4118,20 @@ class UpdateChecker {
      */
     static showNoInternet() {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card update-card';
         card.id = 'update-card';
+        card.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-width: 500px; width: 90%;';
         card.innerHTML = `
-            <h2>No Internet Connection</h2>
-            <p>Check your internet connection and try again.</p>
-            <button onclick="updateChecker.dismissCard()">Continue</button>
+            <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 32px;">📡</div>
+                <div style="flex: 1;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 20px;">No Internet Connection</h2>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 14px;">Unable to check for updates. Please check your internet connection.</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="updateChecker.dismissCard()" style="flex: 1;">Continue</button>
+            </div>
         `;
         document.body.appendChild(card);
         return true;
@@ -3609,34 +4142,68 @@ class UpdateChecker {
      */
     static showUpdateAvailable(tagName, version) {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card update-card';
         card.id = 'update-card';
+        card.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-width: 500px; width: 90%;';
         card.innerHTML = `
-            <h2>Update Available</h2>
-            <p>Version ${version} is available.</p>
-            <div style="margin: 16px 0;">
-                <a href="javascript:void(0)" onclick="openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/${tagName}')">
-                    Download Latest Release
-                </a>
+            <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 32px;">🎉</div>
+                <div style="flex: 1;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 20px;">Update Available</h2>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 14px;">A new version (${tagName}) is available for download.</p>
+                </div>
             </div>
-            <button onclick="updateChecker.dismissCard()">Continue</button>
+            <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                <div style="display: grid; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                        <span style="color: var(--text-secondary);">Current Version:</span>
+                        <span style="font-weight: 600;">${version}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+                        <span style="color: var(--text-secondary);">Latest Version:</span>
+                        <span style="font-weight: 600; color: #10b981;">${tagName}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/${tagName}')" style="flex: 1; background-color: #10b981;">Download Update</button>
+                <button onclick="updateChecker.dismissCard()" style="flex: 1;">Later</button>
+            </div>
         `;
         document.body.appendChild(card);
         return true;
     }
 
     /**
-     * Show update check error
+     * Show update check error with details
      */
     static showUpdateError(error) {
+        const errorMessage = error?.message || 'Unknown error';
+        const errorCode = error?.code || 'ERR_UPDATE_CHECK';
+        
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'card update-card';
         card.id = 'update-card';
+        card.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-width: 500px; width: 90%;';
         card.innerHTML = `
-            <div class="alert error">
-                Error checking for updates
+            <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 32px; color: #ef4444;">⚠️</div>
+                <div style="flex: 1;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 20px; color: #ef4444;">Update Check Failed</h2>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 14px;">An error occurred while checking for updates.</p>
+                </div>
             </div>
-            <button onclick="updateChecker.dismissCard()">Continue</button>
+            <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 16px; max-height: 150px; overflow-y: auto;">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Error Details</div>
+                <div style="font-family: monospace; font-size: 12px; color: #ef4444; line-height: 1.5;">
+                    <div style="margin-bottom: 6px;"><strong>Code:</strong> ${errorCode}</div>
+                    <div><strong>Message:</strong> ${escapeHtml(errorMessage)}</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="updateChecker.dismissCard()" style="flex: 1;">Continue</button>
+                <button onclick="updateChecker.check()" style="flex: 1; background-color: #3b82f6;">Retry</button>
+            </div>
         `;
         document.body.appendChild(card);
         return false;
@@ -3647,7 +4214,12 @@ class UpdateChecker {
      */
     static dismissCard() {
         const card = document.getElementById('update-card');
-        if (card) card.remove();
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translate(-50%, -50%) scale(0.95)';
+            card.style.transition = 'all 0.3s ease';
+            setTimeout(() => card.remove(), 300);
+        }
         
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) loadingScreen.style.display = 'none';
@@ -3691,6 +4263,8 @@ const initializeApp = async () => {
         setupServerMaker();
         setupThemeToggle();
         setupStartButton();
+        setupErrorPageHandlers();
+        setupNoInternetPageHandlers();
 
 
 
@@ -3749,6 +4323,21 @@ if (document.readyState === 'loading') {
 // Utility Functions
 // ============================================================
 
+/**
+ * Escape HTML special characters for safe rendering
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, char => map[char]);
+}
+
 function openExternal(url) {
     ipcRenderer.invoke?.('open-external', url);
 }
@@ -3761,6 +4350,206 @@ function cancelUpdate() {
      document.querySelector('.app-container').style.display = 'block';
  }
 
-   
+// ============================================================
+// Error Page Handler
+// ============================================================
+
+/**
+ * Show error page with formatted JSON details
+ * @param {string} title - Error title
+ * @param {string} message - Error message
+ * @param {string} code - Error code
+ * @param {object} details - Error details object
+ */
+function showErrorPage(title, message, code, details = {}) {
+    const errorPage = document.getElementById('error-page');
+    const titleEl = document.getElementById('error-title');
+    const messageEl = document.getElementById('error-message');
+    const codeEl = document.getElementById('error-code');
+    const jsonEl = document.getElementById('error-json');
+
+    if (errorPage) {
+        // Set error content
+        if (titleEl) titleEl.textContent = title || 'Error';
+        if (messageEl) messageEl.textContent = message || 'An unexpected error occurred';
+        if (codeEl) codeEl.textContent = code || 'UNKNOWN_ERROR';
+
+        // Format JSON details
+        const errorObj = {
+            error: title || 'Unknown Error',
+            code: code || 'UNKNOWN_ERROR',
+            message: message || 'No details available',
+            timestamp: new Date().toISOString(),
+            details: details || {}
+        };
+
+        if (jsonEl) {
+            jsonEl.textContent = JSON.stringify(errorObj, null, 2);
+        }
+
+        // Hide other screens and show error page
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('welcome').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'none';
+        errorPage.style.display = 'block';
+    }
+}
+
+/**
+ * Setup error page button handlers
+ */
+function setupErrorPageHandlers() {
+    const retryBtn = document.getElementById('error-retry-btn');
+    const homeBtn = document.getElementById('error-home-btn');
+    const copyBtn = document.getElementById('error-copy-btn');
+
+    if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+            location.reload();
+        });
+    }
+
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
+            document.getElementById('error-page').style.display = 'none';
+            document.getElementById('welcome').style.display = 'block';
+        });
+    }
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const jsonEl = document.getElementById('error-json');
+            if (jsonEl) {
+                const text = jsonEl.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    UI.showSnackbar('Error details copied to clipboard', 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+            }
+        });
+    }
+}
+
+/**
+ * Show no internet page with retry functionality
+ */
+function showNoInternetPage() {
+    const noInternetPage = document.getElementById('no-internet-page');
+    const statusEl = document.getElementById('no-internet-status');
+    const lastCheckEl = document.getElementById('no-internet-last-check');
+    const retryCountEl = document.getElementById('no-internet-retry-count');
+
+    if (noInternetPage) {
+        // Update status info
+        if (statusEl) statusEl.textContent = 'Offline';
+        if (lastCheckEl) lastCheckEl.textContent = new Date().toLocaleTimeString();
+        if (retryCountEl) retryCountEl.textContent = 'Retry in 10s...';
+
+        // Hide other screens
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('welcome').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'none';
+        document.getElementById('error-page').style.display = 'none';
+        noInternetPage.style.display = 'block';
+
+        // Start auto-retry
+        startNoInternetRetry();
+    }
+}
+
+/**
+ * Auto-retry connection with countdown
+ */
+let noInternetRetryInterval = null;
+function startNoInternetRetry() {
+    // Clear any existing interval
+    if (noInternetRetryInterval) clearInterval(noInternetRetryInterval);
+
+    let countdown = 10;
+    const retryCountEl = document.getElementById('no-internet-retry-count');
+
+    noInternetRetryInterval = setInterval(async () => {
+        countdown--;
+        if (retryCountEl) retryCountEl.textContent = `Retry in ${countdown}s...`;
+
+        if (countdown <= 0) {
+            clearInterval(noInternetRetryInterval);
+            try {
+                const isOnline = await NetworkOps.checkConnectivity();
+                if (isOnline) {
+                    document.getElementById('no-internet-page').style.display = 'none';
+                    document.getElementById('welcome').style.display = 'block';
+                    UI.showSnackbar('Internet connection restored', 3000);
+                } else {
+                    startNoInternetRetry();
+                }
+            } catch (error) {
+                if (retryCountEl) retryCountEl.textContent = 'Retry failed, trying again...';
+                startNoInternetRetry();
+            }
+        }
+    }, 1000);
+}
+
+/**
+ * Setup no internet page button handlers
+ */
+function setupNoInternetPageHandlers() {
+    const retryBtn = document.getElementById('no-internet-retry-btn');
+    const offlineBtn = document.getElementById('no-internet-offline-btn');
+
+    if (retryBtn) {
+        retryBtn.addEventListener('click', async () => {
+            retryBtn.disabled = true;
+            retryBtn.textContent = 'Checking...';
+            try {
+                const isOnline = await NetworkOps.checkConnectivity();
+                if (isOnline) {
+                    document.getElementById('no-internet-page').style.display = 'none';
+                    document.getElementById('welcome').style.display = 'block';
+                    UI.showSnackbar('Connected! Welcome back', 3000);
+                } else {
+                    UI.showSnackbar('Still offline, retrying...', 2000);
+                    retryBtn.disabled = false;
+                    retryBtn.textContent = 'Retry Connection';
+                }
+            } catch (error) {
+                console.error('Retry failed:', error);
+                retryBtn.disabled = false;
+                retryBtn.textContent = 'Retry Connection';
+            }
+        });
+    }
+
+    if (offlineBtn) {
+        offlineBtn.addEventListener('click', () => {
+            if (noInternetRetryInterval) clearInterval(noInternetRetryInterval);
+            document.getElementById('no-internet-page').style.display = 'none';
+            document.getElementById('welcome').style.display = 'block';
+            UI.showSnackbar('Continuing in offline mode', 2000);
+        });
+    }
+}
+
+// Test function - remove in production
+window.testError = function() {
+    showErrorPage(
+        'Test Error',
+        'This is a test error message',
+        'TEST_ERROR_001',
+        {
+            type: 'Test Error',
+            file: 'network.js',
+            line: 1000,
+            stack: 'Error: Test error\n    at testError\n    at HTMLButtonElement.onclick'
+        }
+    );
+};
+
+// Test function - remove in production
+window.testNoInternet = function() {
+    showNoInternetPage();
+};
 
 

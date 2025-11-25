@@ -1,0 +1,263 @@
+/* Font Awesome 7 - Local Font Files */
+
+/* Font Awesome Free - Solid Icons */
+@font-face {
+    font-family: 'Font Awesome 7 Free';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url('./font-awesome/otfs/Font Awesome 7 Free-Solid-900.otf') format('opentype');
+}
+
+/* Font Awesome Free - Regular Icons */
+@font-face {
+    font-family: 'Font Awesome 7 Free';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('./font-awesome/otfs/Font Awesome 7 Free-Regular-400.otf') format('opentype');
+}
+
+/* Font Awesome Brands */
+@font-face {
+    font-family: 'Font Awesome 7 Brands';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('./font-awesome/otfs/Font Awesome 7 Brands-Regular-400.otf') format('opentype');
+}
+
+/* Base Icon Styles */
+.fa, [class^="fa-"], [class*=" fa-"] {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa, .fas {
+    font-family: 'Font Awesome 7 Free';
+    font-weight: 900;
+}
+
+.far {
+    font-family: 'Font Awesome 7 Free';
+    font-weight: 400;
+}
+
+.fab {
+    font-family: 'Font Awesome 7 Brands';
+    font-weight: 400;
+}
+
+/* Icon specific styles */
+.fa::before,
+[class^="fa-"]::before,
+[class*=" fa-"]::before {
+    margin-right: 0.3em;
+}
+
+/* Solid Icons */
+.fas::before {
+    margin-right: 0.3em;
+}
+
+/* Regular Icons */
+.far::before {
+    margin-right: 0.3em;
+}
+
+/* Brand Icons */
+.fab::before {
+    margin-right: 0.3em;
+}
+
+/* Icon Sizing */
+.fa-lg {
+    font-size: 1.333333333333333em;
+    line-height: 0.75em;
+    vertical-align: -0.0667em;
+}
+
+.fa-xl {
+    font-size: 1.25em;
+}
+
+.fa-2x {
+    font-size: 2em;
+}
+
+.fa-3x {
+    font-size: 3em;
+}
+
+.fa-4x {
+    font-size: 4em;
+}
+
+.fa-5x {
+    font-size: 5em;
+}
+
+/* Icon Alignment */
+.fa-fw {
+    text-align: center;
+    width: 1.25em;
+}
+
+.fa-center {
+    text-align: center;
+}
+
+/* Icon Rotation */
+.fa-rotate-90 {
+    transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+    transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+    transform: rotate(270deg);
+}
+
+/* Icon Flip */
+.fa-flip-horizontal {
+    transform: scaleX(-1);
+}
+
+.fa-flip-vertical {
+    transform: scaleY(-1);
+}
+
+/* Icon Colors */
+.fa-primary {
+    color: var(--primary-color, #6366f1);
+}
+
+.fa-secondary {
+    color: var(--secondary-color, #8b5cf6);
+}
+
+.fa-success {
+    color: #10b981;
+}
+
+.fa-danger {
+    color: #ef4444;
+}
+
+.fa-warning {
+    color: #f59e0b;
+}
+
+.fa-info {
+    color: #3b82f6;
+}
+
+/* Animation */
+.fa-spin {
+    animation: fa-spin 2s infinite linear;
+}
+
+.fa-pulse {
+    animation: fa-pulse 1s infinite steps(2, start);
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fa-pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Font Awesome Icon Map - Font Awesome 7 Free Solid */
+/* Common Network Icons */
+.fa-chart-pie::before { content: "\f200"; }
+.fa-search::before { content: "\f002"; }
+.fa-plug::before { content: "\f1a7"; }
+.fa-globe::before { content: "\f0ac"; }
+.fa-eye::before { content: "\f06e"; }
+.fa-circle-info::before { content: "\f05a"; }
+.fa-server::before { content: "\f233"; }
+.fa-bolt::before { content: "\f0e7"; }
+.fa-gear::before { content: "\f013"; }
+.fa-magnifying-glass::before { content: "\f002"; }
+.fa-moon::before { content: "\f186"; }
+.fa-question::before { content: "\f128"; }
+.fa-bars::before { content: "\f0c9"; }
+.fa-chevron-left::before { content: "\f053"; }
+.fa-wifi::before { content: "\f1eb"; }
+.fa-network-wired::before { content: "\f6ff"; }
+.fa-puzzle-piece::before { content: "\f12e"; }
+.fa-circle-xmark::before { content: "\f057"; }
+.fa-error::before { content: "\f057"; }
+
+/* Additional Common Icons */
+.fa-dashboard::before { content: "\f200"; }
+.fa-dashboard-circle::before { content: "\f200"; }
+.fa-cog::before { content: "\f013"; }
+.fa-cogs::before { content: "\f085"; }
+.fa-settings::before { content: "\f013"; }
+.fa-home::before { content: "\f015"; }
+.fa-folder::before { content: "\f07b"; }
+.fa-file::before { content: "\f15b"; }
+.fa-download::before { content: "\f019"; }
+.fa-upload::before { content: "\f093"; }
+.fa-refresh::before { content: "\f021"; }
+.fa-refresh-cw::before { content: "\f021"; }
+.fa-reload::before { content: "\f021"; }
+.fa-plus::before { content: "\f067"; }
+.fa-plus-circle::before { content: "\f055"; }
+.fa-minus::before { content: "\f068"; }
+.fa-minus-circle::before { content: "\f056"; }
+.fa-times::before { content: "\f00d"; }
+.fa-close::before { content: "\f00d"; }
+.fa-x::before { content: "\f00d"; }
+.fa-remove::before { content: "\f00d"; }
+.fa-menu::before { content: "\f0c9"; }
+.fa-check::before { content: "\f05d"; }
+.fa-checkmark::before { content: "\f05d"; }
+.fa-alert::before { content: "\f071"; }
+.fa-alert-circle::before { content: "\f071"; }
+.fa-warning-circle::before { content: "\f071"; }
+.fa-info-circle::before { content: "\f05a"; }
+.fa-help-circle::before { content: "\f128"; }
+.fa-help::before { content: "\f128"; }
+.fa-terminal::before { content: "\f120"; }
+.fa-trash::before { content: "\f1f8"; }
+.fa-trash-2::before { content: "\f1f8"; }
+.fa-trash-alt::before { content: "\f2ed"; }
+.fa-sun::before { content: "\f185"; }
+.fa-star::before { content: "\f005"; }
+.fa-heart::before { content: "\f004"; }
+.fa-user::before { content: "\f007"; }
+.fa-users::before { content: "\f0c0"; }
+.fa-lock::before { content: "\f023"; }
+.fa-unlock::before { content: "\f09c"; }
+.fa-shield::before { content: "\f132"; }
+.fa-exclamation::before { content: "\f12a"; }
+.fa-exclamation-triangle::before { content: "\f071"; }
+.fa-hourglass::before { content: "\f251"; }
+.fa-hourglass-end::before { content: "\f253"; }
+.fa-spinner::before { content: "\f110"; }
+.fa-circle-notch::before { content: "\f1ce"; }
+.fa-sync::before { content: "\f021"; }
+.fa-sync-alt::before { content: "\f021"; }

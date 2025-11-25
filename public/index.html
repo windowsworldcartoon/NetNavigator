@@ -17,10 +17,8 @@
     <!-- Favicon (local SVG - no network request) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
     
-    <!-- Font Awesome loaded asynchronously (non-blocking) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <!-- Fallback for older browsers -->
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
+    <!-- Font Awesome 7 - Local Font Files CSS -->
+    <link rel="stylesheet" href="./font-awesome.css">
     
     <!-- Critical inline CSS (minimal) -->
     <style>
@@ -65,6 +63,89 @@
             </div>
             
             <p style="margin: 12px 0 0 0; font-size: 12px; color: var(--text-secondary); animation: pulse 1.5s ease-in-out infinite;">Please wait...</p>
+        </div>
+    </div>
+
+    <!-- No Internet Page -->
+    <div class="no-internet-page" id="no-internet-page" style="display: none;">
+        <div class="no-internet-container" style="display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+            <div class="card" style="margin: auto; max-width: 600px; padding: 40px; text-align: center;">
+                <div style="font-size: 80px; margin-bottom: 20px; opacity: 0.8;">📡</div>
+                <h1 style="font-size: 32px; margin-bottom: 12px; color: #f59e0b;">No Internet Connection</h1>
+                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">Unable to connect to the internet. Please check your network settings.</p>
+                
+                <!-- Network Status Info -->
+                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600; text-transform: uppercase;">Network Status</div>
+                    <div style="display: grid; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--card-border);">
+                            <span style="color: var(--text-secondary);">Status:</span>
+                            <span id="no-internet-status" style="color: #ef4444; font-weight: 600;">Offline</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--card-border);">
+                            <span style="color: var(--text-secondary);">Last Check:</span>
+                            <span id="no-internet-last-check" style="font-size: 12px;">--</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                            <span style="color: var(--text-secondary);">Retry Interval:</span>
+                            <span id="no-internet-retry-count" style="font-size: 12px;">Waiting...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting Tips -->
+                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600; text-transform: uppercase;">Troubleshooting</div>
+                    <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 1.8;">
+                        <li>Check if your network is connected</li>
+                        <li>Verify your internet connection</li>
+                        <li>Restart your router or modem</li>
+                        <li>Check your firewall settings</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-actions" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                    <button id="no-internet-retry-btn" style="flex: 1; min-width: 120px;">Retry Connection</button>
+                    <button id="no-internet-offline-btn" style="flex: 1; min-width: 120px;">Continue Offline</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Page -->
+    <div class="error-page" id="error-page" style="display: none;">
+        <div class="error-container" style="display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+            <div class="card" style="margin: auto; max-width: 600px; padding: 40px; text-align: center;">
+                <div id="error-icon" style="font-size: 64px; margin-bottom: 20px; color: #ef4444;">
+                    <i class="fas fa-circle-xmark"></i>
+                </div>
+                <h1 id="error-title" style="font-size: 32px; margin-bottom: 12px; color: #ef4444;">Error</h1>
+                <p id="error-message" style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">An unexpected error occurred</p>
+                
+                <!-- Error Code -->
+                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: left;">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Error Code</div>
+                    <div id="error-code" style="font-family: monospace; font-size: 14px; word-break: break-all;">UNKNOWN_ERROR</div>
+                </div>
+
+                <!-- Error Details (JSON) -->
+                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: left; max-height: 250px; overflow-y: auto;">
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Details</div>
+                    <pre id="error-json" style="margin: 0; font-family: 'Courier New', monospace; font-size: 12px; color: var(--text-color); word-wrap: break-word; white-space: pre-wrap; overflow-x: auto;">{
+  "error": "Unknown Error",
+  "timestamp": "2025-01-01T00:00:00Z",
+  "details": "No additional information available"
+}</pre>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-actions" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                    <button id="error-retry-btn" style="flex: 1; min-width: 120px;">Retry</button>
+                    <button id="error-home-btn" style="flex: 1; min-width: 120px;">Return Home</button>
+                    <button id="error-copy-btn" style="flex: 1; min-width: 120px;">Copy Error</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -350,15 +431,152 @@
 
                     <!-- Network Scanner Tab -->
                     <div id="scanner" class="tab-content" role="tabpanel">
-                <h2>Network Scanner</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    Scan your local network to discover connected devices
-                </p>
-                <input type="text" id="scan-ip" placeholder="Enter base IP (e.g., 192.168.1)" aria-label="IP Address">
-                <div style="display: flex; gap: 8px;">
-                    <button id="scan-btn">Scan Network</button>
+                <div class="dashboard-header">
+                    <h2>Network Scanner</h2>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        Scan your local network to discover connected devices and gather detailed information
+                    </p>
                 </div>
-                <div id="scan-results"></div>
+
+                <!-- Scan Configuration Card -->
+                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; margin-bottom: 16px;">Scan Configuration</h3>
+                    
+                    <!-- IP Range Input Row -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 150px; gap: 12px; margin-bottom: 16px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Network IP</label>
+                            <input type="text" id="scan-ip" placeholder="e.g., 192.168.1.0" aria-label="Network IP Address" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Subnet Mask</label>
+                            <input type="text" id="scan-subnet" placeholder="e.g., 255.255.255.0" aria-label="Subnet Mask" style="width: 100%; box-sizing: border-box;" value="255.255.255.0">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout (ms)</label>
+                            <input type="number" id="scan-timeout" min="100" max="5000" value="1000" aria-label="Scan Timeout" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- Scan Options -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                        <label class="switch-container">
+                            <input type="checkbox" id="scan-ping" checked>
+                            <span class="checkmark"></span>
+                            <span>Ping Hosts</span>
+                        </label>
+                        <label class="switch-container">
+                            <input type="checkbox" id="scan-ports" checked>
+                            <span class="checkmark"></span>
+                            <span>Check Common Ports</span>
+                        </label>
+                        <label class="switch-container">
+                            <input type="checkbox" id="scan-hostname">
+                            <span class="checkmark"></span>
+                            <span>Resolve Hostnames</span>
+                        </label>
+                        <label class="switch-container">
+                            <input type="checkbox" id="scan-mac">
+                            <span class="checkmark"></span>
+                            <span>Get MAC Addresses</span>
+                        </label>
+                    </div>
+
+                    <!-- Port Range Selection -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Start Port</label>
+                            <input type="number" id="scan-start-port" min="1" max="65535" value="1" aria-label="Start Port" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">End Port</label>
+                            <input type="number" id="scan-end-port" min="1" max="65535" value="1000" aria-label="End Port" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Thread Count</label>
+                            <input type="number" id="scan-threads" min="1" max="50" value="10" aria-label="Thread Count" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button id="scan-btn" class="primary">▶ Start Scan</button>
+                        <button id="scan-stop-btn" class="secondary" disabled>⏹ Stop Scan</button>
+                        <button id="scan-clear-btn" class="secondary">🗑️ Clear Results</button>
+                        <button id="scan-export-btn" class="secondary" disabled>📥 Export</button>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div id="scan-progress-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-size: 12px; font-weight: 600;">Scanning Progress</span>
+                        <span id="scan-progress-text" style="font-size: 12px; color: var(--text-secondary);">0/255</span>
+                    </div>
+                    <div style="background-color: var(--result-bg); border-radius: 4px; height: 24px; overflow: hidden;">
+                        <div id="scan-progress-bar" style="background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); height: 100%; width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600;">
+                            <span id="scan-progress-percent">0%</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">
+                        <span id="scan-status-text">Ready to scan</span>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div id="scan-stats-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 12px;">Scan Statistics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Hosts Found</div>
+                            <div id="scan-stat-hosts" style="font-size: 24px; font-weight: 600; color: #10b981;">0</div>
+                        </div>
+                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Online Hosts</div>
+                            <div id="scan-stat-online" style="font-size: 24px; font-weight: 600; color: #3b82f6;">0</div>
+                        </div>
+                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Open Ports</div>
+                            <div id="scan-stat-ports" style="font-size: 24px; font-weight: 600; color: #f59e0b;">0</div>
+                        </div>
+                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Scan Time</div>
+                            <div id="scan-stat-time" style="font-size: 24px; font-weight: 600;">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div id="scan-filter-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
+                    <h3 style="margin-top: 0; margin-bottom: 12px;">Filter Results</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Search IP/Hostname</label>
+                            <input type="text" id="scan-filter-ip" placeholder="Filter results..." style="width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Filter By Status</label>
+                            <select id="scan-filter-status" style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
+                                <option value="">All Hosts</option>
+                                <option value="online">Online Only</option>
+                                <option value="offline">Offline Only</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0;">Scan Results</h3>
+                        <span id="scan-result-count" style="font-size: 12px; color: var(--text-secondary);">0 devices found</span>
+                    </div>
+                    <div id="scan-results" style="display: grid; gap: 12px;">
+                        <div style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">
+                            Configure scan settings and click "Start Scan" to begin
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Port Checker Tab -->
@@ -479,16 +697,61 @@
 
             <!-- Network Info Tab -->
             <div id="info" class="tab-content" role="tabpanel">
-                <h2>Network Info</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    View detailed information about your network configuration
-                </p>
-                <div style="display: flex; gap: 8px;">
-                    <button id="get-info-btn">Get Network Info</button>
-                    <button id="check-connect-btn">Check Connectivity</button>
+                <div class="dashboard-header">
+                    <h2>Network Info</h2>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        View detailed information about your network configuration and status
+                    </p>
                 </div>
-                <div id="connect-status" class="connect-status" style="margin: 16px auto; width: 100%;"></div>
-                <div id="info-results" class="info-results" style="margin: 16px auto; width: 100%;"></div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                    <button id="get-info-btn" class="primary">🔍 Get Network Info</button>
+                    <button id="check-connect-btn" class="secondary">📡 Check Connectivity</button>
+                    <button id="refresh-network-info-btn" class="secondary">🔄 Refresh</button>
+                </div>
+
+                <!-- Quick Status Card -->
+                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <!-- Connectivity Status -->
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 32px;">📶</div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Connectivity Status</div>
+                                <div id="quick-connectivity" style="font-weight: 600; font-size: 16px;">Checking...</div>
+                            </div>
+                        </div>
+                        <!-- Internet Status -->
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 32px;">🌐</div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Internet Status</div>
+                                <div id="quick-internet" style="font-weight: 600; font-size: 16px;">Checking...</div>
+                            </div>
+                        </div>
+                        <!-- Last Updated -->
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 32px;">⏰</div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Last Updated</div>
+                                <div id="quick-updated" style="font-weight: 600; font-size: 14px;">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connectivity Status Section -->
+                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; margin-bottom: 16px;">Connectivity Status</h3>
+                    <div id="connect-status" class="connect-status" style="display: grid; gap: 12px;"></div>
+                </div>
+
+                <!-- Network Information Section -->
+                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+                    <h3 style="margin-top: 0; margin-bottom: 16px;">Network Configuration</h3>
+                    <div id="info-results" class="info-results" style="display: grid; gap: 12px;"></div>
+                </div>
             </div>
 
             <!-- Diagnostics Tab -->
@@ -907,42 +1170,81 @@
 
     <!-- Command Palette -->
     <div id="command-palette" class="command-palette" style="display: none;">
-        <div id="command-palette-header" class="command-palette-header">
-            <div class="command-palette-title">
-                <i class="fas fa-terminal" style="margin-right: 8px;"></i>
-                <span>Command Palette</span>
+        <!-- Overlay Backdrop -->
+        <div id="command-palette-backdrop" class="command-palette-backdrop"></div>
+
+        <!-- Command Palette Container -->
+        <div class="command-palette-container">
+            <!-- Header Section -->
+            <div id="command-palette-header" class="command-palette-header">
+                <div class="command-palette-title">
+                    <i class="fas fa-terminal" style="margin-right: 10px; font-size: 18px;"></i>
+                    <span>Command Palette</span>
+                </div>
+                <div class="command-palette-actions">
+                    <button id="command-reload" class="command-action-btn" title="Reload App" aria-label="Reload">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button id="command-settings" class="command-action-btn" title="Settings" aria-label="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="command-close" class="command-action-btn" title="Close (Esc)" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
-            <div class="command-palette-shortcuts">
-                <span class="command-shortcut">Press <kbd>Ctrl+Shift+P</kbd></span>
+
+            <!-- Search Input Section -->
+            <div class="command-input-wrapper">
+                <i class="fas fa-search" style="color: var(--text-secondary); margin-left: 14px; font-size: 16px;"></i>
+                <input 
+                    type="text" 
+                    id="command-input" 
+                    class="command-input"
+                    placeholder="Search commands, navigate tabs..." 
+                    aria-label="Command Input"
+                    autocomplete="off"
+                    spellcheck="false">
+                <div id="command-input-hint" style="color: var(--text-secondary); font-size: 12px; margin-right: 12px;">
+                    <span id="command-hint-text" style="opacity: 0.6;">Type to search</span>
+                </div>
             </div>
-            <div class="command-palette-actions">
-                <button id="command-reload" class="command-action-btn" title="Reload App" aria-label="Reload">
-                    <i class="fas fa-redo"></i>
-                </button>
-                <button id="command-settings" class="command-action-btn" title="Settings" aria-label="Settings">
-                    <i class="fas fa-cog"></i>
-                </button>
-                <button id="command-close" class="command-action-btn" title="Close" aria-label="Close">
-                    <i class="fas fa-times"></i>
-                </button>
+
+            <!-- Recent Commands Section (Optional) -->
+            <div id="command-recent-section" class="command-recent-section" style="display: none;">
+                <div style="padding: 0 12px; margin-top: 8px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px;">Recent</div>
+                    <div id="command-recent-list" style="display: grid; gap: 4px;"></div>
+                </div>
             </div>
-        </div>
-        <div class="command-input-wrapper">
-            <i class="fas fa-search" style="color: var(--text-secondary); margin-left: 12px;"></i>
-            <input 
-                type="text" 
-                id="command-input" 
-                class="command-input"
-                placeholder="Type command or search..." 
-                aria-label="Command Input"
-                autocomplete="off"
-                spellcheck="false">
-        </div>
-        <div class="command-list-container">
-            <ul id="command-list" class="command-list" role="listbox" aria-label="Command List"></ul>
-        </div>
-        <div class="command-palette-footer">
-            <span class="command-hint">↑↓ Navigate • ↵ Execute • Esc Close</span>
+
+            <!-- Commands List Section -->
+            <div class="command-list-container">
+                <ul id="command-list" class="command-list" role="listbox" aria-label="Command List"></ul>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="command-no-results" class="command-no-results" style="display: none;">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;">🔍</div>
+                    <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">No commands found</div>
+                    <div style="color: var(--text-secondary); font-size: 12px;">Try different keywords or browse available commands</div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="command-palette-footer">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span class="command-hint">
+                        <span style="margin-right: 16px;"><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+                        <span style="margin-right: 16px;"><kbd>↵</kbd> Execute</span>
+                        <span><kbd>Esc</kbd> Close</span>
+                    </span>
+                    <div id="command-stats" style="font-size: 12px; color: var(--text-secondary);">
+                        <span id="command-count">0</span> commands available
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
