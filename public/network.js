@@ -4239,6 +4239,74 @@ let settingsManager;
 /**
  * Initialize application when DOM is ready
  */
+/**
+ * Setup What's New Dialog Event Listeners
+ */
+function setupWhatsNewDialog() {
+    const dialog = document.getElementById('whats-new-dialog');
+    const overlay = document.getElementById('whats-new-overlay');
+    const closeBtn = document.getElementById('whats-new-close');
+    const gotItBtn = document.getElementById('whats-new-got-it');
+    const learnMoreBtn = document.getElementById('whats-new-learn-more');
+
+    if (!dialog) return;
+
+    /**
+     * Close dialog function
+     */
+    const closeDialog = () => {
+        dialog.style.display = 'none';
+        // Store that user has seen this version's dialog
+        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+    };
+
+    /**
+     * Show dialog function
+     */
+    const showDialog = () => {
+        // Only show if user hasn't seen it for this version
+        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+            dialog.style.display = 'flex';
+            // Focus on the main button
+            gotItBtn?.focus();
+        }
+    };
+
+    // Close button click
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeDialog);
+    }
+
+    // Overlay click to close
+    if (overlay) {
+        overlay.addEventListener('click', closeDialog);
+    }
+
+    // Got It button
+    if (gotItBtn) {
+        gotItBtn.addEventListener('click', closeDialog);
+    }
+
+    // Learn More button
+    if (learnMoreBtn) {
+        learnMoreBtn.addEventListener('click', () => {
+            // Open release notes or documentation
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+            closeDialog();
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (dialog.style.display === 'flex' && e.key === 'Escape') {
+            closeDialog();
+        }
+    });
+
+    // Show dialog on first load of this version
+    showDialog();
+}
+
 const initializeApp = async () => {
     try {
         console.log('Initializing NetNavigator application...');
@@ -4286,6 +4354,9 @@ const initializeApp = async () => {
         ipcRenderer.on?.('show-snackbar', (event, message, duration) => {
             UI.showSnackbar(message, duration || 3000);
         });
+
+        // Setup What's New Dialog
+        setupWhatsNewDialog();
 
         console.log('NetNavigator initialized successfully');
     } catch (error) {
