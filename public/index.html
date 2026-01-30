@@ -1275,6 +1275,95 @@
     <!-- Snackbar Notification -->
     <div id="snackbar"></div>
 
+    <!-- What's New Dialog -->
+    <div id="whats-new-dialog" class="modal" style="display: none;">
+        <div class="modal-overlay" id="whats-new-overlay"></div>
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 24px;">✨</span>
+                    <h2 style="margin: 0; font-size: 24px;">What's New in v1.2.0</h2>
+                </div>
+                <button id="whats-new-close" class="modal-close-btn" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <!-- New Features Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #10b981; display: flex; align-items: center; gap: 8px;">
+                        <span>🎯</span>
+                        <span>Major Features</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li><strong>Enhanced Network Scanner:</strong> Improved UI with card-based configuration, progress indicators, and real-time statistics</li>
+                        <li><strong>Advanced Filtering:</strong> Filter scan results by IP, hostname, and online status</li>
+                        <li><strong>Batch Scanning:</strong> Configurable thread count for faster network scanning</li>
+                        <li><strong>Export Results:</strong> Export scan results as CSV with security improvements</li>
+                    </ul>
+                </div>
+
+                <!-- Improvements Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #3b82f6; display: flex; align-items: center; gap: 8px;">
+                        <span>⚡</span>
+                        <span>Improvements</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>Better progress tracking with visual progress bar</li>
+                        <li>Detailed scan statistics and summary panel</li>
+                        <li>Improved error handling and validation</li>
+                        <li>Enhanced security with input sanitization</li>
+                        <li>Rate limiting for scan operations</li>
+                    </ul>
+                </div>
+
+                <!-- Security Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+                        <span>🔒</span>
+                        <span>Security Enhancements</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>XSS prevention in result rendering</li>
+                        <li>CSV formula injection prevention</li>
+                        <li>Command injection protection</li>
+                        <li>Input validation and sanitization</li>
+                    </ul>
+                </div>
+
+                <!-- Bug Fixes Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 8px;">
+                        <span>🐛</span>
+                        <span>Bug Fixes</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>Fixed initialization error: TypeError with removeChild on null element</li>
+                        <li>Fixed scan timeout handling</li>
+                        <li>Improved port scanning reliability</li>
+                        <li>Better memory management during scans</li>
+                    </ul>
+                </div>
+
+                <!-- Release Notes -->
+                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                    <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">
+                        <strong>Release Date:</strong> November 25, 2025<br>
+                        <strong>Version:</strong> v1.2.0<br>
+                        <strong>Status:</strong> Stable
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="whats-new-got-it" class="primary" style="flex: 1;">Got It!</button>
+                <button id="whats-new-learn-more" class="secondary" style="flex: 1; margin-left: 12px;">Learn More</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Load script asynchronously after DOM is ready -->
     <script>
         // Load main script asynchronously to not block rendering
