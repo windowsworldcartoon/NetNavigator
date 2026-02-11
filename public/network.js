@@ -4900,7 +4900,19 @@ function setupWhatsNewDialog() {
     const closeDialog = () => {
         dialog.style.display = 'none';
         // Store that user has seen this version's dialog
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         localStorage.setItem('whats-new-v1.3.0-seen', 'true');
+=======
+        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
     };
 
     /**
@@ -4908,7 +4920,19 @@ function setupWhatsNewDialog() {
      */
     const showDialog = () => {
         // Only show if user hasn't seen it for this version
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         if (!localStorage.getItem('whats-new-v1.3.0-seen')) {
+=======
+        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
             dialog.style.display = 'flex';
             // Focus on the main button
             gotItBtn?.focus();
@@ -4934,7 +4958,19 @@ function setupWhatsNewDialog() {
     if (learnMoreBtn) {
         learnMoreBtn.addEventListener('click', () => {
             // Open release notes or documentation
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
             openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.3.0');
+=======
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
+=======
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
             closeDialog();
         });
     }

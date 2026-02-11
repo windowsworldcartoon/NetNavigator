@@ -1777,21 +1777,34 @@
             <div class="modal-header">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span style="font-size: 24px;">✨</span>
+<<<<<<< HEAD
                     <h2 style="margin: 0; font-size: 24px;">What's New in v1.3.0</h2>
+=======
+                    <h2 style="margin: 0; font-size: 24px;">What's New in v1.2.0</h2>
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
                 </div>
                 <button id="whats-new-close" class="modal-close-btn" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+<<<<<<< HEAD
 
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
                 <!-- New Features Section -->
                 <div style="margin-bottom: 24px;">
                     <h3 style="margin-top: 0; color: #4caf50; display: flex; align-items: center; gap: 8px;">
+=======
+            
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <!-- New Features Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #10b981; display: flex; align-items: center; gap: 8px;">
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
                         <span>🎯</span>
                         <span>Major Features</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+<<<<<<< HEAD
                         <li><strong>Traceroute/Tracert Tool:</strong> New tab for network path tracing with hop details,
                             latency tracking, and hostname resolution</li>
                         <li><strong>Classic Design System (ND1-C):</strong> Completely redesigned UI with flat, timeless
@@ -1834,53 +1847,94 @@
                     </ul>
                 </div>
 
-                <!-- Tools & Features -->
+    <!-- Snackbar Notification -->
+    <div id="snackbar"></div>
+
+    <!-- What's New Dialog -->
+    <div id="whats-new-dialog" class="modal" style="display: none;">
+        <div class="modal-overlay" id="whats-new-overlay"></div>
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 24px;">✨</span>
+                    <h2 style="margin: 0; font-size: 24px;">What's New in v1.2.0</h2>
+                </div>
+                <button id="whats-new-close" class="modal-close-btn" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                <!-- New Features Section -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #2196f3; display: flex; align-items: center; gap: 8px;">
-                        <span>🔧</span>
-                        <span>Tools & Features</span>
+                    <h3 style="margin-top: 0; color: #10b981; display: flex; align-items: center; gap: 8px;">
+                        <span>🎯</span>
+                        <span>Major Features</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li><strong>Traceroute Tab:</strong> Trace network paths with hop-by-hop analysis</li>
-                        <li><strong>Quick-Access Tasks:</strong> Windows Jump List integration for instant tool access
-                        </li>
-                        <li><strong>Enhanced Menu System:</strong> Better organized Tools menu with keyboard shortcuts
-                        </li>
-                        <li><strong>Settings Menu:</strong> Quick access via Ctrl+Comma</li>
+                        <li><strong>Enhanced Network Scanner:</strong> Improved UI with card-based configuration, progress indicators, and real-time statistics</li>
+                        <li><strong>Advanced Filtering:</strong> Filter scan results by IP, hostname, and online status</li>
+                        <li><strong>Batch Scanning:</strong> Configurable thread count for faster network scanning</li>
+                        <li><strong>Export Results:</strong> Export scan results as CSV with security improvements</li>
                     </ul>
                 </div>
 
-                <!-- Bug Fixes & Improvements -->
+                <!-- Improvements Section -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #f44336; display: flex; align-items: center; gap: 8px;">
-                        <span>✨</span>
-                        <span>Improvements & Fixes</span>
+                    <h3 style="margin-top: 0; color: #3b82f6; display: flex; align-items: center; gap: 8px;">
+                        <span>⚡</span>
+                        <span>Improvements</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li>Better progress tracking and statistics display</li>
-                        <li>Improved error handling and user feedback</li>
-                        <li>Enhanced security with input validation</li>
-                        <li>Rate limiting for network operations</li>
-                        <li>Responsive design across all window sizes</li>
+                        <li>Better progress tracking with visual progress bar</li>
+                        <li>Detailed scan statistics and summary panel</li>
+                        <li>Improved error handling and validation</li>
+                        <li>Enhanced security with input sanitization</li>
+                        <li>Rate limiting for scan operations</li>
+                    </ul>
+                </div>
+
+                <!-- Security Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+                        <span>🔒</span>
+                        <span>Security Enhancements</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>XSS prevention in result rendering</li>
+                        <li>CSV formula injection prevention</li>
+                        <li>Command injection protection</li>
+                        <li>Input validation and sanitization</li>
+                    </ul>
+                </div>
+
+                <!-- Bug Fixes Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 8px;">
+                        <span>🐛</span>
+                        <span>Bug Fixes</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>Fixed initialization error: TypeError with removeChild on null element</li>
+                        <li>Fixed scan timeout handling</li>
+                        <li>Improved port scanning reliability</li>
                         <li>Better memory management during scans</li>
                     </ul>
                 </div>
 
                 <!-- Release Notes -->
-                <div
-                    style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
                     <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">
-                        <strong>Release Date:</strong> February 8, 2026<br>
-                        <strong>Version:</strong> v1.3.0<br>
+                        <strong>Release Date:</strong> November 25, 2025<br>
+                        <strong>Version:</strong> v1.2.0<br>
                         <strong>Status:</strong> Stable
                     </p>
                 </div>
             </div>
-
+            
             <div class="modal-footer">
                 <button id="whats-new-got-it" class="primary" style="flex: 1;">Got It!</button>
-                <button id="whats-new-learn-more" class="secondary" style="flex: 1; margin-left: 12px;">Learn
-                    More</button>
+                <button id="whats-new-learn-more" class="secondary" style="flex: 1; margin-left: 12px;">Learn More</button>
             </div>
         </div>
     </div>
