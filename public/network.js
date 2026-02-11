@@ -4903,7 +4903,11 @@ function setupWhatsNewDialog() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         localStorage.setItem('whats-new-v1.3.0-seen', 'true');
+=======
+        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
 =======
         localStorage.setItem('whats-new-v1.2.0-seen', 'true');
 >>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
@@ -4923,7 +4927,11 @@ function setupWhatsNewDialog() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!localStorage.getItem('whats-new-v1.3.0-seen')) {
+=======
+        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
 =======
         if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
 >>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
@@ -4961,7 +4969,11 @@ function setupWhatsNewDialog() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.3.0');
+=======
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+>>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
 =======
             openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
 >>>>>>> cab9cbb293b43bbcf5e2da17d502723b19cf10c6
