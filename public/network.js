@@ -104,7 +104,7 @@ class Icon {
         if (!element) return;
 
         const svg = await this.loadSVG(name, variant);
-        
+
         if (svg.startsWith('<svg')) {
             // SVG content
             element.innerHTML = svg;
@@ -132,9 +132,9 @@ class Icon {
     static async create(name, variant = 'outline', classes = '') {
         const element = document.createElement('span');
         element.className = `icon ${classes}`;
-        
+
         await this.inject(element, name, variant);
-        
+
         return element;
     }
 
@@ -235,7 +235,7 @@ const UI = {
         if (!snackbar) return;
 
         const progressId = `progress-linear-${Date.now()}`;
-        
+
         if (isDeterminate) {
             // Determinate progress mode
             snackbar.innerHTML = `
@@ -289,7 +289,7 @@ const UI = {
                 }
             };
         }
-        
+
         return snackbar;
     },
 
@@ -358,10 +358,10 @@ const UI = {
      */
     switchTab(tabName) {
         // Remove active from all nav buttons and tab content
-        document.querySelectorAll('.nav-button, .tab-button').forEach(btn => 
+        document.querySelectorAll('.nav-button, .tab-button').forEach(btn =>
             btn.classList.remove('active')
         );
-        document.querySelectorAll('.tab-content').forEach(content => 
+        document.querySelectorAll('.tab-content').forEach(content =>
             content.classList.remove('active')
         );
 
@@ -383,7 +383,7 @@ const UI = {
     updateConnectivityStatus(isConnected) {
         const statusDot = document.getElementById('connectivity-status');
         const statusText = document.getElementById('connectivity-text');
-        
+
         if (statusDot && statusText) {
             if (isConnected) {
                 statusDot.classList.add('connected');
@@ -671,7 +671,7 @@ class Dialog {
         this.onClose = options.onClose || null;
         this.onConfirm = options.onConfirm || null;
         this.validation = options.validation || null;
-        
+
         this.dialog = null;
         this.backdrop = null;
         this.isOpen = false;
@@ -700,7 +700,7 @@ class Dialog {
         // Create header
         const header = document.createElement('div');
         header.className = 'dialog-header';
-        
+
         if (this.title) {
             const titleEl = document.createElement('h2');
             titleEl.className = 'dialog-title';
@@ -721,13 +721,13 @@ class Dialog {
         const contentDiv = document.createElement('div');
         contentDiv.className = 'dialog-content';
         contentDiv.id = `${this.id}-content`;
-        
+
         if (typeof this.content === 'string') {
             contentDiv.innerHTML = this.content;
         } else if (this.content instanceof HTMLElement) {
             contentDiv.appendChild(this.content);
         }
-        
+
         this.dialog.appendChild(contentDiv);
 
         // Create footer with buttons
@@ -739,10 +739,12 @@ class Dialog {
             if (this.type === 'confirm' && this.buttons.length === 0) {
                 this.buttons = [
                     { label: 'Cancel', class: 'secondary', action: () => this.close() },
-                    { label: 'Confirm', class: 'primary', action: () => {
-                        if (this.onConfirm) this.onConfirm();
-                        this.close();
-                    }}
+                    {
+                        label: 'Confirm', class: 'primary', action: () => {
+                            if (this.onConfirm) this.onConfirm();
+                            this.close();
+                        }
+                    }
                 ];
             }
 
@@ -839,10 +841,10 @@ class Dialog {
         if (this.dialog) {
             document.removeEventListener('keydown', this.escapeHandler);
             this.backdrop.removeEventListener('click', this.backdropHandler);
-            
+
             this.dialog.remove();
             this.backdrop.remove();
-            
+
             this.dialog = null;
             this.backdrop = null;
         }
@@ -853,7 +855,7 @@ class Dialog {
      */
     setContent(content) {
         if (!this.dialog) this.create();
-        
+
         const contentDiv = this.dialog.querySelector('.dialog-content');
         if (contentDiv) {
             if (typeof content === 'string') {
@@ -870,7 +872,7 @@ class Dialog {
      */
     setTitle(title) {
         if (!this.dialog) this.create();
-        
+
         let titleEl = this.dialog.querySelector('.dialog-title');
         if (!titleEl && title) {
             titleEl = document.createElement('h2');
@@ -878,7 +880,7 @@ class Dialog {
             const header = this.dialog.querySelector('.dialog-header');
             header.insertBefore(titleEl, header.firstChild);
         }
-        
+
         if (titleEl) {
             titleEl.textContent = title;
         }
@@ -922,17 +924,17 @@ class Dialog {
         if (contentDiv) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'dialog-error';
-            
+
             let errorId = '';
             let errorContent = '';
-            
+
             if (typeof error === 'string') {
                 errorContent = error;
             } else if (typeof error === 'object') {
                 errorId = error.id || '';
                 errorContent = error.html || error.message || 'An error occurred';
             }
-            
+
             if (errorId) {
                 errorDiv.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px;">
@@ -947,7 +949,7 @@ class Dialog {
                         ${errorId}
                     </div>
                 `;
-                
+
                 // Add copy to clipboard functionality
                 const copyBtn = errorDiv.querySelector('.error-copy-btn');
                 if (copyBtn) {
@@ -964,9 +966,9 @@ class Dialog {
             } else {
                 errorDiv.innerHTML = errorContent;
             }
-            
+
             contentDiv.insertBefore(errorDiv, contentDiv.firstChild);
-            
+
             if (duration > 0) {
                 setTimeout(() => {
                     errorDiv.remove();
@@ -1021,10 +1023,12 @@ class Dialog {
             content: input,
             buttons: [
                 { label: 'Cancel', class: 'secondary', action: () => dialog.close() },
-                { label: 'OK', class: 'primary', action: () => {
-                    if (onConfirm) onConfirm(input.value);
-                    dialog.close();
-                }}
+                {
+                    label: 'OK', class: 'primary', action: () => {
+                        if (onConfirm) onConfirm(input.value);
+                        dialog.close();
+                    }
+                }
             ]
         });
         dialog.show();
@@ -1149,7 +1153,7 @@ class TabManager {
                     btn.setAttribute('data-tab', tabName);
                     btn.setAttribute('role', 'tab');
                     btn.setAttribute('aria-selected', 'false');
-                    
+
                     const icon = options.icon || 'fas fa-puzzle-piece';
                     const label = options.label || tabName;
                     btn.innerHTML = `<i class="${icon}"></i><span>${label}</span>`;
@@ -1234,7 +1238,7 @@ class CommandPalette {
     async loadCommands() {
         try {
             const externalCommands = await ipcRenderer.invoke?.('get-commands') || [];
-            
+
             // Built-in commands
             const builtInCommands = [
                 'reload',
@@ -1272,27 +1276,27 @@ class CommandPalette {
     }
 
     setupEventListeners() {
-         // Listen for IPC command-palette event
-         ipcRenderer.on?.('show-command-palette', () => {
-             this.show();
-         });
+        // Listen for IPC command-palette event
+        ipcRenderer.on?.('show-command-palette', () => {
+            this.show();
+        });
 
-         // Keyboard shortcut
-         document.addEventListener('keydown', (e) => {
-             if (e.ctrlKey && e.shiftKey && e.key === 'P') {
-                 e.preventDefault();
-                 this.show();
-             }
-         });
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                e.preventDefault();
+                this.show();
+            }
+        });
 
-         // Command input
-         const input = document.getElementById('command-input');
-         if (input) {
-             input.addEventListener('input', (e) => {
-                 this.updateList(e.target.value);
-                 this.selectedIndex = 0;
-             });
-         }
+        // Command input
+        const input = document.getElementById('command-input');
+        if (input) {
+            input.addEventListener('input', (e) => {
+                this.updateList(e.target.value);
+                this.selectedIndex = 0;
+            });
+        }
 
         // Palette navigation
         document.addEventListener('keydown', (e) => {
@@ -1538,7 +1542,7 @@ class NetworkOps {
             for (let i = 1; i <= 254; i++) {
                 const ip = `${baseIP}.${i}`;
                 const ping = spawn('ping', ['-n', '1', '-w', '100', ip]);
-                
+
                 ping.on('close', (code) => {
                     completed++;
                     if (code === 0) {
@@ -1556,27 +1560,27 @@ class NetworkOps {
      * Check if a port is open
      */
     static async checkPort(host, port) {
-         if (!Validation.isValidHost(host) || !Validation.isValidPort(port)) {
-             throw new Error('Invalid host or port');
-         }
-         return new Promise((resolve) => {
-             const net = require('net');
-             const socket = net.createConnection(port, host);
-             socket.setTimeout(2000);
-             socket.on('connect', () => {
-                 resolve('open');
-                 socket.end();
-             });
-             socket.on('timeout', () => {
-                 resolve('timeout');
-                 socket.destroy();
-             });
-             socket.on('error', () => {
-                 resolve('closed');
-                 socket.destroy();
-             });
-         });
-     }
+        if (!Validation.isValidHost(host) || !Validation.isValidPort(port)) {
+            throw new Error('Invalid host or port');
+        }
+        return new Promise((resolve) => {
+            const net = require('net');
+            const socket = net.createConnection(port, host);
+            socket.setTimeout(2000);
+            socket.on('connect', () => {
+                resolve('open');
+                socket.end();
+            });
+            socket.on('timeout', () => {
+                resolve('timeout');
+                socket.destroy();
+            });
+            socket.on('error', () => {
+                resolve('closed');
+                socket.destroy();
+            });
+        });
+    }
 
     /**
      * Ping a host
@@ -1589,11 +1593,11 @@ class NetworkOps {
         return new Promise((resolve, reject) => {
             const ping = spawn('ping', ['-n', '1', host]);
             let stdout = '';
-            
+
             ping.stdout.on('data', (data) => {
                 stdout += data.toString();
             });
-            
+
             ping.on('close', (code) => {
                 if (code === 0) {
                     const match = stdout.match(/time[<>=](\d+)ms/);
@@ -1653,19 +1657,206 @@ class NetworkOps {
      * Flush DNS cache
      */
     static async flushDNS() {
-         return new Promise((resolve, reject) => {
-             resolve(true);
-         });
-     }
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    }
 
-     /**
-      * Renew IP address
-      */
-     static async renewIP() {
-         return new Promise((resolve, reject) => {
-             resolve(true);
-         });
-     }
+    /**
+     * Renew IP address
+     */
+    static async renewIP() {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    }
+}
+
+// ============================================================
+// Traceroute Setup
+// ============================================================
+
+function setupTraceroute() {
+    const startBtn = document.getElementById('tracert-start-btn');
+    const stopBtn = document.getElementById('tracert-stop-btn');
+    const clearBtn = document.getElementById('tracert-clear-btn');
+    const exportBtn = document.getElementById('tracert-export-btn');
+
+    if (!startBtn) return;
+
+    let traceInProgress = false;
+    let traceResults = [];
+    let traceStartTime = null;
+
+    // Start trace
+    startBtn.addEventListener('click', async () => {
+        const host = document.getElementById('tracert-host').value.trim();
+        const maxHops = parseInt(document.getElementById('tracert-max-hops').value) || 30;
+        const timeout = parseInt(document.getElementById('tracert-timeout').value) || 5000;
+        const resolveNames = document.getElementById('tracert-resolve-names').checked;
+        const showTiming = document.getElementById('tracert-show-timing').checked;
+
+        try {
+            if (!host) {
+                throw new Error('Please enter a target host');
+            }
+
+            // Validation
+            if (!/^([0-9]{1,3}\.){3}[0-9]{1,3}$|^[a-zA-Z0-9\-\.]+$/.test(host)) {
+                throw new Error('Invalid host format');
+            }
+
+            traceResults = [];
+            traceStartTime = Date.now();
+            traceInProgress = true;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            exportBtn.disabled = true;
+
+            // Show progress
+            document.getElementById('tracert-progress-section').style.display = 'block';
+            document.getElementById('tracert-stats-section').style.display = 'block';
+            document.getElementById('tracert-results').innerHTML = '';
+
+            UI.showSnackbar(`Starting traceroute to ${host}...`, 3000);
+            updateTracertProgress(0, maxHops, 'Initializing traceroute...');
+
+            // Call IPC handler
+            const results = await ipcRenderer.invoke('traceroute', {
+                host,
+                maxHops,
+                timeout,
+                resolveNames
+            });
+
+            if (traceInProgress) {
+                traceResults = results.hops || [];
+                displayTracertResults(traceResults, showTiming);
+                finializeTracert(traceResults, traceStartTime);
+            }
+
+        } catch (error) {
+            const safeMsg = SecurityManager.escapeHtml(error.message || 'An error occurred');
+            const resultsDiv = document.getElementById('tracert-results');
+            resultsDiv.innerHTML = `<div style="background-color: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 4px;">Error: ${safeMsg}</div>`;
+            UI.showSnackbar('Trace error: ' + error.message, 4000);
+            resetTracertUI();
+        }
+    });
+
+    // Stop trace
+    stopBtn.addEventListener('click', () => {
+        traceInProgress = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        exportBtn.disabled = traceResults.length === 0;
+        UI.showSnackbar('Trace stopped', 2000);
+        if (traceResults.length > 0) {
+            finializeTracert(traceResults, traceStartTime);
+        }
+    });
+
+    // Clear results
+    clearBtn.addEventListener('click', () => {
+        traceResults = [];
+        document.getElementById('tracert-results').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">Enter a target host and click "Start Trace" to begin</div>';
+        document.getElementById('tracert-progress-section').style.display = 'none';
+        document.getElementById('tracert-stats-section').style.display = 'none';
+        resetTracertUI();
+        UI.showSnackbar('Results cleared', 1500);
+    });
+
+    // Export results
+    exportBtn.addEventListener('click', () => {
+        if (traceResults.length === 0) {
+            UI.showSnackbar('No results to export', 2000);
+            return;
+        }
+
+        const csv = ['Hop,IP,Hostname,Latency (ms),Status'].concat(
+            traceResults.map((h, i) => `${i + 1},"${h.ip}","${h.hostname || 'N/A'}",${h.latency || '--'},${h.status}`)
+        ).join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `traceroute-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        UI.showSnackbar('Results exported', 2000);
+    });
+
+    function updateTracertProgress(current, max, text) {
+        const progress = Math.min((current / max) * 100, 100);
+        document.getElementById('tracert-progress-bar').style.width = progress + '%';
+        document.getElementById('tracert-progress-text').textContent = text;
+    }
+
+    function displayTracertResults(hops, showTiming) {
+        const resultsDiv = document.getElementById('tracert-results');
+        resultsDiv.innerHTML = '';
+        resultsDiv.className = 'tracert-results';
+
+        hops.forEach((hop, index) => {
+            const hopDiv = document.createElement('div');
+            hopDiv.className = 'tracert-hop';
+
+            const hopNum = document.createElement('div');
+            hopNum.className = 'tracert-hop-number';
+            hopNum.textContent = (index + 1).toString();
+
+            const hopInfo = document.createElement('div');
+            hopInfo.className = 'tracert-hop-info';
+
+            const hopIP = document.createElement('div');
+            hopIP.className = 'tracert-hop-ip';
+            hopIP.textContent = hop.ip || '*';
+
+            const hopHostname = document.createElement('div');
+            hopHostname.className = 'tracert-hop-hostname';
+            hopHostname.textContent = hop.hostname || 'Unknown host';
+
+            hopInfo.appendChild(hopIP);
+            hopInfo.appendChild(hopHostname);
+
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `tracert-hop-status ${hop.status === 'success' ? 'success' : 'timeout'}`;
+            statusBadge.textContent = hop.status === 'success' ? 'Responded' : 'Timeout';
+
+            hopDiv.appendChild(hopNum);
+            hopDiv.appendChild(hopInfo);
+            hopDiv.appendChild(statusBadge);
+
+            if (showTiming && hop.latency) {
+                const timing = document.createElement('div');
+                timing.className = 'tracert-hop-timing';
+                timing.textContent = `${hop.latency}ms`;
+                hopDiv.appendChild(timing);
+            }
+
+            resultsDiv.appendChild(hopDiv);
+        });
+    }
+
+    function finializeTracert(hops, startTime) {
+        const successCount = hops.filter(h => h.status === 'success').length;
+        const avgLatency = hops
+            .filter(h => h.latency)
+            .reduce((sum, h) => sum + h.latency, 0) / (hops.filter(h => h.latency).length || 1);
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+
+        document.getElementById('tracert-stat-hops').textContent = hops.length;
+        document.getElementById('tracert-stat-latency').textContent = Math.round(avgLatency) + ' ms';
+        document.getElementById('tracert-stat-success').textContent = Math.round((successCount / hops.length) * 100) + '%';
+        document.getElementById('tracert-stat-time').textContent = elapsed + ' s';
+    }
+
+    function resetTracertUI() {
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
 }
 
 // ============================================================
@@ -1679,7 +1870,7 @@ function setupNetworkScanner() {
     const exportBtn = document.getElementById('scan-export-btn');
     const filterIpInput = document.getElementById('scan-filter-ip');
     const filterStatusSelect = document.getElementById('scan-filter-status');
-    
+
     if (!scanBtn) return;
 
     let scanInProgress = false;
@@ -1701,7 +1892,7 @@ function setupNetworkScanner() {
         const threadCount = parseInt(document.getElementById('scan-threads').value) || 10;
         const startPort = parseInt(document.getElementById('scan-start-port').value) || 1;
         const endPort = parseInt(document.getElementById('scan-end-port').value) || 1000;
-        
+
         const pingEnabled = document.getElementById('scan-ping').checked;
         const portsEnabled = document.getElementById('scan-ports').checked;
         const hostnameEnabled = document.getElementById('scan-hostname').checked;
@@ -1709,7 +1900,7 @@ function setupNetworkScanner() {
 
         try {
             // ===== SECURITY VALIDATION =====
-            
+
             // Empty input check
             if (!baseIP) {
                 SecurityManager.logSecurityEvent('INVALID_INPUT', { reason: 'empty_ip' });
@@ -1752,9 +1943,9 @@ function setupNetworkScanner() {
             }
 
             // Log scan initiation
-            SecurityManager.logSecurityEvent('SCAN_INITIATED', { 
-                ip: baseIP, 
-                subnet: subnetMask, 
+            SecurityManager.logSecurityEvent('SCAN_INITIATED', {
+                ip: baseIP,
+                subnet: subnetMask,
                 portRange: `${startPort}-${endPort}`,
                 features: { ping: pingEnabled, ports: portsEnabled, hostname: hostnameEnabled }
             });
@@ -1776,7 +1967,7 @@ function setupNetworkScanner() {
             // Calculate IP range from subnet
             const ips = calculateIPRange(baseIP, subnetMask);
             const totalIPs = ips.length;
-            
+
             UI.showSnackbar(`Starting scan of ${totalIPs} IPs...`, 3000);
             updateScanProgress(0, totalIPs, 'Initializing scan...');
 
@@ -1853,9 +2044,9 @@ function setupNetworkScanner() {
         } catch (error) {
             // Sanitize error message to prevent XSS
             const safErrorMsg = SecurityManager.escapeHtml(error.message || 'An error occurred during scanning');
-            
+
             // Log security event
-            SecurityManager.logSecurityEvent('SCAN_ERROR', { 
+            SecurityManager.logSecurityEvent('SCAN_ERROR', {
                 error: error.message?.substring(0, 100),
                 stack: error.stack?.substring(0, 200)
             });
@@ -2018,8 +2209,8 @@ function setupNetworkScanner() {
         let filtered = hosts;
 
         if (ipFilter) {
-            filtered = filtered.filter(h => 
-                h.ip.toLowerCase().includes(ipFilter) || 
+            filtered = filtered.filter(h =>
+                h.ip.toLowerCase().includes(ipFilter) ||
                 (h.hostname && h.hostname.toLowerCase().includes(ipFilter))
             );
         }
@@ -2052,10 +2243,10 @@ function setupNetworkScanner() {
                 const hostname = escapeCSVValue(host.hostname || 'N/A');
                 const status = escapeCSVValue(host.status);
                 const ports = host.ports ? host.ports.map(p => String(p)).join(';') : '';
-                
+
                 csv += `"${ip}","${hostname}","${status}","${ports}"\n`;
             });
-            
+
             SecurityManager.logSecurityEvent('CSV_EXPORT', { hostCount: hosts.length });
             return csv;
         } catch (error) {
@@ -2086,7 +2277,7 @@ function setupNetworkScanner() {
         const ips = [];
         const parts = baseIP.split('.');
         const lastOctet = parseInt(parts[3]);
-        
+
         // Simple implementation - generates range of 256 IPs
         for (let i = 0; i < 256; i++) {
             ips.push(`${parts[0]}.${parts[1]}.${parts[2]}.${i}`);
@@ -2123,11 +2314,11 @@ function setupPortChecker() {
 
             UI.setLoading('port-results', true);
             const result = await NetworkOps.checkPort(host, port);
-            
+
             const status = result === 'open' ? 'success' : 'error';
             const message = result === 'open' ? 'Port is open' : 'Port is closed';
-            
-            UI.showHTML('port-results', 
+
+            UI.showHTML('port-results',
                 `<div class="alert ${status}">${message}</div>`
             );
         } catch (error) {
@@ -2150,7 +2341,7 @@ function setupNetworkMonitor() {
         stopBtn.disabled = false;
         UI.clearResults('monitor-results');
         monitorCount = 0;
-        
+
         const resultsDiv = document.getElementById('monitor-results');
         resultsDiv.innerHTML = '<div style="color: var(--text-secondary); font-family: var(--font-mono); font-size: 12px; padding: 12px; background-color: var(--result-bg); border-radius: 4px;"></div>';
 
@@ -2160,20 +2351,20 @@ function setupNetworkMonitor() {
                 const time = new Date().toLocaleTimeString();
                 const resultsDiv = document.getElementById('monitor-results');
                 const logDiv = resultsDiv.querySelector('div');
-                
+
                 monitorCount++;
                 const statusColor = pingTime < 50 ? '#22c55e' : pingTime < 100 ? '#f59e0b' : '#ef4444';
                 const logEntry = `<div style="color: ${statusColor};">[${time}] Ping = ${pingTime}ms</div>`;
-                
+
                 if (logDiv) {
                     logDiv.innerHTML += logEntry;
-                    
+
                     // Limit displayed entries
                     const entries = logDiv.querySelectorAll('div');
                     if (entries.length > maxEntries) {
                         entries[0].remove();
                     }
-                    
+
                     resultsDiv.scrollTop = resultsDiv.scrollHeight;
                 }
             } catch (error) {
@@ -2278,7 +2469,7 @@ const NetworkOptimizer = {
 
             // Build result HTML
             let html = '<div style="display: grid; gap: 12px;">';
-            
+
             if (results.executed.length > 0) {
                 html += '<div style="padding: 12px; background-color: rgba(34, 197, 94, 0.1); border-left: 3px solid #22c55e; border-radius: 4px;">';
                 html += '<strong style="color: #22c55e;">Executed:</strong>';
@@ -2355,7 +2546,7 @@ const NetworkOptimizer = {
                 {
                     label: 'Close',
                     class: 'secondary',
-                    action: function() { this.close(); }
+                    action: function () { this.close(); }
                 }
             ]
         });
@@ -2433,248 +2624,366 @@ function setupNetworkOptimizer() {
 }
 
 function setupNetworkInfo() {
-     const infoBtn = document.getElementById('get-info-btn');
-     const connectBtn = document.getElementById('check-connect-btn');
+    const infoBtn = document.getElementById('get-info-btn');
+    const connectBtn = document.getElementById('check-connect-btn');
+    const refreshBtn = document.getElementById('refresh-network-info-btn');
+    const exportBtn = document.getElementById('export-info-btn');
 
-     if (infoBtn) {
-         infoBtn.addEventListener('click', async () => {
-             try {
-                 UI.setLoading('info-results', true);
-                 const interfaces = await NetworkOps.getNetworkInfo();
-                 
-                 let html = '<h3>Network Interfaces</h3>';
-                 Object.entries(interfaces).forEach(([name, addrs]) => {
-                     html += `<h4>${name}</h4>`;
-                     if (Array.isArray(addrs)) {
-                         addrs.forEach(addr => {
-                             html += `<div>${addr.family}: ${addr.address}</div>`;
-                         });
-                     }
-                 });
-                 
-                 UI.showHTML('info-results', html);
-             } catch (error) {
-                 UI.showError('info-results', error.message);
-             }
-         });
-     }
+    const updateQuickStatus = async () => {
+        try {
+            // Update connectivity status
+            const isConnected = await NetworkOps.checkConnectivity();
+            document.getElementById('quick-connectivity').textContent = isConnected ? '✓ Connected' : '✗ Offline';
+            document.getElementById('quick-connectivity').style.color = isConnected ? 'var(--success-color)' : 'var(--error-color)';
 
-     if (connectBtn) {
-         connectBtn.addEventListener('click', async () => {
-             try {
-                 UI.setLoading('connect-status', true);
-                 const isConnected = await NetworkOps.checkConnectivity();
-                 const status = isConnected ? 'success' : 'error';
-                 const message = isConnected ? 'Connected to Internet' : 'Not Connected to Internet';
-                 
-                 UI.showHTML('connect-status', 
-                     `<div class="alert ${status}">${message}</div>`
-                 );
-             } catch (error) {
-                 UI.showError('connect-status', error.message);
-             }
-         });
-     }
- }
+            // Update internet status
+            document.getElementById('quick-internet').textContent = isConnected ? '✓ Active' : '✗ Inactive';
+            document.getElementById('quick-internet').style.color = isConnected ? 'var(--success-color)' : 'var(--error-color)';
+
+            // Try to get ping time
+            try {
+                const startTime = Date.now();
+                await NetworkOps.ping('8.8.8.8');
+                const pingTime = Date.now() - startTime;
+                document.getElementById('quick-ping').textContent = `${pingTime}ms`;
+            } catch (e) {
+                document.getElementById('quick-ping').textContent = '--ms';
+            }
+
+            // Update last updated timestamp
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('quick-updated').textContent = now;
+        } catch (error) {
+            console.error('Error updating quick status:', error);
+        }
+    };
+
+    // Initial quick status update
+    updateQuickStatus();
+
+    if (infoBtn) {
+        infoBtn.addEventListener('click', async () => {
+            try {
+                UI.setLoading('info-results', true);
+                const interfaces = await NetworkOps.getNetworkInfo();
+
+                let html = '';
+                Object.entries(interfaces).forEach(([name, addrs]) => {
+                    html += `<div style="margin-bottom: 12px; padding: 8px; background: var(--card-bg-hover); border-radius: 4px;">`;
+                    html += `<strong>${name}</strong>`;
+                    if (Array.isArray(addrs)) {
+                        addrs.forEach(addr => {
+                            const icon = addr.family === 'IPv4' ? '🔵' : '🟣';
+                            html += `<div style="margin-left: 12px; margin-top: 4px;">${icon} ${addr.family}: ${addr.address}</div>`;
+                        });
+                    }
+                    html += `</div>`;
+                });
+
+                UI.showHTML('info-results', html);
+            } catch (error) {
+                UI.showError('info-results', error.message);
+            }
+        });
+    }
+
+    if (connectBtn) {
+        connectBtn.addEventListener('click', async () => {
+            try {
+                UI.setLoading('connect-status', true);
+                const isConnected = await NetworkOps.checkConnectivity();
+                const status = isConnected ? 'success' : 'error';
+                const message = isConnected ? '✓ Connected to Internet' : '✗ Not Connected to Internet';
+
+                UI.showHTML('connect-status',
+                    `<div class="alert ${status}">${message}</div>`
+                );
+
+                // Update quick status
+                await updateQuickStatus();
+            } catch (error) {
+                UI.showError('connect-status', error.message);
+            }
+        });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+            try {
+                UI.showSnackbar('Refreshing network info...', 2000);
+                await updateQuickStatus();
+
+                // Refresh all sections if they have data
+                if (infoBtn) infoBtn.click();
+            } catch (error) {
+                UI.showError('snackbar', error.message);
+            }
+        });
+    }
+
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async () => {
+            try {
+                const interfaces = await NetworkOps.getNetworkInfo();
+                const isConnected = await NetworkOps.checkConnectivity();
+                const timestamp = new Date().toISOString();
+
+                const exportData = {
+                    timestamp: timestamp,
+                    connectivity: {
+                        connected: isConnected,
+                        timestamp: timestamp
+                    },
+                    networkInterfaces: interfaces
+                };
+
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `network-info-${timestamp.slice(0, 10)}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                UI.showSnackbar('Network info exported successfully', 2000);
+            } catch (error) {
+                UI.showError('snackbar', error.message);
+            }
+        });
+    }
+
+    // Populate network interfaces section
+    const displayNetworkInterfaces = async () => {
+        try {
+            const interfaces = await NetworkOps.getNetworkInfo();
+            const interfacesDiv = document.getElementById('network-interfaces');
+            if (!interfacesDiv) return;
+
+            let html = '';
+            Object.entries(interfaces).forEach(([name, addrs]) => {
+                html += `<div style="margin-bottom: 16px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px; border-left: 3px solid var(--accent-primary);">`;
+                html += `<div style="font-weight: 600; margin-bottom: 8px;">🌐 ${name}</div>`;
+                if (Array.isArray(addrs)) {
+                    addrs.forEach(addr => {
+                        const icon = addr.family === 'IPv4' ? '🔵' : '🟣';
+                        html += `<div style="margin-left: 12px; font-size: 13px;">`;
+                        html += `${icon} ${addr.family}: <code style="background: var(--input-bg); padding: 2px 4px; border-radius: 2px;">${addr.address}</code>`;
+                        if (addr.netmask) html += ` / ${addr.netmask}`;
+                        html += `</div>`;
+                    });
+                }
+                html += `</div>`;
+            });
+
+            interfacesDiv.innerHTML = html;
+        } catch (error) {
+            console.error('Error displaying network interfaces:', error);
+        }
+    };
+
+    // Display on page load
+    displayNetworkInterfaces();
+}
 
 function setupDiagnostics() {
-     const refreshBtn = document.getElementById('refresh-diagnostics-btn');
-     const exportBtn = document.getElementById('export-diagnostics-btn');
-     const clearBtn = document.getElementById('clear-diagnostics-btn');
+    const refreshBtn = document.getElementById('refresh-diagnostics-btn');
+    const exportBtn = document.getElementById('export-diagnostics-btn');
+    const clearBtn = document.getElementById('clear-diagnostics-btn');
 
-     const loadDiagnostics = async () => {
-         try {
-             UI.showLoadingSnackbar('Loading diagnostics...', false);
-             
-             // Get enhanced system info using systeminformation
-             let platform, arch, cpus, totalMemory, freeMemory, uptime, hostname;
-             
-             try {
-                 // Use systeminformation for more detailed data
-                 const systemInfo = await si.system();   // { manufacturer, model, version, serial, uuid, sku }
-                 const osInfo = await si.osInfo();       // { platform, distro, release, kernel, arch, hostname, fqdn, codename }
-                 const cpuInfo = await si.cpu();         // { manufacturer, brand, speed, cores, physicalCores, processors, socket }
-                 const memInfo = await si.mem();         // { total, free, used, active, available, buffers, cached, swaptotal, swapfree, swapused }
-                 
-                 platform = osInfo.platform;
-                 arch = osInfo.arch;
-                 cpus = cpuInfo.cores || os.cpus().length;
-                 totalMemory = formatBytes(memInfo.total);
-                 freeMemory = formatBytes(memInfo.available);
-                 uptime = formatUptime(os.uptime());
-                 hostname = osInfo.hostname;
-             } catch (e) {
-                 // Fallback to Node.js os module if systeminformation fails
-                 console.warn('systeminformation unavailable, using os module:', e);
-                 platform = os.platform();
-                 arch = os.arch();
-                 cpus = os.cpus().length;
-                 totalMemory = formatBytes(os.totalmem());
-                 freeMemory = formatBytes(os.freemem());
-                 uptime = formatUptime(os.uptime());
-                 hostname = os.hostname();
-             }
-             
-             // Update system info
-             document.getElementById('diag-platform').textContent = platform;
-             document.getElementById('diag-arch').textContent = arch;
-             document.getElementById('diag-cpus').textContent = cpus;
-             document.getElementById('diag-memory').textContent = totalMemory;
-             document.getElementById('diag-free-memory').textContent = freeMemory;
-             document.getElementById('diag-uptime').textContent = uptime;
-             
-             // Network info
-             document.getElementById('diag-hostname').textContent = hostname;
-             const interfaces = os.networkInterfaces();
-             document.getElementById('diag-interfaces').textContent = Object.keys(interfaces).length;
-             
-             // Format all interfaces
-             let interfacesHtml = '';
-             Object.entries(interfaces).forEach(([name, addrs]) => {
-                 interfacesHtml += `<div><strong>${name}:</strong></div>`;
-                 if (Array.isArray(addrs)) {
-                     addrs.forEach(addr => {
-                         interfacesHtml += `<div style="padding-left: 12px;">${addr.family}: ${addr.address}</div>`;
-                     });
-                 }
-             });
-             document.getElementById('diag-all-interfaces').innerHTML = interfacesHtml;
-             
-             // Get primary IP
-             const nets = os.networkInterfaces();
-             let primaryIP = '--';
-             for (const name of Object.keys(nets)) {
-                 for (const net of nets[name]) {
-                     if (net.family === 'IPv4' && !net.internal) {
-                         primaryIP = net.address;
-                         break;
-                     }
-                 }
-                 if (primaryIP !== '--') break;
-             }
-             document.getElementById('diag-ip').textContent = primaryIP;
-             
-             // Check connectivity
-             const isOnline = await NetworkOps.checkConnectivity();
-             
-             // App version (from package.json via IPC)
-             let appVersion = '--';
-             let nodeVersion = '--';
-             let electronVersion = '--';
-             
-             try {
-                 const versions = await ipcRenderer.invoke?.('get-versions') || {};
-                 appVersion = versions.app || '--';
-                 nodeVersion = process.version || '--';
-                 electronVersion = versions.electron || '--';
-             } catch (e) {
-                 console.warn('Could not get version info:', e);
-                 nodeVersion = process.version || '--';
-             }
-             
-             document.getElementById('diag-app-version').textContent = appVersion;
-             document.getElementById('diag-node-version').textContent = nodeVersion;
-             document.getElementById('diag-electron-version').textContent = electronVersion;
-             
-             UI.hideLoadingSnackbar();
-             UI.showSnackbar('✓ Diagnostics loaded', 3000);
-         } catch (error) {
-             console.error('Diagnostics error:', error);
-             UI.hideLoadingSnackbar();
-             UI.showSnackbar('Error loading diagnostics: ' + error.message, 5000);
-         }
-     };
+    const loadDiagnostics = async () => {
+        try {
+            UI.showLoadingSnackbar('Loading diagnostics...', false);
 
-     if (refreshBtn) {
-         refreshBtn.addEventListener('click', loadDiagnostics);
-     }
+            // Get enhanced system info using systeminformation
+            let platform, arch, cpus, totalMemory, freeMemory, uptime, hostname;
 
-     if (exportBtn) {
-         exportBtn.addEventListener('click', async () => {
-             try {
-                  // Collect all diagnostic data
-                  const data = {
-                      system: {
-                          platform: document.getElementById('diag-platform').textContent,
-                          arch: document.getElementById('diag-arch').textContent,
-                          cpus: document.getElementById('diag-cpus').textContent,
-                          memory: document.getElementById('diag-memory').textContent,
-                          freeMemory: document.getElementById('diag-free-memory').textContent,
-                          uptime: document.getElementById('diag-uptime').textContent,
-                      },
-                      network: {
-                          hostname: document.getElementById('diag-hostname').textContent,
-                          primaryIP: document.getElementById('diag-ip').textContent,
-                          interfaces: document.getElementById('diag-interfaces').textContent,
-                      },
-                      app: {
-                          version: document.getElementById('diag-app-version').textContent,
-                          nodeVersion: document.getElementById('diag-node-version').textContent,
-                          electronVersion: document.getElementById('diag-electron-version').textContent,
-                      },
-                      timestamp: new Date().toISOString()
-                  };
-                  
-                  // Create JSON report
-                  const reportJson = JSON.stringify(data, null, 2);
-                  const blob = new Blob([reportJson], { type: 'application/json' });
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `diagnostics-${new Date().getTime()}.json`;
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-                  
-                  UI.showSnackbar('✓ Diagnostics exported', 3000);
-             } catch (error) {
-                  UI.showSnackbar('Error exporting diagnostics', 3000);
-                  console.error('Export error:', error);
-             }
-         });
-     }
+            try {
+                // Use systeminformation for more detailed data
+                const systemInfo = await si.system();   // { manufacturer, model, version, serial, uuid, sku }
+                const osInfo = await si.osInfo();       // { platform, distro, release, kernel, arch, hostname, fqdn, codename }
+                const cpuInfo = await si.cpu();         // { manufacturer, brand, speed, cores, physicalCores, processors, socket }
+                const memInfo = await si.mem();         // { total, free, used, active, available, buffers, cached, swaptotal, swapfree, swapused }
 
-     if (clearBtn) {
-         clearBtn.addEventListener('click', () => {
-             // Reset all diagnostics displays to '--'
-             document.querySelectorAll('[id^="diag-"]').forEach(el => {
-                 if (el.id !== 'diag-all-interfaces') {
-                     el.textContent = '--';
-                 } else {
-                     el.innerHTML = '';
-                 }
-             });
-             UI.showSnackbar('Diagnostics cleared', 3000);
-         });
-     }
+                platform = osInfo.platform;
+                arch = osInfo.arch;
+                cpus = cpuInfo.cores || os.cpus().length;
+                totalMemory = formatBytes(memInfo.total);
+                freeMemory = formatBytes(memInfo.available);
+                uptime = formatUptime(os.uptime());
+                hostname = osInfo.hostname;
+            } catch (e) {
+                // Fallback to Node.js os module if systeminformation fails
+                console.warn('systeminformation unavailable, using os module:', e);
+                platform = os.platform();
+                arch = os.arch();
+                cpus = os.cpus().length;
+                totalMemory = formatBytes(os.totalmem());
+                freeMemory = formatBytes(os.freemem());
+                uptime = formatUptime(os.uptime());
+                hostname = os.hostname();
+            }
 
-     // Load diagnostics on tab switch
-     const diagTab = document.querySelector('[data-tab="diagnostics"]');
-     if (diagTab) {
-         diagTab.addEventListener('click', () => {
-             // Load diagnostics when tab is opened
-             setTimeout(loadDiagnostics, 100);
-         });
-     }
+            // Update system info
+            document.getElementById('diag-platform').textContent = platform;
+            document.getElementById('diag-arch').textContent = arch;
+            document.getElementById('diag-cpus').textContent = cpus;
+            document.getElementById('diag-memory').textContent = totalMemory;
+            document.getElementById('diag-free-memory').textContent = freeMemory;
+            document.getElementById('diag-uptime').textContent = uptime;
 
-     // Helper function to format bytes
-     window.formatBytes = function(bytes) {
-         const units = ['B', 'KB', 'MB', 'GB'];
-         let size = bytes;
-         let unitIndex = 0;
-         while (size >= 1024 && unitIndex < units.length - 1) {
-             size /= 1024;
-             unitIndex++;
-         }
-         return size.toFixed(2) + ' ' + units[unitIndex];
-     };
+            // Network info
+            document.getElementById('diag-hostname').textContent = hostname;
+            const interfaces = os.networkInterfaces();
+            document.getElementById('diag-interfaces').textContent = Object.keys(interfaces).length;
 
-     // Helper function to format uptime
-     window.formatUptime = function(seconds) {
-         const days = Math.floor(seconds / 86400);
-         const hours = Math.floor((seconds % 86400) / 3600);
-         const mins = Math.floor((seconds % 3600) / 60);
-         return `${days}d ${hours}h ${mins}m`;
-     };
+            // Format all interfaces
+            let interfacesHtml = '';
+            Object.entries(interfaces).forEach(([name, addrs]) => {
+                interfacesHtml += `<div><strong>${name}:</strong></div>`;
+                if (Array.isArray(addrs)) {
+                    addrs.forEach(addr => {
+                        interfacesHtml += `<div style="padding-left: 12px;">${addr.family}: ${addr.address}</div>`;
+                    });
+                }
+            });
+            document.getElementById('diag-all-interfaces').innerHTML = interfacesHtml;
+
+            // Get primary IP
+            const nets = os.networkInterfaces();
+            let primaryIP = '--';
+            for (const name of Object.keys(nets)) {
+                for (const net of nets[name]) {
+                    if (net.family === 'IPv4' && !net.internal) {
+                        primaryIP = net.address;
+                        break;
+                    }
+                }
+                if (primaryIP !== '--') break;
+            }
+            document.getElementById('diag-ip').textContent = primaryIP;
+
+            // Check connectivity
+            const isOnline = await NetworkOps.checkConnectivity();
+
+            // App version (from package.json via IPC)
+            let appVersion = '--';
+            let nodeVersion = '--';
+            let electronVersion = '--';
+
+            try {
+                const versions = await ipcRenderer.invoke?.('get-versions') || {};
+                appVersion = versions.app || '--';
+                nodeVersion = process.version || '--';
+                electronVersion = versions.electron || '--';
+            } catch (e) {
+                console.warn('Could not get version info:', e);
+                nodeVersion = process.version || '--';
+            }
+
+            document.getElementById('diag-app-version').textContent = appVersion;
+            document.getElementById('diag-node-version').textContent = nodeVersion;
+            document.getElementById('diag-electron-version').textContent = electronVersion;
+
+            UI.hideLoadingSnackbar();
+            UI.showSnackbar('✓ Diagnostics loaded', 3000);
+        } catch (error) {
+            console.error('Diagnostics error:', error);
+            UI.hideLoadingSnackbar();
+            UI.showSnackbar('Error loading diagnostics: ' + error.message, 5000);
+        }
+    };
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', loadDiagnostics);
+    }
+
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async () => {
+            try {
+                // Collect all diagnostic data
+                const data = {
+                    system: {
+                        platform: document.getElementById('diag-platform').textContent,
+                        arch: document.getElementById('diag-arch').textContent,
+                        cpus: document.getElementById('diag-cpus').textContent,
+                        memory: document.getElementById('diag-memory').textContent,
+                        freeMemory: document.getElementById('diag-free-memory').textContent,
+                        uptime: document.getElementById('diag-uptime').textContent,
+                    },
+                    network: {
+                        hostname: document.getElementById('diag-hostname').textContent,
+                        primaryIP: document.getElementById('diag-ip').textContent,
+                        interfaces: document.getElementById('diag-interfaces').textContent,
+                    },
+                    app: {
+                        version: document.getElementById('diag-app-version').textContent,
+                        nodeVersion: document.getElementById('diag-node-version').textContent,
+                        electronVersion: document.getElementById('diag-electron-version').textContent,
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                // Create JSON report
+                const reportJson = JSON.stringify(data, null, 2);
+                const blob = new Blob([reportJson], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `diagnostics-${new Date().getTime()}.json`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                UI.showSnackbar('✓ Diagnostics exported', 3000);
+            } catch (error) {
+                UI.showSnackbar('Error exporting diagnostics', 3000);
+                console.error('Export error:', error);
+            }
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            // Reset all diagnostics displays to '--'
+            document.querySelectorAll('[id^="diag-"]').forEach(el => {
+                if (el.id !== 'diag-all-interfaces') {
+                    el.textContent = '--';
+                } else {
+                    el.innerHTML = '';
+                }
+            });
+            UI.showSnackbar('Diagnostics cleared', 3000);
+        });
+    }
+
+    // Load diagnostics on tab switch
+    const diagTab = document.querySelector('[data-tab="diagnostics"]');
+    if (diagTab) {
+        diagTab.addEventListener('click', () => {
+            // Load diagnostics when tab is opened
+            setTimeout(loadDiagnostics, 100);
+        });
+    }
+
+    // Helper function to format bytes
+    window.formatBytes = function (bytes) {
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+        return size.toFixed(2) + ' ' + units[unitIndex];
+    };
+
+    // Helper function to format uptime
+    window.formatUptime = function (seconds) {
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        return `${days}d ${hours}h ${mins}m`;
+    };
 }
 
 // Helper functions (if not already defined)
@@ -2755,7 +3064,7 @@ const DNSManager = {
 
         try {
             const progress = UI.showLoadingSnackbar(`Looking up ${host}...`, false);
-            
+
             // Add to history
             this.addToHistory(host, recordType);
 
@@ -2796,7 +3105,7 @@ const DNSManager = {
 
         try {
             const progress = UI.showLoadingSnackbar(`Reverse lookup for ${host}...`, false);
-            
+
             const result = await ipcRenderer.invoke('dns-reverse-lookup', {
                 ip: host
             });
@@ -2860,7 +3169,7 @@ const DNSManager = {
 
         try {
             const progress = UI.showLoadingSnackbar(`Looking up ${domains.length} domains...`, true, 0);
-            
+
             const results = [];
             for (let i = 0; i < domains.length; i++) {
                 try {
@@ -3037,7 +3346,7 @@ const DNSManager = {
     addToHistory(host, recordType) {
         // Remove if already exists
         this.queryHistory = this.queryHistory.filter(h => h.host !== host || h.type !== recordType);
-        
+
         // Add to beginning
         this.queryHistory.unshift({
             host,
@@ -3225,18 +3534,18 @@ const ServerManager = {
                 validation: (contentDiv) => {
                     const nameInput = contentDiv.querySelector('#server-name-input');
                     const portInput = contentDiv.querySelector('#server-port-input');
-                    
+
                     if (!nameInput.value.trim()) {
                         dialog.showError('Server name is required');
                         return false;
                     }
-                    
+
                     const port = parseInt(portInput.value);
                     if (isNaN(port) || port < 1 || port > 65535) {
                         dialog.showError('Port must be between 1 and 65535');
                         return false;
                     }
-                    
+
                     return true;
                 },
                 buttons: [
@@ -3272,10 +3581,10 @@ const ServerManager = {
                                 }, 800);
 
                                 const result = await ipcRenderer.invoke('create-server', serverConfig);
-                                
+
                                 progress.updateProgress(100);
                                 progress.updateMessage('Server started');
-                                
+
                                 setTimeout(() => {
                                     progress.close();
                                     UI.showSnackbar(`Server "${serverConfig.name}" created and started`, 2000);
@@ -3285,11 +3594,11 @@ const ServerManager = {
                             } catch (error) {
                                 progress.updateProgress(100);
                                 progress.updateMessage('Failed to create server');
-                                
+
                                 setTimeout(() => {
                                     progress.close();
                                 }, 500);
-                                
+
                                 const errorId = `ERR_${Date.now()}`;
                                 dialog.showError({
                                     id: errorId,
@@ -3427,9 +3736,9 @@ const ServerManager = {
         if (!this.outputMap.has(serverName)) {
             this.outputMap.set(serverName, []);
         }
-        
+
         this.outputMap.get(serverName).push({ type, output, timestamp: new Date() });
-        
+
         // Limit to last 1000 lines per server
         const logs = this.outputMap.get(serverName);
         if (logs.length > 1000) {
@@ -3490,9 +3799,190 @@ const ServerManager = {
 };
 
 function setupServerMaker() {
-    ServerManager.init();
+    const refreshBtn = document.getElementById('refresh-servers-btn');
+    const scanPortsBtn = document.getElementById('get-listening-ports-btn');
+    const exportBtn = document.getElementById('export-servers-btn');
+
+    const scanListeningPorts = async () => {
+        try {
+            UI.showSnackbar('Scanning listening ports...', 2000);
+
+            const listeningPorts = [];
+            const commonPorts = [
+                22, 80, 443, 3000, 3001, 3306, 5432, 5000, 8000, 8080,
+                8443, 9000, 27017, 6379, 5900, 22, 21, 25, 53, 110, 143
+            ];
+
+            // Check common ports for listeners
+            for (const port of commonPorts) {
+                try {
+                    const response = await ipcRenderer.invoke('check-port-listener', port);
+                    if (response.listening) {
+                        listeningPorts.push({
+                            port: port,
+                            protocol: response.protocol || 'TCP',
+                            status: 'listening',
+                            service: getServiceName(port)
+                        });
+                    }
+                } catch (e) {
+                    // Port not listening, continue
+                }
+            }
+
+            // Display listening ports
+            const portsDiv = document.getElementById('listening-ports-list');
+            if (listeningPorts.length === 0) {
+                portsDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 24px;">No listening ports detected</div>';
+            } else {
+                let html = '';
+                listeningPorts.forEach(p => {
+                    html += `
+                         <div style="display: grid; grid-template-columns: 60px 80px 1fr auto; gap: 12px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px; align-items: center;">
+                             <div style="font-weight: 600; color: var(--success-color);">${p.port}</div>
+                             <div style="font-size: 12px; color: var(--text-secondary);">${p.protocol}</div>
+                             <div>${p.service}</div>
+                             <span style="color: var(--success-color); font-weight: 600;">✓ Listening</span>
+                         </div>
+                     `;
+                });
+                portsDiv.innerHTML = html;
+
+                // Update count
+                document.getElementById('port-count').textContent = listeningPorts.length;
+            }
+
+            // Update last scanned
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('last-scanned').textContent = now;
+
+            UI.showSnackbar(`Found ${listeningPorts.length} listening ports`, 2000);
+        } catch (error) {
+            console.error('Error scanning ports:', error);
+            UI.showSnackbar('Error scanning ports: ' + error.message, 2000);
+        }
+    };
+
+    const updateServerStatus = async () => {
+        try {
+            const processes = await ipcRenderer.invoke('get-listening-processes');
+            const serverList = document.getElementById('active-servers-list');
+
+            if (!processes || processes.length === 0) {
+                serverList.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 24px;">No active servers detected</div>';
+                document.getElementById('server-count').textContent = '0';
+            } else {
+                let html = '';
+                processes.forEach(proc => {
+                    html += `
+                         <div style="padding: 12px; background: var(--card-bg-hover); border-radius: 8px; border-left: 3px solid var(--accent-primary);">
+                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                 <div style="font-weight: 600;">🖥️ ${proc.name}</div>
+                                 <span style="color: var(--success-color); font-size: 12px;">PID: ${proc.pid}</span>
+                             </div>
+                             <div style="font-size: 12px; color: var(--text-secondary);">
+                                 Ports: ${proc.ports.join(', ')}
+                             </div>
+                         </div>
+                     `;
+                });
+                serverList.innerHTML = html;
+                document.getElementById('server-count').textContent = processes.length;
+            }
+        } catch (error) {
+            console.error('Error updating server status:', error);
+        }
+    };
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+            try {
+                UI.showSnackbar('Refreshing server listeners...', 2000);
+                await updateServerStatus();
+                await scanListeningPorts();
+            } catch (error) {
+                UI.showSnackbar('Error: ' + error.message, 2000);
+            }
+        });
+    }
+
+    if (scanPortsBtn) {
+        scanPortsBtn.addEventListener('click', scanListeningPorts);
+    }
+
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async () => {
+            try {
+                const listeningPorts = [];
+                const commonPorts = [22, 80, 443, 3000, 3001, 3306, 5432, 5000, 8000, 8080, 8443, 9000, 27017, 6379, 5900, 21, 25, 53, 110, 143];
+
+                for (const port of commonPorts) {
+                    try {
+                        const response = await ipcRenderer.invoke('check-port-listener', port);
+                        if (response.listening) {
+                            listeningPorts.push({
+                                port: port,
+                                protocol: response.protocol || 'TCP',
+                                service: getServiceName(port),
+                                timestamp: new Date().toISOString()
+                            });
+                        }
+                    } catch (e) {
+                        // Continue
+                    }
+                }
+
+                const exportData = {
+                    timestamp: new Date().toISOString(),
+                    listeningPorts: listeningPorts,
+                    totalListening: listeningPorts.length
+                };
+
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `listening-ports-${new Date().toISOString().slice(0, 10)}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                UI.showSnackbar('Server data exported successfully', 2000);
+            } catch (error) {
+                UI.showSnackbar('Error exporting: ' + error.message, 2000);
+            }
+        });
+    }
+
+    // Initial load
+    updateServerStatus();
 }
 
+function getServiceName(port) {
+    const services = {
+        21: 'FTP',
+        22: 'SSH',
+        25: 'SMTP',
+        53: 'DNS',
+        80: 'HTTP',
+        110: 'POP3',
+        143: 'IMAP',
+        443: 'HTTPS',
+        3000: 'Node/Development',
+        3001: 'Development',
+        3306: 'MySQL',
+        5000: 'Flask/Development',
+        5432: 'PostgreSQL',
+        5900: 'VNC',
+        6379: 'Redis',
+        8000: 'Development',
+        8080: 'HTTP Proxy',
+        8443: 'HTTPS Proxy',
+        9000: 'SonarQube',
+        27017: 'MongoDB'
+    };
+    return services[port] || `Service on port ${port}`;
+}
 
 function setupServer() {
     return new Promise((resolve, reject) => {
@@ -3505,95 +3995,276 @@ function setupServer() {
 }
 
 
+/**
+ * Theme Manager - Handles all theme operations
+ */
+const ThemeManager = {
+    currentTheme: 'system',
+    isDarkMode: false,
+    settings: null,
+
+    /**
+     * Initialize theme system
+     */
+    async init() {
+        try {
+            // Load theme settings from file
+            this.settings = await ipcRenderer.invoke('load-theme-settings');
+            this.currentTheme = this.settings?.theme || 'system';
+
+            // Get current dark mode state
+            this.isDarkMode = await ipcRenderer.invoke('get-dark-mode-enabled');
+
+            // Apply saved theme
+            await this.applyTheme(this.currentTheme);
+
+            // Apply custom colors if enabled
+            if (this.settings?.customColors && this.settings?.colors) {
+                this.applyCustomColors(this.settings.colors);
+            }
+
+            // Listen for system theme changes
+            ipcRenderer.on('theme-changed', (event, data) => {
+                this.isDarkMode = data.isDark;
+                this.updateThemeUI();
+            });
+
+            console.log('Theme system initialized:', this.currentTheme);
+        } catch (error) {
+            console.error('Error initializing theme:', error);
+        }
+    },
+
+    /**
+     * Apply theme mode
+     */
+    async applyTheme(mode) {
+        try {
+            const result = await ipcRenderer.invoke('set-theme-mode', mode);
+            if (result.success) {
+                this.currentTheme = mode;
+                this.isDarkMode = await ipcRenderer.invoke('get-dark-mode-enabled');
+                this.updateThemeUI();
+                this.saveThemeToStorage();
+            }
+        } catch (error) {
+            console.error('Error applying theme:', error);
+        }
+    },
+
+    /**
+     * Toggle between light and dark mode
+     */
+    async toggleTheme() {
+        const newMode = this.isDarkMode ? 'light' : 'dark';
+        await this.applyTheme(newMode);
+    },
+
+    /**
+     * Update theme UI elements
+     */
+    updateThemeUI() {
+        const themeIcon = document.getElementById('theme-icon');
+        if (themeIcon) {
+            themeIcon.textContent = this.isDarkMode ? '☀️' : '🌙';
+            themeIcon.title = this.isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        // Update body class for CSS theme targeting
+        document.documentElement.setAttribute('data-theme', this.isDarkMode ? 'dark' : 'light');
+
+        // Dispatch custom event for other components
+        window.dispatchEvent(new CustomEvent('theme-updated', {
+            detail: { isDark: this.isDarkMode, theme: this.currentTheme }
+        }));
+    },
+
+    /**
+     * Apply custom colors
+     */
+    applyCustomColors(colors) {
+        const root = document.documentElement;
+
+        if (colors.primary) root.style.setProperty('--accent-primary', colors.primary);
+        if (colors.secondary) root.style.setProperty('--accent-secondary', colors.secondary);
+        if (colors.accent) root.style.setProperty('--accent-tertiary', colors.accent);
+        if (colors.success) root.style.setProperty('--success-color', colors.success);
+        if (colors.warning) root.style.setProperty('--warning-color', colors.warning);
+        if (colors.error) root.style.setProperty('--error-color', colors.error);
+        if (colors.info) root.style.setProperty('--info-color', colors.info);
+    },
+
+    /**
+     * Update custom colors
+     */
+    async updateColors(colors) {
+        try {
+            const result = await ipcRenderer.invoke('update-custom-colors', colors);
+            if (result.success) {
+                this.applyCustomColors(result.colors);
+                this.settings = await ipcRenderer.invoke('load-theme-settings');
+                this.saveThemeToStorage();
+            }
+        } catch (error) {
+            console.error('Error updating colors:', error);
+        }
+    },
+
+    /**
+     * Reset theme colors to default
+     */
+    async resetColors() {
+        try {
+            const result = await ipcRenderer.invoke('reset-theme-colors');
+            if (result.success) {
+                this.applyCustomColors({
+                    primary: '#6366f1',
+                    secondary: '#8b5cf6',
+                    accent: '#3b82f6',
+                    success: '#22c55e',
+                    warning: '#f59e0b',
+                    error: '#ef4444',
+                    info: '#3b82f6'
+                });
+                this.settings = await ipcRenderer.invoke('load-theme-settings');
+                this.saveThemeToStorage();
+            }
+        } catch (error) {
+            console.error('Error resetting colors:', error);
+        }
+    },
+
+    /**
+     * Get color scheme
+     */
+    async getColorScheme() {
+        try {
+            const scheme = await ipcRenderer.invoke('get-color-scheme');
+            return scheme;
+        } catch (error) {
+            console.error('Error getting color scheme:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Save theme to localStorage
+     */
+    saveThemeToStorage() {
+        localStorage.setItem('app-theme', this.currentTheme);
+        localStorage.setItem('app-dark-mode', this.isDarkMode.toString());
+    },
+
+    /**
+     * Load theme from localStorage
+     */
+    loadThemeFromStorage() {
+        const theme = localStorage.getItem('app-theme') || 'system';
+        const isDark = localStorage.getItem('app-dark-mode') === 'true';
+        return { theme, isDark };
+    }
+};
+
+/**
+ * Setup Theme Toggle Button
+ */
 function setupThemeToggle() {
     const themeBtn = document.getElementById('theme-toggle');
     if (!themeBtn) return;
 
-    themeBtn.addEventListener('click', () => {
-        ipcRenderer.invoke?.('theme:toggle');
+    // Initialize theme system
+    ThemeManager.init().then(() => {
+        // Update UI on initialization
+        ThemeManager.updateThemeUI();
+    });
+
+    // Setup click handler
+    themeBtn.addEventListener('click', async () => {
+        await ThemeManager.toggleTheme();
+        UI.showSnackbar(`Switched to ${ThemeManager.isDarkMode ? 'Dark' : 'Light'} Mode`, 2000);
     });
 }
 
 function setupStartButton() {
-     const startBtn = document.getElementById('start-btn');
-     if (!startBtn) return;
+    const startBtn = document.getElementById('start-btn');
+    if (!startBtn) return;
 
-     startBtn.addEventListener('click', () => {
-         document.getElementById('welcome').style.display = 'none';
-         document.getElementById('loading-screen').style.display = 'block';
-         
-         setTimeout(() => {
-             document.getElementById('loading-screen').style.display = 'none';
-             document.querySelector('.app-container').style.display = 'flex';
-         }, 100);
-     });
- }
+    startBtn.addEventListener('click', () => {
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('loading-screen').style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.querySelector('.app-container').style.display = 'flex';
+        }, 100);
+    });
+}
 
 /**
  * Setup Packet Analysis
  */
 function setupPacketAnalysis() {
-     const startBtn = document.getElementById('start-packet-capture-btn');
-     const stopBtn = document.getElementById('stop-packet-capture-btn');
-     const clearBtn = document.getElementById('clear-packet-data-btn');
-     const exportBtn = document.getElementById('export-packets-btn');
-     const packetInterface = document.getElementById('packet-interface');
-     const packetProtocol = document.getElementById('packet-protocol');
+    const startBtn = document.getElementById('start-packet-capture-btn');
+    const stopBtn = document.getElementById('stop-packet-capture-btn');
+    const clearBtn = document.getElementById('clear-packet-data-btn');
+    const exportBtn = document.getElementById('export-packets-btn');
+    const packetInterface = document.getElementById('packet-interface');
+    const packetProtocol = document.getElementById('packet-protocol');
 
-     // Populate network interfaces
-     try {
-         const interfaces = os.networkInterfaces();
-         Object.keys(interfaces).forEach(name => {
-             const option = document.createElement('option');
-             option.value = name;
-             option.textContent = name;
-             packetInterface.appendChild(option);
-         });
-     } catch (e) {
-         console.warn('Could not load network interfaces:', e);
-     }
+    // Populate network interfaces
+    try {
+        const interfaces = os.networkInterfaces();
+        Object.keys(interfaces).forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            packetInterface.appendChild(option);
+        });
+    } catch (e) {
+        console.warn('Could not load network interfaces:', e);
+    }
 
-     // Simulated packet capture (for demo purposes)
-     let captureActive = false;
-     let packets = [];
-     let captureStartTime = null;
-     let captureInterval = null;
+    // Simulated packet capture (for demo purposes)
+    let captureActive = false;
+    let packets = [];
+    let captureStartTime = null;
+    let captureInterval = null;
 
-     const simulatePackets = () => {
-         if (!captureActive) return;
+    const simulatePackets = () => {
+        if (!captureActive) return;
 
-         const protocols = ['TCP', 'UDP', 'ICMP', 'HTTP', 'HTTPS', 'DNS'];
-         const packet = {
-             timestamp: new Date().toLocaleTimeString(),
-             sourceIP: `192.168.1.${Math.floor(Math.random() * 255)}`,
-             destIP: `8.8.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-             protocol: protocols[Math.floor(Math.random() * protocols.length)],
-             sourcePort: Math.floor(Math.random() * 65535) + 1024,
-             destPort: [80, 443, 53, 22, 3306][Math.floor(Math.random() * 5)],
-             length: Math.floor(Math.random() * 1500) + 64
-         };
+        const protocols = ['TCP', 'UDP', 'ICMP', 'HTTP', 'HTTPS', 'DNS'];
+        const packet = {
+            timestamp: new Date().toLocaleTimeString(),
+            sourceIP: `192.168.1.${Math.floor(Math.random() * 255)}`,
+            destIP: `8.8.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+            protocol: protocols[Math.floor(Math.random() * protocols.length)],
+            sourcePort: Math.floor(Math.random() * 65535) + 1024,
+            destPort: [80, 443, 53, 22, 3306][Math.floor(Math.random() * 5)],
+            length: Math.floor(Math.random() * 1500) + 64
+        };
 
-         const selectedProtocol = packetProtocol.value;
-         if (!selectedProtocol || packet.protocol === selectedProtocol) {
-             packets.push(packet);
-             updatePacketTable(packet);
-             updateStatistics();
-         }
+        const selectedProtocol = packetProtocol.value;
+        if (!selectedProtocol || packet.protocol === selectedProtocol) {
+            packets.push(packet);
+            updatePacketTable(packet);
+            updateStatistics();
+        }
 
-         if (packets.length >= parseInt(document.getElementById('packet-max-count').value)) {
-             stopCapture();
-         }
-     };
+        if (packets.length >= parseInt(document.getElementById('packet-max-count').value)) {
+            stopCapture();
+        }
+    };
 
-     const updatePacketTable = (packet) => {
-         const tbody = document.getElementById('packet-table-body');
-         if (tbody.querySelector('td[colspan]')) {
-             tbody.innerHTML = '';
-         }
+    const updatePacketTable = (packet) => {
+        const tbody = document.getElementById('packet-table-body');
+        if (tbody.querySelector('td[colspan]')) {
+            tbody.innerHTML = '';
+        }
 
-         const row = tbody.insertRow(0);
-         row.style.borderBottom = '1px solid var(--card-border)';
-         row.innerHTML = `
+        const row = tbody.insertRow(0);
+        row.style.borderBottom = '1px solid var(--card-border)';
+        row.innerHTML = `
              <td style="padding: 8px;">${packet.timestamp}</td>
              <td style="padding: 8px;">${packet.sourceIP}</td>
              <td style="padding: 8px;">${packet.destIP}</td>
@@ -3603,37 +4274,37 @@ function setupPacketAnalysis() {
              <td style="padding: 8px;">${packet.length} bytes</td>
          `;
 
-         // Keep only last 100 rows
-         while (tbody.rows.length > 100) {
-             tbody.deleteRow(tbody.rows.length - 1);
-         }
-     };
+        // Keep only last 100 rows
+        while (tbody.rows.length > 100) {
+            tbody.deleteRow(tbody.rows.length - 1);
+        }
+    };
 
-     const updateStatistics = () => {
-         const totalPackets = packets.length;
-         const totalBytes = packets.reduce((sum, p) => sum + (p.length || 0), 0);
-         const duration = (Date.now() - captureStartTime) / 1000;
-         const packetsPerSec = Math.round(totalPackets / duration) || 0;
-         const bytesPerSec = Math.round(totalBytes / duration) || 0;
+    const updateStatistics = () => {
+        const totalPackets = packets.length;
+        const totalBytes = packets.reduce((sum, p) => sum + (p.length || 0), 0);
+        const duration = (Date.now() - captureStartTime) / 1000;
+        const packetsPerSec = Math.round(totalPackets / duration) || 0;
+        const bytesPerSec = Math.round(totalBytes / duration) || 0;
 
-         document.getElementById('stat-total-packets').textContent = totalPackets;
-         document.getElementById('stat-total-bytes').textContent = formatBytes(totalBytes);
-         document.getElementById('stat-packets-per-sec').textContent = packetsPerSec;
-         document.getElementById('stat-bytes-per-sec').textContent = formatBytes(bytesPerSec) + '/s';
+        document.getElementById('stat-total-packets').textContent = totalPackets;
+        document.getElementById('stat-total-bytes').textContent = formatBytes(totalBytes);
+        document.getElementById('stat-packets-per-sec').textContent = packetsPerSec;
+        document.getElementById('stat-bytes-per-sec').textContent = formatBytes(bytesPerSec) + '/s';
 
-         // Update protocol distribution
-         const protocolDist = {};
-         packets.forEach(p => {
-             protocolDist[p.protocol] = (protocolDist[p.protocol] || 0) + 1;
-         });
+        // Update protocol distribution
+        const protocolDist = {};
+        packets.forEach(p => {
+            protocolDist[p.protocol] = (protocolDist[p.protocol] || 0) + 1;
+        });
 
-         const distDiv = document.getElementById('protocol-distribution');
-         if (Object.keys(protocolDist).length === 0) {
-             distDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data captured yet</div>';
-         } else {
-             distDiv.innerHTML = Object.entries(protocolDist).map(([protocol, count]) => {
-                 const percentage = Math.round((count / totalPackets) * 100);
-                 return `
+        const distDiv = document.getElementById('protocol-distribution');
+        if (Object.keys(protocolDist).length === 0) {
+            distDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data captured yet</div>';
+        } else {
+            distDiv.innerHTML = Object.entries(protocolDist).map(([protocol, count]) => {
+                const percentage = Math.round((count / totalPackets) * 100);
+                return `
                      <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
                          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                              <span>${protocol}</span>
@@ -3644,91 +4315,91 @@ function setupPacketAnalysis() {
                          </div>
                      </div>
                  `;
-             }).join('');
-         }
+            }).join('');
+        }
 
-         // Update top connections
-         const connMap = {};
-         packets.forEach(p => {
-             const conn = `${p.sourceIP}:${p.sourcePort} → ${p.destIP}:${p.destPort}`;
-             connMap[conn] = (connMap[conn] || 0) + 1;
-         });
+        // Update top connections
+        const connMap = {};
+        packets.forEach(p => {
+            const conn = `${p.sourceIP}:${p.sourcePort} → ${p.destIP}:${p.destPort}`;
+            connMap[conn] = (connMap[conn] || 0) + 1;
+        });
 
-         const topConn = Object.entries(connMap)
-             .sort((a, b) => b[1] - a[1])
-             .slice(0, 5);
+        const topConn = Object.entries(connMap)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
 
-         const connDiv = document.getElementById('top-connections');
-         if (topConn.length === 0) {
-             connDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No connections captured yet</div>';
-         } else {
-             connDiv.innerHTML = topConn.map(([conn, count]) => `
+        const connDiv = document.getElementById('top-connections');
+        if (topConn.length === 0) {
+            connDiv.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No connections captured yet</div>';
+        } else {
+            connDiv.innerHTML = topConn.map(([conn, count]) => `
                  <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
                      <div style="font-size: 12px; font-family: monospace; margin-bottom: 4px;">${conn}</div>
                      <div style="font-size: 12px; color: var(--text-secondary);">Packets: ${count}</div>
                  </div>
              `).join('');
-         }
-     };
+        }
+    };
 
-     const startCapture = () => {
-         captureActive = true;
-         captureStartTime = Date.now();
-         packets = [];
-         startBtn.disabled = true;
-         stopBtn.disabled = false;
-         clearBtn.disabled = true;
-         exportBtn.disabled = true;
+    const startCapture = () => {
+        captureActive = true;
+        captureStartTime = Date.now();
+        packets = [];
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        clearBtn.disabled = true;
+        exportBtn.disabled = true;
 
-         const tbody = document.getElementById('packet-table-body');
-         tbody.innerHTML = '';
+        const tbody = document.getElementById('packet-table-body');
+        tbody.innerHTML = '';
 
-         UI.showSnackbar('Packet capture started...', 3000);
+        UI.showSnackbar('Packet capture started...', 3000);
 
-         captureInterval = setInterval(simulatePackets, 100);
-     };
+        captureInterval = setInterval(simulatePackets, 100);
+    };
 
-     const stopCapture = () => {
-         captureActive = false;
-         if (captureInterval) clearInterval(captureInterval);
-         startBtn.disabled = false;
-         stopBtn.disabled = true;
-         clearBtn.disabled = false;
-         exportBtn.disabled = false;
+    const stopCapture = () => {
+        captureActive = false;
+        if (captureInterval) clearInterval(captureInterval);
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        clearBtn.disabled = false;
+        exportBtn.disabled = false;
 
-         UI.showSnackbar(`Capture stopped. ${packets.length} packets captured.`, 3000);
-     };
+        UI.showSnackbar(`Capture stopped. ${packets.length} packets captured.`, 3000);
+    };
 
-     startBtn.addEventListener('click', startCapture);
-     stopBtn.addEventListener('click', stopCapture);
-     clearBtn.addEventListener('click', () => {
-         packets = [];
-         const tbody = document.getElementById('packet-table-body');
-         tbody.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: var(--text-secondary);">No packets captured yet</td></tr>';
-         document.getElementById('stat-total-packets').textContent = '0';
-         document.getElementById('stat-total-bytes').textContent = '0 B';
-         document.getElementById('stat-packets-per-sec').textContent = '0';
-         document.getElementById('stat-bytes-per-sec').textContent = '0 KB/s';
-         document.getElementById('protocol-distribution').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data captured yet</div>';
-         document.getElementById('top-connections').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No connections captured yet</div>';
-         UI.showSnackbar('Packet data cleared', 2000);
-     });
+    startBtn.addEventListener('click', startCapture);
+    stopBtn.addEventListener('click', stopCapture);
+    clearBtn.addEventListener('click', () => {
+        packets = [];
+        const tbody = document.getElementById('packet-table-body');
+        tbody.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: var(--text-secondary);">No packets captured yet</td></tr>';
+        document.getElementById('stat-total-packets').textContent = '0';
+        document.getElementById('stat-total-bytes').textContent = '0 B';
+        document.getElementById('stat-packets-per-sec').textContent = '0';
+        document.getElementById('stat-bytes-per-sec').textContent = '0 KB/s';
+        document.getElementById('protocol-distribution').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data captured yet</div>';
+        document.getElementById('top-connections').innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No connections captured yet</div>';
+        UI.showSnackbar('Packet data cleared', 2000);
+    });
 
-     exportBtn.addEventListener('click', () => {
-         if (packets.length === 0) {
-             UI.showSnackbar('No packets to export', 2000);
-             return;
-         }
-         const data = JSON.stringify(packets, null, 2);
-         const blob = new Blob([data], { type: 'application/json' });
-         const url = URL.createObjectURL(blob);
-         const a = document.createElement('a');
-         a.href = url;
-         a.download = `packets-${Date.now()}.json`;
-         a.click();
-         URL.revokeObjectURL(url);
-         UI.showSnackbar('Packets exported', 2000);
-     });
+    exportBtn.addEventListener('click', () => {
+        if (packets.length === 0) {
+            UI.showSnackbar('No packets to export', 2000);
+            return;
+        }
+        const data = JSON.stringify(packets, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `packets-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        UI.showSnackbar('Packets exported', 2000);
+    });
 }
 
 // Sidebar Manager
@@ -3756,7 +4427,7 @@ const SidebarManager = {
             btn.addEventListener('click', (e) => {
                 // Don't navigate if clicking favorite button
                 if (e.target.closest('.fav-btn')) return;
-                
+
                 const tabName = btn.getAttribute('data-tab');
                 if (tabName) {
                     UI.switchTab(tabName);
@@ -3765,10 +4436,10 @@ const SidebarManager = {
             });
 
             // Hover effect
-            btn.addEventListener('mouseenter', function() {
+            btn.addEventListener('mouseenter', function () {
                 this.style.backgroundColor = 'var(--input-bg)';
             });
-            btn.addEventListener('mouseleave', function() {
+            btn.addEventListener('mouseleave', function () {
                 if (!this.classList.contains('active')) {
                     this.style.backgroundColor = 'transparent';
                 }
@@ -3854,7 +4525,7 @@ const SidebarManager = {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const tabName = btn.getAttribute('data-tab');
-                
+
                 if (this.isFavorite(tabName)) {
                     this.removeFavorite(tabName);
                 } else {
@@ -4063,54 +4734,26 @@ class UpdateChecker {
      * Check for application updates
      */
     static async check() {
-        try {
+        new Promise((resolve, reject) => {
             console.log('Checking for updates...');
-            
-            // First check internet connectivity with timeout
-            console.log('Verifying internet connection...');
-            const isOnline = await NetworkOps.checkConnectivity()
-            console.log(isOnline)
-            
-            if (!isOnline) {
-                console.log('No internet connection detected');
-                return this.showNoInternet();
-            }
+            const url = 'https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest';
+            const network = dns.lookup('github.com', (err, address, family) => {
+                if (err) {
+                    reject('No internet connection');
+                } else {
+                    fetch(url).then(response => {
+                        if (response.ok) {
+                            resolve(response.json());
+                        } else {
+                            reject(new Error('Failed to fetch updates ' + response.status));
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }
+            })
 
-            console.log('Internet connection verified, checking for updates...');
-            
-            // Fetch update information with timeout
-            const updateDataPromise = ipcRenderer.invoke?.('updates-json');
-            if (!updateDataPromise) {
-                console.warn('No electronAPI available');
-                return false;
-            }
-            
-            const updateData = await Promise.race([
-                updateDataPromise,
-                new Promise((_, reject) => setTimeout(() => {
-                    reject(new Error('Update check timeout'));
-                }, 5000))
-            ]);
-            
-            if (!updateData) {
-                console.warn('No update data available');
-                return false;
-            }
-
-            const { tag_name, version } = updateData;
-            console.log(`Current: ${version}, Latest: ${tag_name}`);
-            
-            // Compare versions
-            if (tag_name !== version) {
-                return this.showUpdateAvailable(tag_name, version);
-            }
-
-            console.log('Application is up to date');
-            return false;
-        } catch (error) {
-            console.error('Update check failed:', error);
-            return this.showUpdateError(error);
-        }
+        })
     }
 
     /**
@@ -4180,7 +4823,7 @@ class UpdateChecker {
     static showUpdateError(error) {
         const errorMessage = error?.message || 'Unknown error';
         const errorCode = error?.code || 'ERR_UPDATE_CHECK';
-        
+
         const card = document.createElement('div');
         card.className = 'card update-card';
         card.id = 'update-card';
@@ -4220,10 +4863,10 @@ class UpdateChecker {
             card.style.transition = 'all 0.3s ease';
             setTimeout(() => card.remove(), 300);
         }
-        
+
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) loadingScreen.style.display = 'none';
-        
+
         const welcome = document.getElementById('welcome');
         if (welcome) welcome.style.display = 'block';
     }
@@ -4257,7 +4900,7 @@ function setupWhatsNewDialog() {
     const closeDialog = () => {
         dialog.style.display = 'none';
         // Store that user has seen this version's dialog
-        localStorage.setItem('whats-new-v1.2.0-seen', 'true');
+        localStorage.setItem('whats-new-v1.3.0-seen', 'true');
     };
 
     /**
@@ -4265,7 +4908,7 @@ function setupWhatsNewDialog() {
      */
     const showDialog = () => {
         // Only show if user hasn't seen it for this version
-        if (!localStorage.getItem('whats-new-v1.2.0-seen')) {
+        if (!localStorage.getItem('whats-new-v1.3.0-seen')) {
             dialog.style.display = 'flex';
             // Focus on the main button
             gotItBtn?.focus();
@@ -4291,7 +4934,7 @@ function setupWhatsNewDialog() {
     if (learnMoreBtn) {
         learnMoreBtn.addEventListener('click', () => {
             // Open release notes or documentation
-            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.2.0');
+            openExternal('https://github.com/windowsworldcartoon/NetNavigator/releases/tag/v1.3.0');
             closeDialog();
         });
     }
@@ -4310,7 +4953,7 @@ function setupWhatsNewDialog() {
 const initializeApp = async () => {
     try {
         console.log('Initializing NetNavigator application...');
-        
+
         // Initialize managers
         tabManager = new TabManager();
         commandPalette = new CommandPalette();
@@ -4318,8 +4961,10 @@ const initializeApp = async () => {
 
         // Setup UI navigation
         setupSidebarNavigation();
-        
+
         // Setup network features
+        setupErrorPageHandlers();
+        setupNoInternetPageHandlers();
         setupNetworkScanner();
         setupPortChecker();
         setupNetworkMonitor();
@@ -4327,20 +4972,22 @@ const initializeApp = async () => {
         setupNetworkInfo();
         setupDiagnostics();
         setupDNSLookup();
+        setupTraceroute();
         setupPacketAnalysis();
         setupServerMaker();
         setupThemeToggle();
         setupStartButton();
-        setupErrorPageHandlers();
-        setupNoInternetPageHandlers();
-
-
+        setupWelcomeCanvas();
 
         // Check internet and update status
         let isOnline = false;
         try {
             isOnline = await NetworkOps.checkConnectivity();
             UI.updateConnectivityStatus(isOnline);
+            if (!isOnline) {
+                console.log('No internet connection detected');
+                UI.showNoInternet();
+            }
         } catch (error) {
             console.warn('Could not check connectivity:', error);
             UI.updateConnectivityStatus(false);
@@ -4414,12 +5061,12 @@ function openExternal(url) {
 }
 
 function cancelUpdate() {
-     const card = document.getElementById('update-card');
-     if (card) card.remove();
-     
-     document.getElementById('loading-screen').style.display = 'none';
-     document.querySelector('.app-container').style.display = 'block';
- }
+    const card = document.getElementById('update-card');
+    if (card) card.remove();
+
+    document.getElementById('loading-screen').style.display = 'none';
+    document.querySelector('.app-container').style.display = 'block';
+}
 
 // ============================================================
 // Error Page Handler
@@ -4464,6 +5111,306 @@ function showErrorPage(title, message, code, details = {}) {
         document.querySelector('.app-container').style.display = 'none';
         errorPage.style.display = 'block';
     }
+}
+
+ipcRenderer.on('check-for-updates', async () => {
+    console.log('check-for-updates');
+    
+    const hideMainUI = () => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('welcome').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'none';
+    };
+    
+    const showMainUI = () => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('welcome').style.display = 'block';
+        document.querySelector('.app-container').style.display = 'block';
+    };
+
+    try {
+        document.getElementById('loading-screen').style.display = 'block';
+        hideMainUI();
+
+        const response = await fetch('https://api.github.com/repos/windowsworldcartoon/NetNavigator/releases/latest');
+        
+        if (!response.ok) {
+            showErrorPage('Error', `Failed to check for updates (${response.status})`, response.status);
+            return;
+        }
+
+        const data = await response.json();
+        const latestVersion = data.tag_name;
+        const currentVersion = 'v1.3.0';
+
+        if (latestVersion === currentVersion) {
+            showMainUI();
+            UI.showSnackbar('You are running the latest version', 3000);
+            return;
+        }
+
+        hideMainUI();
+        const backdrop = document.createElement('div');
+        backdrop.className = 'dialog-backdrop';
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'update-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-content">
+                <h3>Update Available</h3>
+                <p>A new version ${latestVersion} is available. Do you want to update now?</p>
+                <div style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; width: 100%;">
+                    <button id="cancel-btn" class="secondary">Cancel</button>
+                    <button id="update-btn" class="primary">Update</button>
+                </div>
+            </div>
+        `;
+        
+        const closeDialog = () => {
+            backdrop.classList.add('fadeout');
+            dialog.classList.add('fadeout');
+            setTimeout(() => {
+                backdrop.remove();
+                dialog.remove();
+                showMainUI();
+            }, 300);
+        };
+        
+        dialog.querySelector('#update-btn').addEventListener('click', () => {
+            ipcRenderer.send('open-external', 'https://github.com/windowsworldcartoon/NetNavigator/releases/latest');
+            closeDialog();
+        });
+        
+        dialog.querySelector('#cancel-btn').addEventListener('click', closeDialog);
+        
+        document.body.appendChild(backdrop);
+        document.body.appendChild(dialog);
+    } catch (error) {
+        console.error('Update check failed:', error);
+        showErrorPage('Error', 'Failed to check for updates', error.message);
+    }
+});
+
+/**
+ * Setup animated canvas background
+ */
+function setupWelcomeCanvas() {
+    const canvas = document.getElementById('welcome-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Globe properties
+    const globeRadius = 120;
+    const globeX = canvas.width * 0.15;
+    const globeY = canvas.height * 0.5;
+    let globeRotation = 0;
+
+    // Particle system
+    const particles = [];
+    const particleCount = 30;
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 1;
+            this.vy = (Math.random() - 0.5) * 1;
+            this.radius = Math.random() * 2 + 1;
+            this.color = `rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2})`;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Wrap around edges
+            if (this.x < 0) this.x = canvas.width;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.y < 0) this.y = canvas.height;
+            if (this.y > canvas.height) this.y = 0;
+        }
+
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // Initialize particles
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+
+    // Draw rotating globe
+    const drawGlobe = (x, y, radius, rotation) => {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+
+        // Globe background (water)
+        ctx.fillStyle = 'rgba(30, 80, 200, 0.3)';
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Globe outline
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Latitude lines
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+        ctx.lineWidth = 1;
+        for (let i = -3; i <= 3; i++) {
+            const lat = (i / 3) * (Math.PI / 2);
+            const lineRadius = radius * Math.cos(lat);
+            const yOffset = radius * Math.sin(lat);
+            ctx.beginPath();
+            ctx.ellipse(0, yOffset, lineRadius, lineRadius / 3, 0, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Longitude lines
+        for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+            ctx.lineTo(-Math.cos(angle) * radius, -Math.sin(angle) * radius);
+            ctx.stroke();
+        }
+
+        // Land masses (simplified continents)
+        ctx.fillStyle = 'rgba(76, 175, 80, 0.4)';
+        // North America
+        ctx.beginPath();
+        ctx.arc(-radius * 0.6, -radius * 0.3, radius * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+        // Europe/Africa
+        ctx.beginPath();
+        ctx.arc(radius * 0.3, -radius * 0.2, radius * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        // Asia
+        ctx.beginPath();
+        ctx.arc(radius * 0.5, radius * 0.3, radius * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    };
+
+    // Animation loop
+    const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw globe
+        globeRotation += 0.005;
+        drawGlobe(globeX, globeY, globeRadius, globeRotation);
+
+        // Draw connecting lines
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 150) {
+                    ctx.strokeStyle = `rgba(99, 102, 241, ${0.2 * (1 - distance / 150)})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Update and draw particles
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+}
+
+/**
+ * Setup floating cube dragging
+ */
+function setupFloatingCube() {
+    const cube = document.getElementById('floating-cube');
+    if (!cube) return;
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    let floatOffset = 0;
+
+    // Set initial position centered in viewport
+    const initialX = (window.innerWidth - cube.offsetWidth) / 2;
+    const initialY = (window.innerHeight - cube.offsetHeight) / 2 - 100;
+    cube.style.left = initialX + 'px';
+    cube.style.top = initialY + 'px';
+
+    // Add floating animation when not dragging
+    const floatAnimation = setInterval(() => {
+        if (isDragging) return;
+        floatOffset += 0.05;
+        const baseY = parseInt(cube.style.top) || initialY;
+        const floatY = Math.sin(floatOffset) * 20;
+        cube.style.transform = `translateY(${floatY}px)`;
+    }, 20);
+
+    cube.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        cube.classList.add('dragging');
+        cube.style.cursor = 'grabbing';
+        
+        offsetX = e.clientX - cube.offsetLeft;
+        offsetY = e.clientY - cube.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        let x = e.clientX - offsetX;
+        let y = e.clientY - offsetY;
+        
+        // Keep cube in viewport
+        x = Math.max(0, Math.min(x, window.innerWidth - cube.offsetWidth));
+        y = Math.max(0, Math.min(y, window.innerHeight - cube.offsetHeight));
+        
+        cube.style.left = x + 'px';
+        cube.style.top = y + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            cube.classList.remove('dragging');
+            cube.style.cursor = 'grab';
+            cube.style.transform = '';
+        }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('unload', () => {
+        clearInterval(floatAnimation);
+    });
 }
 
 /**
@@ -4604,7 +5551,7 @@ function setupNoInternetPageHandlers() {
 }
 
 // Test function - remove in production
-window.testError = function() {
+window.testError = function () {
     showErrorPage(
         'Test Error',
         'This is a test error message',
@@ -4619,7 +5566,7 @@ window.testError = function() {
 };
 
 // Test function - remove in production
-window.testNoInternet = function() {
+window.testNoInternet = function () {
     showNoInternetPage();
 };
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,95 +9,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+
     <title>NetNavigator - Network Tools</title>
-    
+
     <!-- Preload critical stylesheet only -->
     <link rel="preload" href="./index.css" as="style">
-    
+
     <!-- Favicon (local SVG - no network request) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
-    
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+
     <!-- Font Awesome 7 - Local Font Files CSS -->
     <link rel="stylesheet" href="./font-awesome.css">
-    
+
     <!-- Critical inline CSS (minimal) -->
     <style>
-        html { scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        .loading-screen { display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .loading-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
-    
+
     <!-- Deferred stylesheet loading -->
     <link rel="stylesheet" href="./index.css">
 </head>
+
 <body>
-    <!-- Loading Screen (minimal, no images) -->
+    <!-- Loading Screen (Classic ND1-C Style) -->
     <div class="loading-screen" id="loading-screen">
-        <div class="card" style="margin: auto; height: fit-content; text-align: center;">
-            <div style="perspective: 1000px; width: 64px; height: 64px; margin: 0 auto 16px;">
-                <img src="./network.png" alt="NetNavigator" style="width: 100%; height: 100%; border-radius: 8px; animation: spin3d 4s linear infinite; display: block;" />
+        <div class="card" style="margin: auto; height: fit-content; text-align: center; max-width: 300px;">
+            <div style="margin: 0 auto 20px;">
+                <img src="./network.png" alt="NetNavigator"
+                    style="width: 64px; height: 64px; border-radius: 4px; display: block; margin: 0 auto;" />
             </div>
-            <style>
-                @keyframes spin3d {
-                    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-                    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
-                }
-            </style>
-            <h1 style="font-size: 28px; margin-bottom: 8px;">NetNavigator</h1>
-            <p style="margin: 8px 0; color: var(--text-secondary);">Initializing...</p>
-            
-            <!-- 3D Loading Cube -->
-            <div style="display: flex; justify-content: center; margin-top: 32px; margin-bottom: 8px;">
-                <div class="perspective-container" style="min-height: 180px; min-width: 180px;">
-                    <div class="cube-3d" style="animation: rotateCube 3s infinite linear;">
-                        <div class="cube-face front" style="font-size: 12px; background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); opacity: 0.9;">Network</div>
-                        <div class="cube-face back" style="font-size: 12px; background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); opacity: 0.9;">Initializing</div>
-                        <div class="cube-face right" style="font-size: 12px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); opacity: 0.9;">Loading</div>
-                        <div class="cube-face left" style="font-size: 12px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); opacity: 0.9;">Starting</div>
-                        <div class="cube-face top" style="font-size: 12px; background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%); opacity: 0.9;">🌐</div>
-                        <div class="cube-face bottom" style="font-size: 12px; background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%); opacity: 0.9;">🔄</div>
-                    </div>
+            <h1 style="font-size: 24px; margin: 12px 0; color: var(--text-color);">NetNavigator</h1>
+            <p style="margin: 8px 0 20px 0; color: var(--text-secondary); font-size: 13px;">v1.3.0</p>
+
+            <!-- Classic Loading Spinner -->
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <div
+                    style="width: 40px; height: 40px; border: 3px solid var(--card-border); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite;">
                 </div>
             </div>
-            
-            <p style="margin: 12px 0 0 0; font-size: 12px; color: var(--text-secondary); animation: pulse 1.5s ease-in-out infinite;">Please wait...</p>
+
+            <p style="margin: 12px 0 0 0; font-size: 12px; color: var(--text-secondary);">
+                Loading...
+            </p>
         </div>
     </div>
 
     <!-- No Internet Page -->
-    <div class="no-internet-page" id="no-internet-page" style="display: none;">
-        <div class="no-internet-container" style="display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-            <div class="card" style="margin: auto; max-width: 600px; padding: 40px; text-align: center;">
-                <div style="font-size: 80px; margin-bottom: 20px; opacity: 0.8;">📡</div>
-                <h1 style="font-size: 32px; margin-bottom: 12px; color: #f59e0b;">No Internet Connection</h1>
-                <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">Unable to connect to the internet. Please check your network settings.</p>
-                
+    <div class="no-internet-page" id="no-internet-page" hidden>
+        <div class="no-internet-container">
+            <div class="card no-internet-card">
+                <div class="no-internet-icon">📡</div>
+                <h1 class="no-internet-title">No Internet Connection</h1>
+                <p class="no-internet-description">Unable to connect to the internet. Please check your network
+                    settings.</p>
+
                 <!-- Network Status Info -->
-                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: left;">
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600; text-transform: uppercase;">Network Status</div>
-                    <div style="display: grid; gap: 8px;">
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--card-border);">
-                            <span style="color: var(--text-secondary);">Status:</span>
-                            <span id="no-internet-status" style="color: #ef4444; font-weight: 600;">Offline</span>
+                <div class="status-info-box">
+                    <div class="status-info-title">Network Status</div>
+                    <div class="status-info-grid">
+                        <div class="status-info-item">
+                            <span>Status:</span>
+                            <span id="no-internet-status" class="status-offline">Offline</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--card-border);">
-                            <span style="color: var(--text-secondary);">Last Check:</span>
-                            <span id="no-internet-last-check" style="font-size: 12px;">--</span>
+                        <div class="status-info-item">
+                            <span>Last Check:</span>
+                            <span id="no-internet-last-check">--</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                            <span style="color: var(--text-secondary);">Retry Interval:</span>
-                            <span id="no-internet-retry-count" style="font-size: 12px;">Waiting...</span>
+                        <div class="status-info-item">
+                            <span>Retry Interval:</span>
+                            <span id="no-internet-retry-count">Waiting...</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Troubleshooting Tips -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: left;">
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600; text-transform: uppercase;">Troubleshooting</div>
-                    <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 1.8;">
+                <div class="troubleshooting-box">
+                    <div class="troubleshooting-title">Troubleshooting</div>
+                    <ul class="troubleshooting-list">
                         <li>Check if your network is connected</li>
                         <li>Verify your internet connection</li>
                         <li>Restart your router or modem</li>
@@ -105,34 +120,34 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="card-actions" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                    <button id="no-internet-retry-btn" style="flex: 1; min-width: 120px;">Retry Connection</button>
-                    <button id="no-internet-offline-btn" style="flex: 1; min-width: 120px;">Continue Offline</button>
+                <div class="card-actions">
+                    <button id="no-internet-retry-btn" class="primary">Retry Connection</button>
+                    <button id="no-internet-offline-btn" class="secondary">Continue Offline</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Error Page -->
-    <div class="error-page" id="error-page" style="display: none;">
-        <div class="error-container" style="display: flex; align-items: center; justify-content: center; height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-            <div class="card" style="margin: auto; max-width: 600px; padding: 40px; text-align: center;">
-                <div id="error-icon" style="font-size: 64px; margin-bottom: 20px; color: #ef4444;">
+    <div class="error-page" id="error-page" hidden>
+        <div class="error-container">
+            <div class="card error-card">
+                <div id="error-icon" class="error-icon">
                     <i class="fas fa-circle-xmark"></i>
                 </div>
-                <h1 id="error-title" style="font-size: 32px; margin-bottom: 12px; color: #ef4444;">Error</h1>
-                <p id="error-message" style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">An unexpected error occurred</p>
-                
+                <h1 id="error-title" class="error-title">Error</h1>
+                <p id="error-message" class="error-description">An unexpected error occurred</p>
+
                 <!-- Error Code -->
-                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: left;">
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Error Code</div>
-                    <div id="error-code" style="font-family: monospace; font-size: 14px; word-break: break-all;">UNKNOWN_ERROR</div>
+                <div class="error-code-box">
+                    <div class="error-code-title">Error Code</div>
+                    <div id="error-code" class="error-code-value">UNKNOWN_ERROR</div>
                 </div>
 
                 <!-- Error Details (JSON) -->
-                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: left; max-height: 250px; overflow-y: auto;">
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Details</div>
-                    <pre id="error-json" style="margin: 0; font-family: 'Courier New', monospace; font-size: 12px; color: var(--text-color); word-wrap: break-word; white-space: pre-wrap; overflow-x: auto;">{
+                <div class="error-details-box">
+                    <div class="error-details-title">Details</div>
+                    <pre id="error-json" class="error-details-json">{
   "error": "Unknown Error",
   "timestamp": "2025-01-01T00:00:00Z",
   "details": "No additional information available"
@@ -140,32 +155,74 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="card-actions" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                    <button id="error-retry-btn" style="flex: 1; min-width: 120px;">Retry</button>
-                    <button id="error-home-btn" style="flex: 1; min-width: 120px;">Return Home</button>
-                    <button id="error-copy-btn" style="flex: 1; min-width: 120px;">Copy Error</button>
+                <div class="card-actions">
+                    <button id="error-retry-btn" class="primary">Retry</button>
+                    <button id="error-home-btn" class="secondary">Return Home</button>
+                    <button id="error-copy-btn" class="secondary">Copy Error</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Welcome Screen -->
+    <!-- Welcome Screen (Classic ND1-C Style) -->
     <div class="welcome" id="welcome" style="display: none;">
+        <!-- Canvas Background Animation -->
+        <canvas id="welcome-canvas" style="position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.3; pointer-events: none;"></canvas>
+        
         <div class="welcome-content">
-            <div class="card">
+            <div class="card" style="max-width: 450px;">
                 <div style="text-align: center; margin-bottom: 24px;">
-                    <img src="./network.png" alt="NetNavigator" style="width: 80px; height: 80px; border-radius: 12px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);">
+                    <img src="./network.png" alt="NetNavigator"
+                        style="width: 80px; height: 80px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
                 </div>
-                <h1 style="text-align: center;">Welcome to NetNavigator</h1>
-                <p>A powerful network scanning and monitoring tool for system administrators and developers.</p>
-                <div style="margin: 20px 0; font-size: 13px; color: var(--text-secondary); line-height: 2;">
-                    <div>✓ Network Scanning</div>
-                    <div>✓ Port Checking</div>
-                    <div>✓ DNS Resolution</div>
-                    <div>✓ Real-time Monitoring</div>
+                <h1 style="text-align: center; margin: 12px 0;">Welcome to NetNavigator</h1>
+                <p style="text-align: center; margin: 12px 0 24px 0; color: var(--text-secondary); font-size: 14px;">
+                    A powerful network scanning and monitoring tool for system administrators and developers.
+                </p>
+
+                <!-- Features Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0;">
+                    <div
+                        style="padding: 12px; background-color: var(--card-bg-hover); border: 1px solid var(--card-border); border-radius: 4px;">
+                        <div style="font-size: 16px; margin-bottom: 6px;">🔍</div>
+                        <div style="font-weight: 500; font-size: 13px; color: var(--text-color);">Network Scanning</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Discover devices
+                            and services</div>
+                    </div>
+                    <div
+                        style="padding: 12px; background-color: var(--card-bg-hover); border: 1px solid var(--card-border); border-radius: 4px;">
+                        <div style="font-size: 16px; margin-bottom: 6px;">🔌</div>
+                        <div style="font-weight: 500; font-size: 13px; color: var(--text-color);">Port Scanner</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Identify open
+                            services</div>
+                    </div>
+                    <div
+                        style="padding: 12px; background-color: var(--card-bg-hover); border: 1px solid var(--card-border); border-radius: 4px;">
+                        <div style="font-size: 16px; margin-bottom: 6px;">🛤️</div>
+                        <div style="font-weight: 500; font-size: 13px; color: var(--text-color);">Traceroute</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Trace network paths
+                        </div>
+                    </div>
+                    <div
+                        style="padding: 12px; background-color: var(--card-bg-hover); border: 1px solid var(--card-border); border-radius: 4px;">
+                        <div style="font-size: 16px; margin-bottom: 6px;">🌐</div>
+                        <div style="font-weight: 500; font-size: 13px; color: var(--text-color);">DNS Tools</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Domain resolution
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Version Info -->
+                <div
+                    style="margin: 20px 0; padding: 12px; background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 4px; text-align: center;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        <strong>NetNavigator v1.3.0</strong><br>
+                        Professional Network Tools
+                    </div>
+                </div>
+
                 <div class="card-actions">
-                    <button id="start-btn" style="width: 200px;">Get Started</button>
+                    <button id="start-btn" class="primary" style="width: 100%;">Get Started</button>
                 </div>
             </div>
         </div>
@@ -177,7 +234,8 @@
         <header id="app-header" class="app-header">
             <div class="header-left">
                 <h1 class="app-title">
-                    <img src="./network.png" alt="NetNavigator" style="width: 32px; height: 32px; margin-right: 12px; border-radius: 4px;">
+                    <img src="./network.png" alt="NetNavigator"
+                        style="width: 32px; height: 32px; margin-right: 12px; border-radius: 4px;">
                     <span>NetNavigator</span>
                 </h1>
             </div>
@@ -201,144 +259,196 @@
         </header>
 
         <!-- Main Content Area with Sidebar -->
-        <div class="app-content-wrapper" style="display: flex; height: calc(100vh - 60px); overflow: hidden;">
+        <div class="app-content-wrapper">
             <!-- Sidebar Navigation -->
-            <aside class="app-sidebar" id="app-sidebar" style="width: 260px; min-width: 260px; background-color: var(--sidebar-bg, var(--card-bg)); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; transition: width 0.3s ease, margin-left 0.3s ease; overflow: hidden;">
-                
+            <aside class="app-sidebar" id="app-sidebar">
+
                 <!-- Sidebar Header -->
-                <div style="padding: 16px 12px; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between;">
-                    <h3 style="margin: 0; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">Navigation</h3>
-                    <button id="sidebar-search-toggle" class="sidebar-action-btn" title="Search" style="background: none; border: none; cursor: pointer; padding: 4px 8px; color: var(--text-secondary); font-size: 14px;">🔍</button>
+                <div class="sidebar-header">
+                    <h3>Navigation</h3>
+                    <button id="sidebar-search-toggle" class="sidebar-action-btn" title="Search"
+                        aria-label="Toggle search">🔍</button>
                 </div>
 
                 <!-- Sidebar Search -->
-                <div id="sidebar-search-box" style="padding: 8px 12px; display: none; border-bottom: 1px solid var(--card-border);">
-                    <input type="text" id="sidebar-search-input" placeholder="Search tools..." 
-                        style="width: 100%; padding: 6px 8px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px; font-size: 12px; box-sizing: border-box;" />
+                <div id="sidebar-search-box" class="sidebar-search">
+                    <input type="text" id="sidebar-search-input" placeholder="Search tools..."
+                        class="sidebar-search-input" />
                 </div>
 
                 <!-- Favorites Section -->
-                <div id="favorites-section" style="padding: 12px 8px; border-bottom: 1px solid var(--card-border); display: none;">
-                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; margin-bottom: 8px; padding: 0 4px;">⭐ Favorites</div>
-                    <div id="favorites-list" style="display: grid; gap: 4px;"></div>
+                <div id="favorites-section" class="sidebar-favorites">
+                    <div class="favorites-label">⭐ Favorites</div>
+                    <div id="favorites-list" class="favorites-list"></div>
                 </div>
 
                 <!-- Navigation Container -->
-                <nav class="sidebar-nav" id="sidebar-nav-container" role="navigation" style="flex: 1; overflow-y: auto; padding: 8px 0;">
+                <nav class="sidebar-nav" id="sidebar-nav-container" role="navigation"
+                    style="flex: 1; overflow-y: auto; padding: 8px 0;">
                     <!-- Tools Section -->
                     <div class="nav-section" data-section="tools">
-                        <button class="nav-section-toggle" style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;" title="Toggle section">
+                        <button class="nav-section-toggle"
+                            style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;"
+                            title="Toggle section">
                             <span>🔧 TOOLS</span>
                             <span style="font-size: 10px;">▼</span>
                         </button>
                         <div class="nav-section-content" style="display: grid; gap: 2px; padding: 0 4px;">
-                            <button class="nav-button active" data-tab="dashboard" role="tab" aria-selected="true" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button active" data-tab="dashboard" role="tab" aria-selected="true"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">📊</span>
                                 <span class="nav-label">Dashboard</span>
-                                <button class="fav-btn" data-tab="dashboard" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="dashboard" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
-                            <button class="nav-button" data-tab="scanner" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="scanner" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">🔍</span>
                                 <span class="nav-label">Scanner</span>
-                                <button class="fav-btn" data-tab="scanner" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="scanner" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
-                            <button class="nav-button" data-tab="port" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="port-checker" role="tab" aria-selected="false"
+                                data-tooltip="Check single port (deprecated)"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">🔌</span>
-                                <span class="nav-label">Port Checker</span>
-                                <button class="fav-btn" data-tab="port" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <span class="nav-label">Port Checker (Legacy)</span>
+                                <button class="fav-btn" data-tab="port-checker" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
-                            <button class="nav-button" data-tab="dns" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="port" role="tab" aria-selected="false"
+                                data-tooltip="Scan multiple ports on a host"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                                <span class="nav-icon">🔌</span>
+                                <span class="nav-label">(New) Port Scanner</span>
+                                <button class="fav-btn" data-tab="port" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                            </button>
+                            <button class="nav-button" data-tab="dns" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">🌐</span>
                                 <span class="nav-label">DNS Lookup</span>
-                                <button class="fav-btn" data-tab="dns" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="dns" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                            </button>
+                            <button class="nav-button" data-tab="tracert" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                                <span class="nav-icon">🛤️</span>
+                                <span class="nav-label">Traceroute</span>
+                                <button class="fav-btn" data-tab="tracert" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
                         </div>
                     </div>
 
                     <!-- Monitoring Section -->
                     <div class="nav-section" data-section="monitoring">
-                        <button class="nav-section-toggle" style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;" title="Toggle section">
+                        <button class="nav-section-toggle"
+                            style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;"
+                            title="Toggle section">
                             <span>👁️ MONITORING</span>
                             <span style="font-size: 10px;">▼</span>
                         </button>
                         <div class="nav-section-content" style="display: grid; gap: 2px; padding: 0 4px;">
-                            <button class="nav-button" data-tab="monitor" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="monitor" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">👁️</span>
                                 <span class="nav-label">Network Monitor</span>
-                                <button class="fav-btn" data-tab="monitor" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="monitor" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
-                            <button class="nav-button" data-tab="info" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
-                                 <span class="nav-icon">ℹ️</span>
-                                 <span class="nav-label">Network Info</span>
-                                 <button class="fav-btn" data-tab="info" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
-                             </button>
-                             <button class="nav-button" data-tab="diagnostics" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
-                                  <span class="nav-icon">🔧</span>
-                                  <span class="nav-label">Diagnostics</span>
-                                  <button class="fav-btn" data-tab="diagnostics" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
-                              </button>
-                              <button class="nav-button" data-tab="packet-analysis" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
-                                  <span class="nav-icon">📡</span>
-                                  <span class="nav-label">Packet Analysis</span>
-                                  <button class="fav-btn" data-tab="packet-analysis" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
-                              </button>
-                             </div>
-                             </div>
+                            <button class="nav-button" data-tab="info" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                                <span class="nav-icon">ℹ️</span>
+                                <span class="nav-label">Network Info</span>
+                                <button class="fav-btn" data-tab="info" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                            </button>
+                            <button class="nav-button" data-tab="diagnostics" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                                <span class="nav-icon">🔧</span>
+                                <span class="nav-label">Diagnostics</span>
+                                <button class="fav-btn" data-tab="diagnostics" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                            </button>
+                            <button class="nav-button" data-tab="packet-analysis" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                                <span class="nav-icon">📡</span>
+                                <span class="nav-label">Packet Analysis</span>
+                                <button class="fav-btn" data-tab="packet-analysis" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Server Section -->
                     <div class="nav-section" data-section="server">
-                        <button class="nav-section-toggle" style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;" title="Toggle section">
+                        <button class="nav-section-toggle"
+                            style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;"
+                            title="Toggle section">
                             <span>🖥️ SERVER</span>
                             <span style="font-size: 10px;">▼</span>
                         </button>
                         <div class="nav-section-content" style="display: grid; gap: 2px; padding: 0 4px;">
-                            <button class="nav-button" data-tab="server-maker" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="server-maker" role="tab" aria-selected="false"
+                                data-tooltip="Monitor servers and listening ports"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">🖥️</span>
                                 <span class="nav-label">Server Manager</span>
-                                <button class="fav-btn" data-tab="server-maker" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="server-maker" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
                         </div>
                     </div>
 
                     <!-- System Section -->
                     <div class="nav-section" data-section="system">
-                        <button class="nav-section-toggle" style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;" title="Toggle section">
+                        <button class="nav-section-toggle"
+                            style="width: 100%; padding: 8px 12px; background: none; border: none; color: var(--text-color); font-weight: 600; font-size: 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s;"
+                            title="Toggle section">
                             <span>⚙️ SYSTEM</span>
                             <span style="font-size: 10px;">▼</span>
                         </button>
                         <div class="nav-section-content" style="display: grid; gap: 2px; padding: 0 4px;">
-                            <button class="nav-button" data-tab="optimize" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="optimize" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">⚡</span>
                                 <span class="nav-label">Optimize</span>
-                                <button class="fav-btn" data-tab="optimize" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="optimize" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
-                            <button class="nav-button" data-tab="settings" role="tab" aria-selected="false" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
+                            <button class="nav-button" data-tab="settings" role="tab" aria-selected="false"
+                                style="padding: 8px 12px; display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; border-radius: 4px; color: var(--text-color); font-size: 13px; width: 100%; text-align: left; transition: background-color 0.2s;">
                                 <span class="nav-icon">⚙️</span>
                                 <span class="nav-label">Settings</span>
-                                <button class="fav-btn" data-tab="settings" title="Add to favorites" style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
+                                <button class="fav-btn" data-tab="settings" title="Add to favorites"
+                                    style="background: none; border: none; cursor: pointer; margin-left: auto; padding: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.2s;">☆</button>
                             </button>
                         </div>
                     </div>
                 </nav>
 
                 <!-- Sidebar Footer -->
-                <div class="sidebar-footer" style="padding: 12px; border-top: 1px solid var(--card-border); display: flex; gap: 4px;">
-                    <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Toggle Sidebar" style="flex: 1; padding: 8px 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; cursor: pointer; color: var(--text-color); font-size: 13px;">
+                <div class="sidebar-footer"
+                    style="padding: 12px; border-top: 1px solid var(--card-border); display: flex; gap: 4px;">
+                    <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Toggle Sidebar"
+                        style="flex: 1; padding: 8px 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; cursor: pointer; color: var(--text-color); font-size: 13px;">
                         ◀ Collapse
                     </button>
                 </div>
             </aside>
 
             <!-- Main Content -->
-            <main class="app-main" role="main" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-color);">
-                <div id="content" style="flex: 1; overflow-y: auto; padding: 20px; max-width: 100%;">
+            <main class="app-main" role="main">
+                <div id="content">
                     <!-- Dashboard Tab -->
                     <div id="dashboard" class="tab-content active" role="tabpanel">
                         <div class="dashboard-header">
                             <h2>Dashboard</h2>
-                            <p style="color: var(--text-secondary); font-size: 14px;">Quick overview of your network status</p>
+                            <p style="color: var(--text-secondary); font-size: 14px;">Quick overview of your network
+                                status</p>
                         </div>
-                        
+
                         <div class="dashboard-grid">
                             <!-- Network Status Card -->
                             <div class="dashboard-card">
@@ -347,8 +457,11 @@
                                 </div>
                                 <div class="card-content">
                                     <h3>Connectivity</h3>
-                                    <p id="dashboard-connectivity" style="font-size: 18px; font-weight: 600; margin: 8px 0; color: var(--text-color);">Checking...</p>
-                                    <span style="font-size: 12px; color: var(--text-secondary);">Network connection status</span>
+                                    <p id="dashboard-connectivity"
+                                        style="font-size: 18px; font-weight: 600; margin: 8px 0; color: var(--text-color);">
+                                        Checking...</p>
+                                    <span style="font-size: 12px; color: var(--text-secondary);">Network connection
+                                        status</span>
                                 </div>
                             </div>
 
@@ -359,8 +472,11 @@
                                 </div>
                                 <div class="card-content">
                                     <h3>Network Scan</h3>
-                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Scan your local network</p>
-                                    <button class="quick-action-btn" onclick="document.querySelector('[data-tab=scanner]').click()">Start Scan</button>
+                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Scan your
+                                        local network</p>
+                                    <button class="quick-action-btn"
+                                        onclick="document.querySelector('[data-tab=scanner]').click()">Start
+                                        Scan</button>
                                 </div>
                             </div>
 
@@ -371,8 +487,10 @@
                                 </div>
                                 <div class="card-content">
                                     <h3>Port Check</h3>
-                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Check open ports</p>
-                                    <button class="quick-action-btn" onclick="document.querySelector('[data-tab=port]').click()">Check Ports</button>
+                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Check open
+                                        ports</p>
+                                    <button class="quick-action-btn"
+                                        onclick="document.querySelector('[data-tab=port]').click()">Check Ports</button>
                                 </div>
                             </div>
 
@@ -383,20 +501,27 @@
                                 </div>
                                 <div class="card-content">
                                     <h3>DNS Lookup</h3>
-                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Resolve domain names</p>
-                                    <button class="quick-action-btn" onclick="document.querySelector('[data-tab=dns]').click()">Lookup</button>
+                                    <p style="font-size: 12px; color: var(--text-secondary); margin: 12px 0;">Resolve
+                                        domain names</p>
+                                    <button class="quick-action-btn"
+                                        onclick="document.querySelector('[data-tab=dns]').click()">Lookup</button>
                                 </div>
                             </div>
-                            </div>
+                        </div>
 
-                            <!-- 3D Visualization Section -->
-                            <div style="margin-top: 40px;">
-                            <h3 style="margin-bottom: 24px; font-size: 20px; font-weight: 600;">System Visualization</h3>
-                            
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                        <!-- 3D Visualization Section -->
+                        <div style="margin-top: 40px;">
+                            <h3 style="margin-bottom: 24px; font-size: 20px; font-weight: 600;">System Visualization
+                            </h3>
+
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
                                 <!-- 3D Rotating Cube -->
-                                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; text-align: center;">
-                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">3D Network Cube</div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; text-align: center;">
+                                    <div
+                                        style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
+                                        3D Network Cube</div>
                                     <div class="perspective-container" style="min-height: 250px;">
                                         <div class="cube-3d">
                                             <div class="cube-face front">Network</div>
@@ -410,9 +535,13 @@
                                 </div>
 
                                 <!-- 3D Flip Card -->
-                                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; text-align: center;">
-                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">Interactive 3D Card</div>
-                                    <div style="display: flex; justify-content: center; min-height: 250px; align-items: center;">
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; text-align: center;">
+                                    <div
+                                        style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; font-weight: 600;">
+                                        Interactive 3D Card</div>
+                                    <div
+                                        style="display: flex; justify-content: center; min-height: 250px; align-items: center;">
                                         <div class="flip-card-3d">
                                             <div class="flip-card-inner">
                                                 <div class="flip-card-front">
@@ -426,745 +555,1136 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            </div>
+                        </div>
+                    </div>
 
-                    <!-- Network Scanner Tab -->
+                    <!-- Network Scanner Tab (Deprecated) -->
                     <div id="scanner" class="tab-content" role="tabpanel">
-                <div class="dashboard-header">
-                    <h2>Network Scanner</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px;">
-                        Scan your local network to discover connected devices and gather detailed information
-                    </p>
-                </div>
+                        <div
+                            style="background: var(--warning-bg); border: 1px solid var(--warning-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="font-size: 24px;">⚠️</div>
+                                <div>
+                                    <h3 style="margin-top: 0; color: var(--warning-color);">Deprecated Feature</h3>
+                                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                                        This tab is deprecated and will be removed in a future version.
+                                        <br><strong>Use the Server Manager or Network Info tabs instead</strong> to
+                                        check your network and listening ports.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Scan Configuration Card -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; margin-bottom: 16px;">Scan Configuration</h3>
-                    
-                    <!-- IP Range Input Row -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 150px; gap: 12px; margin-bottom: 16px;">
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Network IP</label>
-                            <input type="text" id="scan-ip" placeholder="e.g., 192.168.1.0" aria-label="Network IP Address" style="width: 100%; box-sizing: border-box;">
+                        <div class="dashboard-header">
+                            <h2>Network Scanner (Legacy)</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                ⚠️ <strong>Deprecated:</strong> This feature has been moved to Network Info and Server
+                                Manager tabs
+                            </p>
                         </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Subnet Mask</label>
-                            <input type="text" id="scan-subnet" placeholder="e.g., 255.255.255.0" aria-label="Subnet Mask" style="width: 100%; box-sizing: border-box;" value="255.255.255.0">
+
+                        <!-- Scan Configuration Card -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 24px; opacity: 0.6;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Scan Configuration (Disabled)</h3>
+
+                            <!-- IP Range Input Row -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr 150px; gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Network
+                                        IP</label>
+                                    <input type="text" id="scan-ip" placeholder="e.g., 192.168.1.0"
+                                        aria-label="Network IP Address" style="width: 100%; box-sizing: border-box;"
+                                        disabled>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Subnet
+                                        Mask</label>
+                                    <input type="text" id="scan-subnet" placeholder="e.g., 255.255.255.0"
+                                        aria-label="Subnet Mask" style="width: 100%; box-sizing: border-box;"
+                                        value="255.255.255.0" disabled>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout
+                                        (ms)</label>
+                                    <input type="number" id="scan-timeout" min="100" max="5000" value="1000"
+                                        aria-label="Scan Timeout" style="width: 100%; box-sizing: border-box;" disabled>
+                                </div>
+                            </div>
+
+                            <!-- Control Buttons -->
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button id="scan-btn" class="primary" disabled>▶ Start Scan (Deprecated)</button>
+                                <button id="scan-stop-btn" class="secondary" disabled>⏹ Stop Scan</button>
+                                <button id="scan-clear-btn" class="secondary" disabled>🗑️ Clear Results</button>
+                                <button id="scan-export-btn" class="secondary" disabled>📥 Export</button>
+                            </div>
                         </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout (ms)</label>
-                            <input type="number" id="scan-timeout" min="100" max="5000" value="1000" aria-label="Scan Timeout" style="width: 100%; box-sizing: border-box;">
+
+                        <!-- Results Section -->
+                        <div style="margin-top: 24px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="margin: 0;">Scan Results</h3>
+                                <span id="scan-result-count" style="font-size: 12px; color: var(--text-secondary);">0
+                                    devices found</span>
+                            </div>
+                            <div id="scan-results" style="display: grid; gap: 12px;">
+                                <div
+                                    style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">
+                                    This tab is no longer supported.
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Scan Options -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
-                        <label class="switch-container">
-                            <input type="checkbox" id="scan-ping" checked>
-                            <span class="checkmark"></span>
-                            <span>Ping Hosts</span>
-                        </label>
-                        <label class="switch-container">
-                            <input type="checkbox" id="scan-ports" checked>
-                            <span class="checkmark"></span>
-                            <span>Check Common Ports</span>
-                        </label>
-                        <label class="switch-container">
-                            <input type="checkbox" id="scan-hostname">
-                            <span class="checkmark"></span>
-                            <span>Resolve Hostnames</span>
-                        </label>
-                        <label class="switch-container">
-                            <input type="checkbox" id="scan-mac">
-                            <span class="checkmark"></span>
-                            <span>Get MAC Addresses</span>
-                        </label>
+                    <!-- Port Scanner Tab -->
+                    <div id="port" class="tab-content" role="tabpanel">
+                        <h2>🔌 Port Scanner</h2>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                            Scan ports on a target host to identify open services and running applications
+                        </p>
+
+                        <!-- Scan Configuration -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Scan Configuration</h3>
+
+                            <!-- Host and Port Range -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Target
+                                        Host</label>
+                                    <input type="text" id="port-scan-host"
+                                        placeholder="e.g., 192.168.1.1 or example.com" aria-label="Target Host"
+                                        style="width: 100%; box-sizing: border-box;">
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Start
+                                        Port</label>
+                                    <input type="number" id="port-scan-start" min="1" max="65535" value="1"
+                                        aria-label="Start Port" style="width: 100%; box-sizing: border-box;">
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">End
+                                        Port</label>
+                                    <input type="number" id="port-scan-end" min="1" max="65535" value="1000"
+                                        aria-label="End Port" style="width: 100%; box-sizing: border-box;">
+                                </div>
+                            </div>
+
+                            <!-- Scan Options -->
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                                <label class="switch-container">
+                                    <input type="checkbox" id="port-scan-timeout-check" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Fast Scan (1000ms timeout)</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="port-scan-service-detect">
+                                    <span class="checkmark"></span>
+                                    <span>Detect Services</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="port-scan-banner">
+                                    <span class="checkmark"></span>
+                                    <span>Grab Banners</span>
+                                </label>
+                            </div>
+
+                            <!-- Quick Preset Buttons -->
+                            <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                                <button class="quick-scan-preset" data-start="1" data-end="1024">Common Ports
+                                    (1-1024)</button>
+                                <button class="quick-scan-preset" data-start="80" data-end="443">Web Ports
+                                    (80-443)</button>
+                                <button class="quick-scan-preset" data-start="3000" data-end="9000">Dev Ports
+                                    (3000-9000)</button>
+                                <button class="quick-scan-preset" data-start="3306" data-end="27017">Database
+                                    Ports</button>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button id="port-scan-start-btn" class="primary">▶ Start Scan</button>
+                                <button id="port-scan-stop-btn" class="secondary" disabled>⏹ Stop Scan</button>
+                                <button id="port-scan-export-btn" class="secondary" disabled>📥 Export</button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div id="port-scan-progress-section"
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: none;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 12px; font-weight: 600;">Scanning Progress</span>
+                                <span id="port-scan-progress-text"
+                                    style="font-size: 12px; color: var(--text-secondary);">0/1000</span>
+                            </div>
+                            <div
+                                style="background-color: var(--result-bg); border-radius: 4px; height: 24px; overflow: hidden;">
+                                <div id="port-scan-progress-bar"
+                                    style="background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%); height: 100%; width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600;">
+                                    <span id="port-scan-progress-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics -->
+                        <div id="port-scan-stats-section"
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: none;">
+                            <h3 style="margin-top: 0; margin-bottom: 12px;">Scan Results Summary</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                <div style="background-color: var(--card-bg-hover); padding: 12px; border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Total Scanned</div>
+                                    <div id="port-scan-stat-total" style="font-size: 18px; font-weight: 600;">0</div>
+                                </div>
+                                <div style="background-color: var(--card-bg-hover); padding: 12px; border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Ports Open</div>
+                                    <div id="port-scan-stat-open"
+                                        style="font-size: 18px; font-weight: 600; color: var(--success-color);">0</div>
+                                </div>
+                                <div style="background-color: var(--card-bg-hover); padding: 12px; border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Scan
+                                        Time</div>
+                                    <div id="port-scan-stat-time" style="font-size: 18px; font-weight: 600;">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results -->
+                        <div style="margin-top: 24px;">
+                            <h3 style="margin-top: 0;">📋 Results</h3>
+                            <div id="port-scan-results" style="display: grid; gap: 8px;">
+                                <div
+                                    style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">
+                                    Enter a host and configure the port range, then click "Start Scan"
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Port Range Selection -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Start Port</label>
-                            <input type="number" id="scan-start-port" min="1" max="65535" value="1" aria-label="Start Port" style="width: 100%; box-sizing: border-box;">
+                    <!-- Port Checker Tab (Deprecated) -->
+                    <div id="port-checker" class="tab-content" role="tabpanel">
+                        <div
+                            style="background: var(--warning-bg); border: 1px solid var(--warning-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <div style="font-size: 24px;">⚠️</div>
+                                <div>
+                                    <h3 style="margin-top: 0; color: var(--warning-color);">Deprecated - Being Removed
+                                    </h3>
+                                    <p style="margin: 8px 0 0 0; color: var(--text-secondary);">
+                                        This feature is <strong>deprecated and will be removed in the next major
+                                            version</strong>.
+                                        <br>Please migrate to the <strong>Port Scanner tab</strong> for enhanced port
+                                        scanning capabilities.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">End Port</label>
-                            <input type="number" id="scan-end-port" min="1" max="65535" value="1000" aria-label="End Port" style="width: 100%; box-sizing: border-box;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Thread Count</label>
-                            <input type="number" id="scan-threads" min="1" max="50" value="10" aria-label="Thread Count" style="width: 100%; box-sizing: border-box;">
-                        </div>
-                    </div>
 
-                    <!-- Control Buttons -->
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button id="scan-btn" class="primary">▶ Start Scan</button>
-                        <button id="scan-stop-btn" class="secondary" disabled>⏹ Stop Scan</button>
-                        <button id="scan-clear-btn" class="secondary">🗑️ Clear Results</button>
-                        <button id="scan-export-btn" class="secondary" disabled>📥 Export</button>
-                    </div>
-                </div>
-
-                <!-- Progress Section -->
-                <div id="scan-progress-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span style="font-size: 12px; font-weight: 600;">Scanning Progress</span>
-                        <span id="scan-progress-text" style="font-size: 12px; color: var(--text-secondary);">0/255</span>
-                    </div>
-                    <div style="background-color: var(--result-bg); border-radius: 4px; height: 24px; overflow: hidden;">
-                        <div id="scan-progress-bar" style="background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); height: 100%; width: 0%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600;">
-                            <span id="scan-progress-percent">0%</span>
-                        </div>
-                    </div>
-                    <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">
-                        <span id="scan-status-text">Ready to scan</span>
-                    </div>
-                </div>
-
-                <!-- Statistics Panel -->
-                <div id="scan-stats-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
-                    <h3 style="margin-top: 0; margin-bottom: 12px;">Scan Statistics</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Hosts Found</div>
-                            <div id="scan-stat-hosts" style="font-size: 24px; font-weight: 600; color: #10b981;">0</div>
-                        </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Online Hosts</div>
-                            <div id="scan-stat-online" style="font-size: 24px; font-weight: 600; color: #3b82f6;">0</div>
-                        </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Open Ports</div>
-                            <div id="scan-stat-ports" style="font-size: 24px; font-weight: 600; color: #f59e0b;">0</div>
-                        </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Scan Time</div>
-                            <div id="scan-stat-time" style="font-size: 24px; font-weight: 600;">--</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filters & Search -->
-                <div id="scan-filter-section" style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;">
-                    <h3 style="margin-top: 0; margin-bottom: 12px;">Filter Results</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Search IP/Hostname</label>
-                            <input type="text" id="scan-filter-ip" placeholder="Filter results..." style="width: 100%; box-sizing: border-box;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Filter By Status</label>
-                            <select id="scan-filter-status" style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
-                                <option value="">All Hosts</option>
-                                <option value="online">Online Only</option>
-                                <option value="offline">Offline Only</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Section -->
-                <div style="margin-top: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0;">Scan Results</h3>
-                        <span id="scan-result-count" style="font-size: 12px; color: var(--text-secondary);">0 devices found</span>
-                    </div>
-                    <div id="scan-results" style="display: grid; gap: 12px;">
-                        <div style="color: var(--text-secondary); text-align: center; padding: 40px 20px; background-color: var(--result-bg); border-radius: 8px;">
-                            Configure scan settings and click "Start Scan" to begin
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Port Checker Tab -->
-            <div id="port" class="tab-content" role="tabpanel">
-                <h2>Port Checker</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    Check if a specific port is open on a host
-                </p>
-                <input type="text" id="host" placeholder="Host (e.g., 192.168.1.1)" aria-label="Host">
-                <input type="number" id="port-num" placeholder="Port (e.g., 80)" aria-label="Port Number">
-                <div style="display: flex; gap: 8px;">
-                    <button id="check-port-btn">Check Port</button>
-                </div>
-                <div id="port-results"></div>
-            </div>
-
-            <!-- Network Monitor Tab -->
-            <div id="monitor" class="tab-content" role="tabpanel">
-                <h2>Network Monitor</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    Monitor real-time network activity and traffic
-                </p>
-                <div style="display: flex; gap: 8px;">
-                    <button id="start-monitor">Start Monitoring</button>
-                    <button id="stop-monitor" disabled>Stop Monitoring</button>
-                </div>
-                <div id="monitor-results"></div>
-            </div>
-
-            <!-- Network Optimization Tab -->
-            <div id="optimize" class="tab-content" role="tabpanel">
-                <h2>Network Optimization</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    Optimize your network settings for better performance
-                </p>
-
-                <!-- Optimization Options -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
-                    <label class="switch-container">
-                        <input type="checkbox" id="optimize-dns" checked>
-                        <span class="checkmark"></span>
-                        <span>Flush DNS Cache</span>
-                    </label>
-                    <label class="switch-container">
-                        <input type="checkbox" id="optimize-ip" checked>
-                        <span class="checkmark"></span>
-                        <span>Renew IP Address</span>
-                    </label>
-                    <label class="switch-container">
-                        <input type="checkbox" id="optimize-tcp" checked>
-                        <span class="checkmark"></span>
-                        <span>TCP Window Scaling</span>
-                    </label>
-                    <label class="switch-container">
-                        <input type="checkbox" id="optimize-buffers" checked>
-                        <span class="checkmark"></span>
-                        <span>Increase Buffers</span>
-                    </label>
-                </div>
-
-                <!-- Action Buttons -->
-                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
-                    <button id="optimize-btn" class="primary">Run Optimization</button>
-                    <button id="optimize-profile-btn" class="secondary">View Profiles</button>
-                    <button id="optimize-reset-btn" class="secondary">Reset to Defaults</button>
-                </div>
-
-                <!-- Performance Metrics -->
-                <div style="margin-bottom: 24px;">
-                    <h3>Network Performance</h3>
-                    <div id="optimize-metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Latency</div>
-                            <div id="metric-latency" style="font-size: 24px; font-weight: 600;">-- ms</div>
-                        </div>
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Packet Loss</div>
-                            <div id="metric-loss" style="font-size: 24px; font-weight: 600;">-- %</div>
-                        </div>
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">Bandwidth</div>
-                            <div id="metric-bandwidth" style="font-size: 24px; font-weight: 600;">-- Mbps</div>
-                        </div>
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">DNS Time</div>
-                            <div id="metric-dns" style="font-size: 24px; font-weight: 600;">-- ms</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Optimization Results -->
-                <div style="margin-bottom: 24px;">
-                    <h3>Optimization Results</h3>
-                    <div id="optimize-results" style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; min-height: 100px;">
-                        <div style="color: var(--text-secondary); text-align: center;">Run optimization to see results</div>
-                    </div>
-                </div>
-
-                <!-- Network Statistics -->
-                <div>
-                    <h3>Network Statistics</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Active Connections</div>
-                            <div id="stat-connections" style="font-weight: 600;">--</div>
-                        </div>
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Listening Ports</div>
-                            <div id="stat-ports" style="font-weight: 600;">--</div>
-                        </div>
-                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Memory Usage</div>
-                            <div id="stat-memory" style="font-weight: 600;">--</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Network Info Tab -->
-            <div id="info" class="tab-content" role="tabpanel">
-                <div class="dashboard-header">
-                    <h2>Network Info</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px;">
-                        View detailed information about your network configuration and status
-                    </p>
-                </div>
-
-                <!-- Action Buttons -->
-                <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                    <button id="get-info-btn" class="primary">🔍 Get Network Info</button>
-                    <button id="check-connect-btn" class="secondary">📡 Check Connectivity</button>
-                    <button id="refresh-network-info-btn" class="secondary">🔄 Refresh</button>
-                </div>
-
-                <!-- Quick Status Card -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <!-- Connectivity Status -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="font-size: 32px;">📶</div>
+                        <h2>Port Checker (Legacy)</h2>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                            ⚠️ <strong>Deprecated:</strong> This feature will be removed in the next version. Use Port
+                            Scanner instead.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                             <div>
-                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Connectivity Status</div>
-                                <div id="quick-connectivity" style="font-weight: 600; font-size: 16px;">Checking...</div>
+                                <label
+                                    style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Host</label>
+                                <input type="text" id="host" placeholder="Host (e.g., 192.168.1.1)" aria-label="Host">
                             </div>
-                        </div>
-                        <!-- Internet Status -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="font-size: 32px;">🌐</div>
                             <div>
-                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Internet Status</div>
-                                <div id="quick-internet" style="font-weight: 600; font-size: 16px;">Checking...</div>
+                                <label
+                                    style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Port</label>
+                                <input type="number" id="port-num" placeholder="Port (e.g., 80)"
+                                    aria-label="Port Number">
                             </div>
                         </div>
-                        <!-- Last Updated -->
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="font-size: 32px;">⏰</div>
-                            <div>
-                                <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Last Updated</div>
-                                <div id="quick-updated" style="font-weight: 600; font-size: 14px;">--</div>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="check-port-btn" class="secondary">Check Port</button>
+                        </div>
+                        <div id="port-results" style="margin-top: 16px;"></div>
+                    </div>
+
+                    <!-- Traceroute Tab -->
+                    <div id="tracert" class="tab-content" role="tabpanel">
+                        <div class="dashboard-header">
+                            <h2>Traceroute / Tracert</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                Trace the network path to a target host and identify all hops along the way
+                            </p>
+                        </div>
+
+                        <!-- Input Controls -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Target Configuration</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Target
+                                        Host</label>
+                                    <input type="text" id="tracert-host" placeholder="e.g., 8.8.8.8 or google.com"
+                                        aria-label="Target Host">
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Max
+                                        Hops</label>
+                                    <input type="number" id="tracert-max-hops" value="30" min="1" max="64"
+                                        aria-label="Max Hops">
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout
+                                        (ms)</label>
+                                    <input type="number" id="tracert-timeout" value="5000" min="100" max="30000"
+                                        aria-label="Timeout">
+                                </div>
+                            </div>
+
+                            <!-- Options -->
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                                <label class="switch-container">
+                                    <input type="checkbox" id="tracert-resolve-names" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Resolve Hostnames</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="tracert-show-timing">
+                                    <span class="checkmark"></span>
+                                    <span>Show Timing</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="tracert-show-geolocation">
+                                    <span class="checkmark"></span>
+                                    <span>Geolocation</span>
+                                </label>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button id="tracert-start-btn" class="primary">▶ Start Trace</button>
+                                <button id="tracert-stop-btn" class="secondary" disabled>⏹ Stop</button>
+                                <button id="tracert-clear-btn" class="secondary">🗑 Clear</button>
+                                <button id="tracert-export-btn" class="secondary" disabled>📥 Export</button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div id="tracert-progress-section" style="display: none; margin-bottom: 24px;">
+                            <div
+                                style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">
+                                            Progress</div>
+                                        <div id="tracert-progress-text" style="font-weight: 600;">Initializing...</div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="width: 100%; height: 4px; background-color: rgba(99, 102, 241, 0.1); border-radius: 2px; overflow: hidden;">
+                                    <div id="tracert-progress-bar"
+                                        style="height: 100%; background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%); border-radius: 2px; width: 0%; transition: width 0.3s ease;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Section -->
+                        <div id="tracert-stats-section" style="display: none; margin-bottom: 24px;">
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Hops Found</div>
+                                    <div id="tracert-stat-hops" style="font-weight: 600; font-size: 24px;">0</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Avg Latency</div>
+                                    <div id="tracert-stat-latency" style="font-weight: 600; font-size: 24px;">-- ms
+                                    </div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Success Rate</div>
+                                    <div id="tracert-stat-success" style="font-weight: 600; font-size: 24px;">--%</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Elapsed Time</div>
+                                    <div id="tracert-stat-time" style="font-weight: 600; font-size: 24px;">-- s</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Route Details</h3>
+                            <div id="tracert-results"
+                                style="display: flex; align-items: center; justify-content: center; min-height: 200px; background-color: var(--result-bg); border-radius: 8px; color: var(--text-secondary);">
+                                Enter a target host and click "Start Trace" to begin
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Connectivity Status Section -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; margin-bottom: 16px;">Connectivity Status</h3>
-                    <div id="connect-status" class="connect-status" style="display: grid; gap: 12px;"></div>
-                </div>
-
-                <!-- Network Information Section -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
-                    <h3 style="margin-top: 0; margin-bottom: 16px;">Network Configuration</h3>
-                    <div id="info-results" class="info-results" style="display: grid; gap: 12px;"></div>
-                </div>
-            </div>
-
-            <!-- Diagnostics Tab -->
-            <div id="diagnostics" class="tab-content" role="tabpanel">
-                <div class="dashboard-header">
-                    <h2>Diagnostics</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px;">
-                        System information and diagnostic tools
-                    </p>
-                </div>
-                
-                <!-- Diagnostic Actions -->
-                <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
-                    <button id="refresh-diagnostics-btn">🔄 Refresh Diagnostics</button>
-                    <button id="export-diagnostics-btn">📥 Export Report</button>
-                    <button id="clear-diagnostics-btn">🗑️ Clear</button>
-                </div>
-
-                <!-- System Information Section -->
-                <div class="diagnostics-section">
-                    <h3>System Information</h3>
-                    <div class="diagnostics-grid">
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">🖥️</span>
-                                Platform
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-platform">--</div>
+                    <!-- Network Monitor Tab -->
+                    <div id="monitor" class="tab-content" role="tabpanel">
+                        <h2>Network Monitor</h2>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                            Monitor real-time network activity and traffic
+                        </p>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="start-monitor">Start Monitoring</button>
+                            <button id="stop-monitor" disabled>Stop Monitoring</button>
                         </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">⚙️</span>
-                                Architecture
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-arch">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">💻</span>
-                                CPUs
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-cpus">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">💾</span>
-                                Total Memory
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-memory">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">📊</span>
-                                Free Memory
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-free-memory">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">⏱️</span>
-                                Uptime
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-uptime">--</div>
-                        </div>
+                        <div id="monitor-results"></div>
                     </div>
-                </div>
 
-                <!-- Network Diagnostics Section -->
-                <div class="diagnostics-section">
-                    <h3>Network Diagnostics</h3>
-                    <div class="diagnostics-grid">
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">📱</span>
-                                Hostname
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-hostname" style="font-size: var(--font-size-base);">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">🌐</span>
-                                Primary IP
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-ip">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">🔗</span>
-                                Network Interfaces
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-interfaces">--</div>
-                        </div>
-                    </div>
-                    <div style="margin-top: 24px;">
-                        <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">All Network Interfaces</div>
-                        <div id="diag-all-interfaces"></div>
-                    </div>
-                </div>
+                    <!-- Network Optimization Tab -->
+                    <div id="optimize" class="tab-content" role="tabpanel">
+                        <h2>Network Optimization</h2>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                            Optimize your network settings for better performance
+                        </p>
 
-                <!-- Application Information Section -->
-                <div class="diagnostics-section">
-                    <h3>Application Info</h3>
-                    <div class="diagnostics-grid">
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">📦</span>
-                                App Version
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-app-version">--</div>
+                        <!-- Optimization Options -->
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
+                            <label class="switch-container">
+                                <input type="checkbox" id="optimize-dns" checked>
+                                <span class="checkmark"></span>
+                                <span>Flush DNS Cache</span>
+                            </label>
+                            <label class="switch-container">
+                                <input type="checkbox" id="optimize-ip" checked>
+                                <span class="checkmark"></span>
+                                <span>Renew IP Address</span>
+                            </label>
+                            <label class="switch-container">
+                                <input type="checkbox" id="optimize-tcp" checked>
+                                <span class="checkmark"></span>
+                                <span>TCP Window Scaling</span>
+                            </label>
+                            <label class="switch-container">
+                                <input type="checkbox" id="optimize-buffers" checked>
+                                <span class="checkmark"></span>
+                                <span>Increase Buffers</span>
+                            </label>
                         </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">🔧</span>
-                                Node.js Version
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-node-version">--</div>
-                        </div>
-                        <div class="diagnostics-grid-item">
-                            <div class="diagnostics-grid-item-label">
-                                <span class="diagnostics-grid-item-icon">⚡</span>
-                                Electron Version
-                            </div>
-                            <div class="diagnostics-grid-item-value" id="diag-electron-version">--</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- DNS Lookup Tab -->
-            <div id="dns" class="tab-content" role="tabpanel">
-                <div class="dashboard-header">
-                    <h2>DNS Lookup</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px;">
-                        Resolve domain names and query DNS records
-                    </p>
-                </div>
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                            <button id="optimize-btn" class="primary">Run Optimization</button>
+                            <button id="optimize-profile-btn" class="secondary">View Profiles</button>
+                            <button id="optimize-reset-btn" class="secondary">Reset to Defaults</button>
+                        </div>
 
-                <!-- DNS Query Form -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; margin-bottom: 16px;">DNS Query</h3>
-                    
-                    <!-- Input Row -->
-                    <div style="display: grid; grid-template-columns: 1fr 150px 150px; gap: 12px; margin-bottom: 16px;">
+                        <!-- Performance Metrics -->
+                        <div style="margin-bottom: 24px;">
+                            <h3>Network Performance</h3>
+                            <div id="optimize-metrics"
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">
+                                        Latency</div>
+                                    <div id="metric-latency" style="font-size: 24px; font-weight: 600;">-- ms</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">
+                                        Packet Loss</div>
+                                    <div id="metric-loss" style="font-size: 24px; font-weight: 600;">-- %</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">
+                                        Bandwidth</div>
+                                    <div id="metric-bandwidth" style="font-size: 24px; font-weight: 600;">-- Mbps</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px;">DNS
+                                        Time</div>
+                                    <div id="metric-dns" style="font-size: 24px; font-weight: 600;">-- ms</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Optimization Results -->
+                        <div style="margin-bottom: 24px;">
+                            <h3>Optimization Results</h3>
+                            <div id="optimize-results"
+                                style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; min-height: 100px;">
+                                <div style="color: var(--text-secondary); text-align: center;">Run optimization to see
+                                    results</div>
+                            </div>
+                        </div>
+
+                        <!-- Network Statistics -->
                         <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Domain/Host</label>
-                            <input type="text" id="dns-host" placeholder="e.g., www.google.com" aria-label="Domain Name" style="width: 100%; box-sizing: border-box;">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Record Type</label>
-                            <select id="dns-type" style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px; box-sizing: border-box;">
-                                <option value="A">A</option>
-                                <option value="AAAA">AAAA</option>
-                                <option value="MX">MX</option>
-                                <option value="NS">NS</option>
-                                <option value="TXT">TXT</option>
-                                <option value="CNAME">CNAME</option>
-                                <option value="SOA">SOA</option>
-                                <option value="SRV">SRV</option>
-                                <option value="PTR">PTR</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout (s)</label>
-                            <input type="number" id="dns-timeout" min="1" max="30" value="5" aria-label="Query Timeout" style="width: 100%; box-sizing: border-box;">
-                        </div>
-                    </div>
-
-                    <!-- Options Row -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
-                        <label class="switch-container">
-                            <input type="checkbox" id="dns-recursive" checked>
-                            <span class="checkmark"></span>
-                            <span>Recursive Query</span>
-                        </label>
-                        <label class="switch-container">
-                            <input type="checkbox" id="dns-all-records">
-                            <span class="checkmark"></span>
-                            <span>Query All Types</span>
-                        </label>
-                        <label class="switch-container">
-                            <input type="checkbox" id="dns-trace">
-                            <span class="checkmark"></span>
-                            <span>Trace Route</span>
-                        </label>
-                    </div>
-
-                    <!-- Buttons -->
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button id="check-dns-btn" class="primary">Lookup DNS</button>
-                        <button id="dns-reverse-btn" class="secondary">Reverse Lookup</button>
-                        <button id="dns-batch-btn" class="secondary">Batch Lookup</button>
-                        <button id="dns-clear-btn" class="secondary">Clear Results</button>
-                    </div>
-                </div>
-
-                <!-- Query History -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;" id="dns-history-section">
-                    <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 14px;">Recent Queries</h3>
-                    <div id="dns-history" style="display: grid; gap: 8px; max-height: 150px; overflow-y: auto;">
-                    </div>
-                </div>
-
-                <!-- Results Section -->
-                <div style="margin-top: 24px;">
-                    <h3 style="margin-bottom: 16px;">Results</h3>
-                    <div id="dns-results" class="dns-results" style="display: grid; gap: 16px;">
-                        <div style="color: var(--text-secondary); text-align: center; padding: 40px 20px;">
-                            Enter a domain name and click "Lookup DNS" to begin
+                            <h3>Network Statistics</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Active Connections</div>
+                                    <div id="stat-connections" style="font-weight: 600;">--</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Listening Ports</div>
+                                    <div id="stat-ports" style="font-weight: 600;">--</div>
+                                </div>
+                                <div
+                                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Memory Usage</div>
+                                    <div id="stat-memory" style="font-weight: 600;">--</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Packet & Traffic Analysis Tab -->
-            <div id="packet-analysis" class="tab-content" role="tabpanel">
-                <div class="dashboard-header">
-                    <h2>Packet & Traffic Analysis</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px;">
-                        Monitor network traffic and analyze packet data
-                    </p>
-                </div>
-
-                <!-- Control Buttons -->
-                <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                    <button id="start-packet-capture-btn" class="primary">▶ Start Capture</button>
-                    <button id="stop-packet-capture-btn" class="secondary" disabled>⏹ Stop Capture</button>
-                    <button id="clear-packet-data-btn" class="secondary">🗑️ Clear</button>
-                    <button id="export-packets-btn" class="secondary">📥 Export</button>
-                </div>
-
-                <!-- Capture Settings -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0;">Capture Settings</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Interface</label>
-                            <select id="packet-interface" style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
-                                <option value="">All Interfaces</option>
-                            </select>
+                    <!-- Network Info Tab -->
+                    <div id="info" class="tab-content" role="tabpanel">
+                        <div class="dashboard-header">
+                            <h2>Network Info</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                View detailed information about your network configuration and status
+                            </p>
                         </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Protocol Filter</label>
-                            <select id="packet-protocol" style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
-                                <option value="">All Protocols</option>
-                                <option value="tcp">TCP</option>
-                                <option value="udp">UDP</option>
-                                <option value="icmp">ICMP</option>
-                                <option value="http">HTTP</option>
-                                <option value="https">HTTPS</option>
-                                <option value="dns">DNS</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Max Packets</label>
-                            <input type="number" id="packet-max-count" min="10" max="1000" value="100" style="width: 100%; padding: 8px 12px; box-sizing: border-box; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Statistics Panel -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0;">Traffic Statistics</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Total Packets</div>
-                            <div id="stat-total-packets" style="font-size: 24px; font-weight: 600;">0</div>
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                            <button id="get-info-btn" class="primary">🔍 Get Network Info</button>
+                            <button id="check-connect-btn" class="secondary">📡 Check Connectivity</button>
+                            <button id="refresh-network-info-btn" class="secondary">🔄 Refresh</button>
+                            <button id="export-info-btn" class="secondary">📥 Export</button>
                         </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Total Bytes</div>
-                            <div id="stat-total-bytes" style="font-size: 24px; font-weight: 600;">0 B</div>
+
+                        <!-- Quick Status Card -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Quick Status</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+                                <!-- Connectivity Status -->
+                                <div
+                                    style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="font-size: 28px;">📶</div>
+                                    <div>
+                                        <div style="color: var(--text-secondary); font-size: 11px; margin-bottom: 4px;">
+                                            Connectivity</div>
+                                        <div id="quick-connectivity" style="font-weight: 600; font-size: 14px;">
+                                            Checking...</div>
+                                    </div>
+                                </div>
+                                <!-- Internet Status -->
+                                <div
+                                    style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="font-size: 28px;">🌐</div>
+                                    <div>
+                                        <div style="color: var(--text-secondary); font-size: 11px; margin-bottom: 4px;">
+                                            Internet</div>
+                                        <div id="quick-internet" style="font-weight: 600; font-size: 14px;">Checking...
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Ping Status -->
+                                <div
+                                    style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="font-size: 28px;">⚡</div>
+                                    <div>
+                                        <div style="color: var(--text-secondary); font-size: 11px; margin-bottom: 4px;">
+                                            Ping</div>
+                                        <div id="quick-ping" style="font-weight: 600; font-size: 14px;">--ms</div>
+                                    </div>
+                                </div>
+                                <!-- Last Updated -->
+                                <div
+                                    style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="font-size: 28px;">⏰</div>
+                                    <div>
+                                        <div style="color: var(--text-secondary); font-size: 11px; margin-bottom: 4px;">
+                                            Updated</div>
+                                        <div id="quick-updated" style="font-weight: 600; font-size: 12px;">--</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Packets/sec</div>
-                            <div id="stat-packets-per-sec" style="font-size: 24px; font-weight: 600;">0</div>
+
+                        <!-- Two Column Layout -->
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+                            <!-- Connectivity Status Section -->
+                            <div
+                                style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+                                <h3 style="margin-top: 0; margin-bottom: 16px;">🔌 Connectivity Status</h3>
+                                <div id="connect-status" class="connect-status" style="display: grid; gap: 12px;"></div>
+                            </div>
+
+                            <!-- Network Configuration Section -->
+                            <div
+                                style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+                                <h3 style="margin-top: 0; margin-bottom: 16px;">⚙️ Network Configuration</h3>
+                                <div id="info-results" class="info-results" style="display: grid; gap: 12px;"></div>
+                            </div>
                         </div>
-                        <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
-                            <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Bytes/sec</div>
-                            <div id="stat-bytes-per-sec" style="font-size: 24px; font-weight: 600;">0 KB/s</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Protocol Distribution -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; margin-bottom: 12px;">Protocol Distribution</h3>
-                    <div id="protocol-distribution" style="display: grid; gap: 8px;">
-                        <div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data captured yet</div>
-                    </div>
-                </div>
-
-                <!-- Top Connections -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; margin-bottom: 12px;">Top Connections</h3>
-                    <div id="top-connections" style="display: grid; gap: 8px;">
-                        <div style="color: var(--text-secondary); text-align: center; padding: 20px;">No connections captured yet</div>
-                    </div>
-                </div>
-
-                <!-- Packet Table -->
-                <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
-                    <h3 style="margin-top: 0; margin-bottom: 12px;">Captured Packets</h3>
-                    <div style="overflow-x: auto;">
-                        <table id="packet-table" style="width: 100%; font-size: 12px; border-collapse: collapse;">
-                            <thead style="background-color: var(--result-bg);">
-                                <tr>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Time</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Source IP</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Dest IP</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Protocol</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Source Port</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Dest Port</th>
-                                    <th style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">Length</th>
-                                </tr>
-                            </thead>
-                            <tbody id="packet-table-body">
-                                <tr>
-                                    <td colspan="7" style="padding: 20px; text-align: center; color: var(--text-secondary);">No packets captured yet</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Server Maker Tab -->
-            <div id="server-maker" class="tab-content" role="tabpanel">
-                <h2>Server Manager</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
-                    Create and manage local servers for testing
-                </p>
-                
-                <!-- Create Server Button -->
-                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
-                    <button id="create-server-btn" class="primary">Create Server</button>
-                    <button id="refresh-servers-btn" class="secondary">Refresh Status</button>
-                </div>
-
-                <!-- Active Servers List -->
-                <div style="margin-bottom: 24px;">
-                    <h3>Active Servers</h3>
-                    <div id="active-servers-list" style="display: grid; gap: 12px;">
-                        <div style="color: var(--text-secondary); text-align: center; padding: 24px;">
-                            No active servers
+                        <!-- Network Interfaces Section (Below) -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-top: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">🌍 Network Interfaces</h3>
+                            <div id="network-interfaces" style="display: grid; gap: 12px;"></div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Server Output Console -->
-                <div style="margin-bottom: 24px;">
-                    <h3>Server Output</h3>
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <select id="server-output-select" style="flex: 1; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
-                            <option value="">Select a server to view output...</option>
-                        </select>
-                        <button id="clear-output-btn" class="secondary">Clear Output</button>
+                    <!-- Diagnostics Tab -->
+                    <div id="diagnostics" class="tab-content" role="tabpanel">
+                        <div class="dashboard-header">
+                            <h2>Diagnostics</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                System information and diagnostic tools
+                            </p>
+                        </div>
+
+                        <!-- Diagnostic Actions -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+                            <button id="refresh-diagnostics-btn">🔄 Refresh Diagnostics</button>
+                            <button id="export-diagnostics-btn">📥 Export Report</button>
+                            <button id="clear-diagnostics-btn">🗑️ Clear</button>
+                        </div>
+
+                        <!-- System Information Section -->
+                        <div class="diagnostics-section">
+                            <h3>System Information</h3>
+                            <div class="diagnostics-grid">
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">🖥️</span>
+                                        Platform
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-platform">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">⚙️</span>
+                                        Architecture
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-arch">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">💻</span>
+                                        CPUs
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-cpus">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">💾</span>
+                                        Total Memory
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-memory">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">📊</span>
+                                        Free Memory
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-free-memory">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">⏱️</span>
+                                        Uptime
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-uptime">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Network Diagnostics Section -->
+                        <div class="diagnostics-section">
+                            <h3>Network Diagnostics</h3>
+                            <div class="diagnostics-grid">
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">📱</span>
+                                        Hostname
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-hostname"
+                                        style="font-size: var(--font-size-base);">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">🌐</span>
+                                        Primary IP
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-ip">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">🔗</span>
+                                        Network Interfaces
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-interfaces">--</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <div
+                                    style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    All Network Interfaces</div>
+                                <div id="diag-all-interfaces"></div>
+                            </div>
+                        </div>
+
+                        <!-- Application Information Section -->
+                        <div class="diagnostics-section">
+                            <h3>Application Info</h3>
+                            <div class="diagnostics-grid">
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">📦</span>
+                                        App Version
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-app-version">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">🔧</span>
+                                        Node.js Version
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-node-version">--</div>
+                                </div>
+                                <div class="diagnostics-grid-item">
+                                    <div class="diagnostics-grid-item-label">
+                                        <span class="diagnostics-grid-item-icon">⚡</span>
+                                        Electron Version
+                                    </div>
+                                    <div class="diagnostics-grid-item-value" id="diag-electron-version">--</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="server-output" style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 4px; padding: 12px; font-family: var(--font-mono); font-size: 12px; max-height: 300px; overflow-y: auto; color: #00ff00; line-height: 1.4;">
-                        <div style="color: var(--text-secondary);">Server output will appear here...</div>
+
+                    <!-- DNS Lookup Tab -->
+                    <div id="dns" class="tab-content" role="tabpanel">
+                        <div class="dashboard-header">
+                            <h2>DNS Lookup</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                Resolve domain names and query DNS records
+                            </p>
+                        </div>
+
+                        <!-- DNS Query Form -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">DNS Query</h3>
+
+                            <!-- Input Row -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 150px 150px; gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Domain/Host</label>
+                                    <input type="text" id="dns-host" placeholder="e.g., www.google.com"
+                                        aria-label="Domain Name" style="width: 100%; box-sizing: border-box;">
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Record
+                                        Type</label>
+                                    <select id="dns-type"
+                                        style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px; box-sizing: border-box;">
+                                        <option value="A">A</option>
+                                        <option value="AAAA">AAAA</option>
+                                        <option value="MX">MX</option>
+                                        <option value="NS">NS</option>
+                                        <option value="TXT">TXT</option>
+                                        <option value="CNAME">CNAME</option>
+                                        <option value="SOA">SOA</option>
+                                        <option value="SRV">SRV</option>
+                                        <option value="PTR">PTR</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Timeout
+                                        (s)</label>
+                                    <input type="number" id="dns-timeout" min="1" max="30" value="5"
+                                        aria-label="Query Timeout" style="width: 100%; box-sizing: border-box;">
+                                </div>
+                            </div>
+
+                            <!-- Options Row -->
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                                <label class="switch-container">
+                                    <input type="checkbox" id="dns-recursive" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Recursive Query</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="dns-all-records">
+                                    <span class="checkmark"></span>
+                                    <span>Query All Types</span>
+                                </label>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="dns-trace">
+                                    <span class="checkmark"></span>
+                                    <span>Trace Route</span>
+                                </label>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button id="check-dns-btn" class="primary">Lookup DNS</button>
+                                <button id="dns-reverse-btn" class="secondary">Reverse Lookup</button>
+                                <button id="dns-batch-btn" class="secondary">Batch Lookup</button>
+                                <button id="dns-clear-btn" class="secondary">Clear Results</button>
+                            </div>
+                        </div>
+
+                        <!-- Query History -->
+                        <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px; display: none;"
+                            id="dns-history-section">
+                            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 14px;">Recent Queries</h3>
+                            <div id="dns-history" style="display: grid; gap: 8px; max-height: 150px; overflow-y: auto;">
+                            </div>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div style="margin-top: 24px;">
+                            <h3 style="margin-bottom: 16px;">Results</h3>
+                            <div id="dns-results" class="dns-results" style="display: grid; gap: 16px;">
+                                <div style="color: var(--text-secondary); text-align: center; padding: 40px 20px;">
+                                    Enter a domain name and click "Lookup DNS" to begin
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Server Details Panel -->
-                <div id="server-maker-content">
-                    <div id="server-maker-request" class="server-maker-request"></div>
-                    <div id="server-maker-result" class="server-maker-result"></div>
-                </div>
-            </div>
+                    <!-- Packet & Traffic Analysis Tab -->
+                    <div id="packet-analysis" class="tab-content" role="tabpanel">
+                        <div class="dashboard-header">
+                            <h2>Packet & Traffic Analysis</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px;">
+                                Monitor network traffic and analyze packet data
+                            </p>
+                        </div>
 
-            <!-- Settings Tab -->
-            <div id="settings" class="tab-content" role="tabpanel">
-                <h2>Settings</h2>
-                
-                <!-- Theme Settings -->
-                <div class="setting-group">
-                    <h3>Theme Preference</h3>
-                    <label class="radio-container">
-                        <input type="radio" name="theme" value="light" id="theme-light">
-                        <span class="checkmark"></span>
-                        <span>Light Mode</span>
-                    </label>
-                    <label class="radio-container">
-                        <input type="radio" name="theme" value="dark" id="theme-dark" checked>
-                        <span class="checkmark"></span>
-                        <span>Dark Mode</span>
-                    </label>
-                    <label class="radio-container">
-                        <input type="radio" name="theme" value="system" id="theme-system">
-                        <span class="checkmark"></span>
-                        <span>System Theme</span>
-                    </label>
-                </div>
+                        <!-- Control Buttons -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                            <button id="start-packet-capture-btn" class="primary">▶ Start Capture</button>
+                            <button id="stop-packet-capture-btn" class="secondary" disabled>⏹ Stop Capture</button>
+                            <button id="clear-packet-data-btn" class="secondary">🗑️ Clear</button>
+                            <button id="export-packets-btn" class="secondary">📥 Export</button>
+                        </div>
 
-                <!-- Update Settings -->
-                <div class="setting-group">
-                    <h3>Updates</h3>
-                    <label class="switch-container">
-                        <input type="checkbox" id="auto-update">
-                        <span class="checkmark"></span>
-                        <span>Auto-check for updates</span>
-                    </label>
-                </div>
+                        <!-- Capture Settings -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0;">Capture Settings</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Interface</label>
+                                    <select id="packet-interface"
+                                        style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
+                                        <option value="">All Interfaces</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Protocol
+                                        Filter</label>
+                                    <select id="packet-protocol"
+                                        style="width: 100%; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
+                                        <option value="">All Protocols</option>
+                                        <option value="tcp">TCP</option>
+                                        <option value="udp">UDP</option>
+                                        <option value="icmp">ICMP</option>
+                                        <option value="http">HTTP</option>
+                                        <option value="https">HTTPS</option>
+                                        <option value="dns">DNS</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Max
+                                        Packets</label>
+                                    <input type="number" id="packet-max-count" min="10" max="1000" value="100"
+                                        style="width: 100%; padding: 8px 12px; box-sizing: border-box; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- App Settings -->
-                <div class="setting-group">
-                    <h3>Application</h3>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button id="reset-settings">Reset Settings</button>
-                        <button id="clear-cache">Clear Cache</button>
+                        <!-- Statistics Panel -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0;">Traffic Statistics</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Total Packets</div>
+                                    <div id="stat-total-packets" style="font-size: 24px; font-weight: 600;">0</div>
+                                </div>
+                                <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Total Bytes</div>
+                                    <div id="stat-total-bytes" style="font-size: 24px; font-weight: 600;">0 B</div>
+                                </div>
+                                <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Packets/sec</div>
+                                    <div id="stat-packets-per-sec" style="font-size: 24px; font-weight: 600;">0</div>
+                                </div>
+                                <div style="background-color: var(--result-bg); padding: 12px; border-radius: 4px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Bytes/sec</div>
+                                    <div id="stat-bytes-per-sec" style="font-size: 24px; font-weight: 600;">0 KB/s</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Protocol Distribution -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 12px;">Protocol Distribution</h3>
+                            <div id="protocol-distribution" style="display: grid; gap: 8px;">
+                                <div style="color: var(--text-secondary); text-align: center; padding: 20px;">No data
+                                    captured yet</div>
+                            </div>
+                        </div>
+
+                        <!-- Top Connections -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 12px;">Top Connections</h3>
+                            <div id="top-connections" style="display: grid; gap: 8px;">
+                                <div style="color: var(--text-secondary); text-align: center; padding: 20px;">No
+                                    connections captured yet</div>
+                            </div>
+                        </div>
+
+                        <!-- Packet Table -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px;">
+                            <h3 style="margin-top: 0; margin-bottom: 12px;">Captured Packets</h3>
+                            <div style="overflow-x: auto;">
+                                <table id="packet-table"
+                                    style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                                    <thead style="background-color: var(--result-bg);">
+                                        <tr>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Time</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Source IP</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Dest IP</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Protocol</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Source Port</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Dest Port</th>
+                                            <th
+                                                style="padding: 8px; text-align: left; border-bottom: 1px solid var(--card-border);">
+                                                Length</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="packet-table-body">
+                                        <tr>
+                                            <td colspan="7"
+                                                style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                                                No packets captured yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Server Maker Tab -->
+                    <div id="server-maker" class="tab-content" role="tabpanel">
+                        <h2>🖥️ Server Manager</h2>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                            Monitor and manage servers currently running on this system
+                        </p>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+                            <button id="refresh-servers-btn" class="primary">🔄 Refresh Listeners</button>
+                            <button id="get-listening-ports-btn" class="secondary">📊 Scan Listening Ports</button>
+                            <button id="export-servers-btn" class="secondary">📥 Export</button>
+                        </div>
+
+                        <!-- Server Status Summary -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0;">📡 Server Status</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                <div style="padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Active Servers</div>
+                                    <div id="server-count" style="font-weight: 600; font-size: 18px;">0</div>
+                                </div>
+                                <div style="padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">
+                                        Listening Ports</div>
+                                    <div id="port-count" style="font-weight: 600; font-size: 18px;">0</div>
+                                </div>
+                                <div style="padding: 12px; background: var(--card-bg-hover); border-radius: 8px;">
+                                    <div style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Last
+                                        Scanned</div>
+                                    <div id="last-scanned" style="font-weight: 600; font-size: 12px;">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Servers List -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0;">🚀 Active Servers</h3>
+                            <div id="active-servers-list" style="display: grid; gap: 12px;">
+                                <div style="color: var(--text-secondary); text-align: center; padding: 24px;">
+                                    Click "Scan Listening Ports" to detect servers...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listening Ports Table -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <h3 style="margin-top: 0;">🔌 Listening Ports</h3>
+                            <div id="listening-ports-list" style="display: grid; gap: 8px;">
+                                <div style="color: var(--text-secondary); text-align: center; padding: 24px;">
+                                    No listening ports detected
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Server Output Console -->
+                        <div
+                            style="background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px;">
+                            <h3 style="margin-top: 0;">📝 Server Output</h3>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <select id="server-output-select"
+                                    style="flex: 1; padding: 8px 12px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--input-border); border-radius: 4px;">
+                                    <option value="">Select a server to view output...</option>
+                                </select>
+                                <button id="clear-output-btn" class="secondary">Clear</button>
+                            </div>
+                            <div id="server-output"
+                                style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 4px; padding: 12px; font-family: var(--font-mono); font-size: 12px; max-height: 300px; overflow-y: auto; color: #00ff00; line-height: 1.4;">
+                                <div style="color: var(--text-secondary);">Server output will appear here...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settings" class="tab-content" role="tabpanel">
+                        <h2>Settings</h2>
+
+                        <!-- Theme Settings -->
+                        <div class="setting-group">
+                            <h3>Theme Preference</h3>
+                            <label class="radio-container">
+                                <input type="radio" name="theme" value="light" id="theme-light">
+                                <span class="checkmark"></span>
+                                <span>Light Mode</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="theme" value="dark" id="theme-dark" checked>
+                                <span class="checkmark"></span>
+                                <span>Dark Mode</span>
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="theme" value="system" id="theme-system">
+                                <span class="checkmark"></span>
+                                <span>System Theme</span>
+                            </label>
+                        </div>
+
+                        <!-- Update Settings -->
+                        <div class="setting-group">
+                            <h3>Updates</h3>
+                            <label class="switch-container">
+                                <input type="checkbox" id="auto-update">
+                                <span class="checkmark"></span>
+                                <span>Auto-check for updates</span>
+                            </label>
+                        </div>
+
+                        <!-- App Settings -->
+                        <div class="setting-group">
+                            <h3>Application</h3>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button id="reset-settings">Reset Settings</button>
+                                <button id="clear-cache">Clear Cache</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
+        </div>
+
+        <!-- Bottom Toolbar (VSCode-style) -->
+        <div id="bottom-toolbar" class="bottom-toolbar" role="toolbar" aria-label="Quick Actions">
+            <button id="quick-scan" class="toolbar-button" title="Network Scanner" aria-label="Network Scanner">
+                <span>🔍</span>
+                <span>Scanner</span>
+            </button>
+            <button id="quick-port-check" class="toolbar-button" title="Port Checker" aria-label="Port Checker">
+                <span>🔌</span>
+                <span>Ports</span>
+            </button>
+            <button id="quick-dns" class="toolbar-button" title="DNS Lookup" aria-label="DNS Lookup">
+                <span>🌐</span>
+                <span>DNS</span>
+            </button>
+            <button id="quick-monitor" class="toolbar-button" title="Network Monitor" aria-label="Network Monitor">
+                <span>👁️</span>
+                <span>Monitor</span>
+            </button>
+            <button id="quick-settings" class="toolbar-button" title="Settings" aria-label="Settings">
+                <span>⚙️</span>
+                <span>Settings</span>
+            </button>
         </div>
     </div>
 
@@ -1197,13 +1717,8 @@
             <!-- Search Input Section -->
             <div class="command-input-wrapper">
                 <i class="fas fa-search" style="color: var(--text-secondary); margin-left: 14px; font-size: 16px;"></i>
-                <input 
-                    type="text" 
-                    id="command-input" 
-                    class="command-input"
-                    placeholder="Search commands, navigate tabs..." 
-                    aria-label="Command Input"
-                    autocomplete="off"
+                <input type="text" id="command-input" class="command-input"
+                    placeholder="Search commands, navigate tabs..." aria-label="Command Input" autocomplete="off"
                     spellcheck="false">
                 <div id="command-input-hint" style="color: var(--text-secondary); font-size: 12px; margin-right: 12px;">
                     <span id="command-hint-text" style="opacity: 0.6;">Type to search</span>
@@ -1213,7 +1728,9 @@
             <!-- Recent Commands Section (Optional) -->
             <div id="command-recent-section" class="command-recent-section" style="display: none;">
                 <div style="padding: 0 12px; margin-top: 8px;">
-                    <div style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px;">Recent</div>
+                    <div
+                        style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px;">
+                        Recent</div>
                     <div id="command-recent-list" style="display: grid; gap: 4px;"></div>
                 </div>
             </div>
@@ -1227,8 +1744,10 @@
             <div id="command-no-results" class="command-no-results" style="display: none;">
                 <div style="text-align: center; padding: 40px 20px;">
                     <div style="font-size: 32px; margin-bottom: 12px; opacity: 0.5;">🔍</div>
-                    <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">No commands found</div>
-                    <div style="color: var(--text-secondary); font-size: 12px;">Try different keywords or browse available commands</div>
+                    <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">No commands found
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 12px;">Try different keywords or browse
+                        available commands</div>
                 </div>
             </div>
 
@@ -1248,30 +1767,6 @@
         </div>
     </div>
 
-    <!-- Bottom Toolbar (VSCode-style) -->
-    <div id="bottom-toolbar" class="bottom-toolbar" role="toolbar" aria-label="Quick Actions">
-        <button id="quick-scan" class="toolbar-button" title="Network Scanner" aria-label="Network Scanner">
-            <span>🔍</span>
-            <span>Scanner</span>
-        </button>
-        <button id="quick-port-check" class="toolbar-button" title="Port Checker" aria-label="Port Checker">
-            <span>🔌</span>
-            <span>Ports</span>
-        </button>
-        <button id="quick-dns" class="toolbar-button" title="DNS Lookup" aria-label="DNS Lookup">
-            <span>🌐</span>
-            <span>DNS</span>
-        </button>
-        <button id="quick-monitor" class="toolbar-button" title="Network Monitor" aria-label="Network Monitor">
-            <span>👁️</span>
-            <span>Monitor</span>
-        </button>
-        <button id="quick-settings" class="toolbar-button" title="Settings" aria-label="Settings">
-            <span>⚙️</span>
-            <span>Settings</span>
-        </button>
-    </div>
-
     <!-- Snackbar Notification -->
     <div id="snackbar"></div>
 
@@ -1282,84 +1777,110 @@
             <div class="modal-header">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span style="font-size: 24px;">✨</span>
-                    <h2 style="margin: 0; font-size: 24px;">What's New in v1.2.0</h2>
+                    <h2 style="margin: 0; font-size: 24px;">What's New in v1.3.0</h2>
                 </div>
                 <button id="whats-new-close" class="modal-close-btn" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
                 <!-- New Features Section -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #10b981; display: flex; align-items: center; gap: 8px;">
+                    <h3 style="margin-top: 0; color: #4caf50; display: flex; align-items: center; gap: 8px;">
                         <span>🎯</span>
                         <span>Major Features</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li><strong>Enhanced Network Scanner:</strong> Improved UI with card-based configuration, progress indicators, and real-time statistics</li>
-                        <li><strong>Advanced Filtering:</strong> Filter scan results by IP, hostname, and online status</li>
-                        <li><strong>Batch Scanning:</strong> Configurable thread count for faster network scanning</li>
-                        <li><strong>Export Results:</strong> Export scan results as CSV with security improvements</li>
+                        <li><strong>Traceroute/Tracert Tool:</strong> New tab for network path tracing with hop details,
+                            latency tracking, and hostname resolution</li>
+                        <li><strong>Classic Design System (ND1-C):</strong> Completely redesigned UI with flat, timeless
+                            aesthetic and minimal borders</li>
+                        <li><strong>Enhanced Theme System:</strong> Advanced theme management with custom colors,
+                            light/dark modes, and persistent settings</li>
+                        <li><strong>Improved Electron Menu:</strong> Reorganized menu structure with quick-access tools
+                            and Windows Jump List integration</li>
                     </ul>
                 </div>
 
-                <!-- Improvements Section -->
+                <!-- UI/Design Section -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #3b82f6; display: flex; align-items: center; gap: 8px;">
-                        <span>⚡</span>
-                        <span>Improvements</span>
+                    <h3 style="margin-top: 0; color: #2196f3; display: flex; align-items: center; gap: 8px;">
+                        <span>🎨</span>
+                        <span>Design & UI Updates</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li>Better progress tracking with visual progress bar</li>
-                        <li>Detailed scan statistics and summary panel</li>
-                        <li>Improved error handling and validation</li>
-                        <li>Enhanced security with input sanitization</li>
-                        <li>Rate limiting for scan operations</li>
+                        <li>New Classic Design System (ND1-C) - flat, minimal aesthetic</li>
+                        <li>Reduced border radius for professional appearance (2px-8px)</li>
+                        <li>Updated button styles with proper focus states and variants</li>
+                        <li>Classic snackbar notifications with theme integration</li>
+                        <li>Consistent color palette throughout the application</li>
+                        <li>Improved accessibility with focus outlines and keyboard navigation</li>
                     </ul>
                 </div>
 
-                <!-- Security Section -->
+                <!-- Theme & Customization -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
-                        <span>🔒</span>
-                        <span>Security Enhancements</span>
+                    <h3 style="margin-top: 0; color: #ff9800; display: flex; align-items: center; gap: 8px;">
+                        <span>⚙️</span>
+                        <span>Theme & Customization</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li>XSS prevention in result rendering</li>
-                        <li>CSV formula injection prevention</li>
-                        <li>Command injection protection</li>
-                        <li>Input validation and sanitization</li>
+                        <li><strong>Theme Manager:</strong> Centralized theme management with multiple IPC handlers</li>
+                        <li><strong>Custom Colors:</strong> Update individual accent colors on the fly</li>
+                        <li><strong>theme.settings.json:</strong> Persistent theme configuration file</li>
+                        <li><strong>Automatic Detection:</strong> System theme detection with override capability</li>
+                        <li><strong>CSS Variables:</strong> Full theme support via CSS custom properties</li>
                     </ul>
                 </div>
 
-                <!-- Bug Fixes Section -->
+                <!-- Tools & Features -->
                 <div style="margin-bottom: 24px;">
-                    <h3 style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 8px;">
-                        <span>🐛</span>
-                        <span>Bug Fixes</span>
+                    <h3 style="margin-top: 0; color: #2196f3; display: flex; align-items: center; gap: 8px;">
+                        <span>🔧</span>
+                        <span>Tools & Features</span>
                     </h3>
                     <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
-                        <li>Fixed initialization error: TypeError with removeChild on null element</li>
-                        <li>Fixed scan timeout handling</li>
-                        <li>Improved port scanning reliability</li>
+                        <li><strong>Traceroute Tab:</strong> Trace network paths with hop-by-hop analysis</li>
+                        <li><strong>Quick-Access Tasks:</strong> Windows Jump List integration for instant tool access
+                        </li>
+                        <li><strong>Enhanced Menu System:</strong> Better organized Tools menu with keyboard shortcuts
+                        </li>
+                        <li><strong>Settings Menu:</strong> Quick access via Ctrl+Comma</li>
+                    </ul>
+                </div>
+
+                <!-- Bug Fixes & Improvements -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; color: #f44336; display: flex; align-items: center; gap: 8px;">
+                        <span>✨</span>
+                        <span>Improvements & Fixes</span>
+                    </h3>
+                    <ul style="margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+                        <li>Better progress tracking and statistics display</li>
+                        <li>Improved error handling and user feedback</li>
+                        <li>Enhanced security with input validation</li>
+                        <li>Rate limiting for network operations</li>
+                        <li>Responsive design across all window sizes</li>
                         <li>Better memory management during scans</li>
                     </ul>
                 </div>
 
                 <!-- Release Notes -->
-                <div style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <div
+                    style="background-color: var(--result-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
                     <p style="margin: 0; font-size: 12px; color: var(--text-secondary);">
-                        <strong>Release Date:</strong> November 25, 2025<br>
-                        <strong>Version:</strong> v1.2.0<br>
+                        <strong>Release Date:</strong> February 8, 2026<br>
+                        <strong>Version:</strong> v1.3.0<br>
                         <strong>Status:</strong> Stable
                     </p>
                 </div>
             </div>
-            
+
             <div class="modal-footer">
                 <button id="whats-new-got-it" class="primary" style="flex: 1;">Got It!</button>
-                <button id="whats-new-learn-more" class="secondary" style="flex: 1; margin-left: 12px;">Learn More</button>
+                <button id="whats-new-learn-more" class="secondary" style="flex: 1; margin-left: 12px;">Learn
+                    More</button>
             </div>
         </div>
     </div>
@@ -1374,10 +1895,11 @@
             document.body.appendChild(script);
         });
     </script>
-    
+
     <!-- Fallback for JavaScript disabled -->
     <noscript>
-        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: system-ui, sans-serif;">
+        <div
+            style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: system-ui, sans-serif;">
             <div style="text-align: center; padding: 20px;">
                 <h1>JavaScript Required</h1>
                 <p>NetNavigator requires JavaScript to be enabled.</p>
@@ -1385,7 +1907,7 @@
             </div>
         </div>
     </noscript>
-    
+
     <!-- Performance monitoring (optional) -->
     <script>
         // Track loading performance
@@ -1396,4 +1918,5 @@
         });
     </script>
 </body>
+
 </html>

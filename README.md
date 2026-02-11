@@ -1,4 +1,4 @@
-# NetNavigator v1.1.0
+# NetNavigator v1.3.0
 Welcome to NetNavigator - A comprehensive Network Utility for Windows, Linux, and MacOS
 
 # Table of Contents
@@ -6,16 +6,19 @@ Welcome to NetNavigator - A comprehensive Network Utility for Windows, Linux, an
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [What's New](#whats-new-in-v130)
 - [System Requirements](#system-requirements)
 - [Contributing](#contributing)
 
 ## Features
 
 ### Network Tools
-- **Network Scanner** - Discover devices on your local network
-- **Port Checker** - Check if ports are open on a host
+- **Network Scanner** - Discover devices on your local network with advanced filtering
+- **Port Scanner** - Comprehensive port scanning with configurable ranges
+- **Traceroute/Tracert** - Trace network paths with hop-by-hop analysis
 - **DNS Lookup** - Resolve domain names with multiple record types
 - **Network Monitor** - Monitor real-time network activity
+- **Diagnostics** - System and network diagnostic information
 
 ### Advanced Features
 - **Packet & Traffic Analysis** - Capture and analyze network packets in real-time
@@ -23,19 +26,42 @@ Welcome to NetNavigator - A comprehensive Network Utility for Windows, Linux, an
   - Top connections monitoring
   - Traffic statistics
   - Packet table with detailed information
-- **Diagnostics** - System and network diagnostic information
-  - System information (Platform, CPU, Memory, Uptime)
-  - Network interfaces and IP information
-  - Application versions (Node.js, Electron)
-- **Network Info** - View detailed network configuration
+- **Theme Management System** - Dynamic theme switching with persistent configuration
+  - Light/Dark mode auto-detection
+  - Custom color overrides
+  - Real-time theme application
 - **Network Optimization** - Optimize network settings for better performance
+- **Enhanced Export** - Export results as CSV with security safeguards
 
 ### UI/UX
-- Modern, intuitive interface with dark/light theme support
+- **Classic Design System (ND1-C)** - Flat, minimal aesthetic with professional styling
 - Sidebar navigation with favorites
 - Command palette for quick access
 - Real-time status indicators
 - Responsive design
+- Animated welcome screen with particle network visualization
+
+## What's New in v1.3.0
+
+### Major Features
+- **Traceroute/Tracert Tool** - New dedicated tab for network path tracing
+- **Classic Design System (ND1-C)** - Completely redesigned UI with flat aesthetic
+- **Enhanced Theme System** - Advanced theme management with custom colors and persistence
+- **OS Integration** - Windows Jump List shortcuts and command-line argument handling
+- **Animated Welcome Screen** - Particle network visualization with rotating globe
+
+### UI/Design Updates
+- Flat, minimal design aesthetic (reduced border radii: 2px-8px)
+- Updated button variants with proper focus states
+- Redesigned snackbar notifications
+- Consistent color palette throughout
+- Improved accessibility with keyboard navigation
+
+### Tools & Performance
+- CSV export for traceroute results
+- Enhanced cross-platform compatibility
+- Better IPC error handling
+- Improved reliability
 
 ## Installation
 
@@ -60,14 +86,16 @@ npm start
 ## Usage
 After launching NetNavigator:
 1. **Dashboard** - View quick overview of network status
-2. **Scanner** - Enter a base IP to scan your network
-3. **Port Checker** - Check specific ports on hosts
-4. **DNS Lookup** - Resolve domains and query DNS records
-5. **Packet Analysis** - Start capturing network packets in real-time
-6. **Diagnostics** - View system and network diagnostic information
-7. **Network Info** - Get detailed network configuration
-8. **Monitor** - Monitor real-time network activity
-9. **Optimize** - Run network optimization tools
+2. **Network Scanner** - Enter a base IP to scan your network with filtering options
+3. **Port Scanner** - Scan specific ports with configurable ranges and batch scanning
+4. **Traceroute** - Trace network paths and analyze hop-by-hop latency
+5. **DNS Lookup** - Resolve domains and query DNS records
+6. **Packet Analysis** - Start capturing network packets in real-time
+7. **Diagnostics** - View system and network diagnostic information
+8. **Network Info** - Get detailed network configuration
+9. **Monitor** - Monitor real-time network activity
+10. **Optimize** - Run network optimization tools
+11. **Settings** - Customize theme, colors, and preferences
 
 ## System Requirements
 - **Windows**: Windows 7 or later

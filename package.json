@@ -1,6 +1,6 @@
 {
   "name": "netnavigator",
-  "version": "v1.2.0",
+  "version": "v1.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "semver": "^7.7.3",
     "systeminformation": "^5.27.11"
   },
   "devDependencies": {
